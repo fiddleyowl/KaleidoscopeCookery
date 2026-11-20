@@ -1,0 +1,27 @@
+name: Build NeoForge 26.1.2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["26.1.2-neoforge"]
+  pull_request:
+    branches: ["26.1.2-neoforge"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'liberica'
+      - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew build --console=plain
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kaleidoscope-cookery-26.1.2
+          path: build/libs/*.jar

@@ -33,6 +33,6 @@ side = "BOTH"
 [[dependencies."${mod_id}"]]
 modId = "kubejs"
 type = "optional"
-versionRange = "[2101.7.2-build.309,)"
+versionRange = "[26.1.2-8.0.4,)"
 ordering = "NONE"
 side = "BOTH"
