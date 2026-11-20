@@ -16,7 +16,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -51,7 +51,7 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
     /**
      * 服务端客户端共通数据
      */
-    private @Nullable ResourceLocation modelId = null;
+    private @Nullable Identifier modelId = null;
     private int maxCutCount = 0;
     private int currentCutCount = 0;
     private ItemStack currentCutStack = ItemStack.EMPTY;
@@ -195,7 +195,7 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (tag.contains(MODEL_ID)) {
-            this.modelId = ResourceLocation.parse(tag.getString(MODEL_ID));
+            this.modelId = Identifier.parse(tag.getString(MODEL_ID));
         } else {
             this.modelId = null;
         }
@@ -218,7 +218,7 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
     }
 
     @Nullable
-    public ResourceLocation getModelId() {
+    public Identifier getModelId() {
         return modelId;
     }
 

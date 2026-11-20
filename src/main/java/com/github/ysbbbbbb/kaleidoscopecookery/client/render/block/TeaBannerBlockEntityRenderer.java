@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.AttachFace;
@@ -63,7 +63,7 @@ public class TeaBannerBlockEntityRenderer implements BlockEntityRenderer<TeaBann
             poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
         }
 
-        ResourceLocation baseTexture = ResourceLocation.fromNamespaceAndPath(MOD_ID, "textures/entity/banner/" + teaBanner.getColor().getName() + ".png");
+        Identifier baseTexture = Identifier.fromNamespaceAndPath(MOD_ID, "textures/entity/banner/" + teaBanner.getColor().getName() + ".png");
         VertexConsumer baseBuffer = buffer.getBuffer(RenderType.entityCutoutNoCull(baseTexture));
         if (wallMounted) {
             this.wallBanner.renderToBuffer(poseStack, baseBuffer, packedLight, packedOverlay);
@@ -75,7 +75,7 @@ public class TeaBannerBlockEntityRenderer implements BlockEntityRenderer<TeaBann
         if (patternName == null) {
             patternName = "tea";
         }
-        ResourceLocation patternTexture = ResourceLocation.fromNamespaceAndPath(MOD_ID, "textures/entity/pattern/" + patternName + ".png");
+        Identifier patternTexture = Identifier.fromNamespaceAndPath(MOD_ID, "textures/entity/pattern/" + patternName + ".png");
 
         if (wallMounted) {
             poseStack.translate(-1, 3, 0);

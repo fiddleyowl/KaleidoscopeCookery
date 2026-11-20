@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class ChoppingBoardBlockEntityRender implements BlockEntityRenderer<ChoppingBoardBlockEntity> {
@@ -25,7 +25,7 @@ public class ChoppingBoardBlockEntityRender implements BlockEntityRenderer<Chopp
 
     @Override
     public void render(ChoppingBoardBlockEntity choppingBoard, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        ResourceLocation modelId = choppingBoard.getModelId();
+        Identifier modelId = choppingBoard.getModelId();
         if (modelId == null) {
             return;
         }
@@ -33,7 +33,7 @@ public class ChoppingBoardBlockEntityRender implements BlockEntityRenderer<Chopp
             choppingBoard.previousModel = ModelResourceLocation.standalone(modelId);
             choppingBoard.cacheModels = new ModelResourceLocation[choppingBoard.getMaxCutCount() + 1];
             for (int i = 0; i <= choppingBoard.getMaxCutCount(); i++) {
-                ResourceLocation location = ResourceLocation.fromNamespaceAndPath(modelId.getNamespace(), "chopping_board/" + modelId.getPath() + "/" + i);
+                Identifier location = Identifier.fromNamespaceAndPath(modelId.getNamespace(), "chopping_board/" + modelId.getPath() + "/" + i);
                 choppingBoard.cacheModels[i] = ModelResourceLocation.standalone(location);
             }
         }

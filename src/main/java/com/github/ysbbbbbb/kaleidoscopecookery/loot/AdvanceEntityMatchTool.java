@@ -5,8 +5,8 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModLootModifier;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,7 +20,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import java.util.Set;
 
 public class AdvanceEntityMatchTool implements LootItemCondition {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "advance_entity_match_tool");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "advance_entity_match_tool");
     public static final MapCodec<AdvanceEntityMatchTool> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             EquipmentSlot.CODEC.fieldOf("slot").forGetter(tool -> tool.slot),
             ItemPredicate.CODEC.fieldOf("predicate").forGetter(tool -> tool.predicate)

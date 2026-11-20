@@ -7,10 +7,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SitRenderer extends EntityRenderer<SitEntity> {
-    private static final ResourceLocation EMPTY = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/entity/empty.png");
+    private static final Identifier EMPTY = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/entity/empty.png");
 
     public SitRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -21,7 +21,7 @@ public class SitRenderer extends EntityRenderer<SitEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SitEntity entitySit) {
+    public Identifier getTextureLocation(SitEntity entitySit) {
         return EMPTY;
     }
 }

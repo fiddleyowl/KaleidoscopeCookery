@@ -16,7 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TransmutationLunchBagItem extends Item {
-    public static final ResourceLocation HAS_ITEMS_PROPERTY = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "has_items");
+    public static final Identifier HAS_ITEMS_PROPERTY = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "has_items");
     public static final int NO_ITEMS = 0;
     public static final int HAS_ITEMS = 1;
 
@@ -225,21 +225,21 @@ public class TransmutationLunchBagItem extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
         if (!hasItems(stack)) {
-            return UseAnim.NONE;
+            return ItemUseAnimation.NONE;
         }
         ItemStackHandler items = getItems(stack);
         for (int i = 0; i < items.getSlots(); i++) {
             ItemStack stored = items.getStackInSlot(i);
             if (stored.has(DataComponents.FOOD)) {
-                return UseAnim.EAT;
+                return ItemUseAnimation.EAT;
             }
             if (stored.is(Items.POTION)) {
-                return UseAnim.DRINK;
+                return ItemUseAnimation.DRINK;
             }
         }
-        return UseAnim.NONE;
+        return ItemUseAnimation.NONE;
     }
 
     @Override

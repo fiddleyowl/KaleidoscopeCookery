@@ -3,14 +3,14 @@ package com.github.ysbbbbbb.kaleidoscopecookery.compat.ponder.init;
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Objects;
 
 public class KitchenBlockPonderTag {
-    public static final ResourceLocation KITCHEN_BLOCKS = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "kitchen_blocks");
+    public static final Identifier KITCHEN_BLOCKS = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "kitchen_blocks");
 
-    public static void register(PonderTagRegistrationHelper<ResourceLocation> helper) {
+    public static void register(PonderTagRegistrationHelper<Identifier> helper) {
         helper.registerTag(KITCHEN_BLOCKS).addToIndex()
                 .item(ModItems.KITCHEN_SHOVEL.get(), true, false)
                 .title("")

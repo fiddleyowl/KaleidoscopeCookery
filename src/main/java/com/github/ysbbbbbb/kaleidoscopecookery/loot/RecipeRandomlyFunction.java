@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class RecipeRandomlyFunction extends LootItemConditionalFunction {
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "recipe_randomly");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "recipe_randomly");
     public static final MapCodec<RecipeRandomlyFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance).and(
                     RecipeItem.RecipeRecord.CODEC.listOf().optionalFieldOf("recipes", List.of()).forGetter(f -> f.possibleRecipes)
             ).apply(instance, RecipeRandomlyFunction::new)
@@ -56,11 +56,11 @@ public class RecipeRandomlyFunction extends LootItemConditionalFunction {
         }
 
         // 否则从所有模型食物中随机一个
-        List<ResourceLocation> keys = FoodBiteRegistry.FOOD_DATA_MAP.keySet().stream().toList();
+        List<Identifier> keys = FoodBiteRegistry.FOOD_DATA_MAP.keySet().stream().toList();
         if (keys.isEmpty()) {
             return stack;
         }
-        ResourceLocation randomKey = keys.get(randomsource.nextInt(keys.size()));
+        Identifier randomKey = keys.get(randomsource.nextInt(keys.size()));
         Item result = FoodBiteRegistry.getItem(randomKey);
         RegistryAccess registryAccess = context.getLevel().registryAccess();
 

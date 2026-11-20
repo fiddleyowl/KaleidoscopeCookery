@@ -2,9 +2,9 @@ package com.github.ysbbbbbb.kaleidoscopecookery.init;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.google.common.collect.Maps;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
@@ -29,7 +29,7 @@ public class ModArmorMaterials {
             12,
             SoundEvents.ARMOR_EQUIP_LEATHER,
             () -> Ingredient.of(Items.LEATHER),
-            List.of(new ArmorMaterial.Layer(ResourceLocation.withDefaultNamespace("cookery_farmer"))),
+            List.of(new ArmorMaterial.Layer(Identifier.withDefaultNamespace("cookery_farmer"))),
             0, 0
     ));
 }

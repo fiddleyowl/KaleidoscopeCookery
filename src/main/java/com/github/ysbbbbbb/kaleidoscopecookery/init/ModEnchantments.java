@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 import static com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery.MOD_ID;
-import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
+import static net.minecraft.resources.Identifier.fromNamespaceAndPath;
 
 public interface ModEnchantments {
     ResourceKey<Enchantment> QUICK_KNIFE = ResourceKey.create(Registries.ENCHANTMENT, fromNamespaceAndPath(MOD_ID, "quick_knife"));

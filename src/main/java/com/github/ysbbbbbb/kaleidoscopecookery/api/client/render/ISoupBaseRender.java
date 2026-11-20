@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -76,7 +76,7 @@ public interface ISoupBaseRender {
      */
     void renderWhenCooking(StockpotBlockEntity stockpot, float partialTick, PoseStack poseStack,
                            MultiBufferSource buffer, int packedLight, int packedOverlay,
-                           ResourceLocation cookingTexture, float soupHeight);
+                           Identifier cookingTexture, float soupHeight);
 
     /**
      * 烹饪完成后的汤底渲染
@@ -86,5 +86,5 @@ public interface ISoupBaseRender {
      */
     void renderWhenFinished(StockpotBlockEntity stockpot, float partialTick, PoseStack poseStack,
                             MultiBufferSource buffer, int packedLight, int packedOverlay,
-                            ResourceLocation finishedTexture, float soupHeight);
+                            Identifier finishedTexture, float soupHeight);
 }

@@ -23,7 +23,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 
@@ -34,7 +34,7 @@ import java.util.Optional;
 
 public class ReiTeapotRecipeCategory implements DisplayCategory<ReiTeapotRecipeCategory.TeapotRecipeDisplay> {
     public static final CategoryIdentifier<TeapotRecipeDisplay> ID = CategoryIdentifier.of(KaleidoscopeCookery.MOD_ID, "plugin/teapot");
-    private static final ResourceLocation BG = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/jei/teapot.png");
+    private static final Identifier BG = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/jei/teapot.png");
     private static final MutableComponent TITLE = Component.translatable("block.kaleidoscope_cookery.teapot");
     public static final int WIDTH = 176;
     public static final int HEIGHT = 88;
@@ -121,7 +121,7 @@ public class ReiTeapotRecipeCategory implements DisplayCategory<ReiTeapotRecipeC
     public static class TeapotRecipeDisplay extends BasicDisplay {
         public final int brewTime;
 
-        public TeapotRecipeDisplay(ResourceLocation location, List<EntryIngredient> fluidInput,
+        public TeapotRecipeDisplay(Identifier location, List<EntryIngredient> fluidInput,
                                    List<EntryIngredient> ingredientInput,
                                    List<EntryIngredient> outputs, int brewTime) {
             super(List.of(fluidInput.getFirst(), ingredientInput.getFirst()), outputs, Optional.of(location));

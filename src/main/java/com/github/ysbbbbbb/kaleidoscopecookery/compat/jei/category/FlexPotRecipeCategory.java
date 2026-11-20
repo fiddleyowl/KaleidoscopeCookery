@@ -22,7 +22,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -33,9 +33,9 @@ import java.util.List;
 
 public class FlexPotRecipeCategory implements IRecipeCategory<RecipeHolder<FlexPotRecipe>> {
     public static final RecipeType<RecipeHolder<FlexPotRecipe>> TYPE = RecipeType.createRecipeHolderType(
-            ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "flex_pot")
+            Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "flex_pot")
     );
-    private static final ResourceLocation BG = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/jei/pot.png");
+    private static final Identifier BG = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/jei/pot.png");
     private static final Component TITLE = ComponentUtils.formatList(List.of(
             Component.translatable("jei.kaleidoscope_cookery.flex_recipe"),
             Component.translatable("block.kaleidoscope_cookery.pot")

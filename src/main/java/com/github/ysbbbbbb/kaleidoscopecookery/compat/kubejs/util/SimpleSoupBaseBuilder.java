@@ -4,7 +4,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.StockpotVisuals;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.soupbase.SimpleSoupBase;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -18,10 +18,10 @@ import java.util.function.Predicate;
         简易汤底的构建器，用于 KubeJS
         """)
 public final class SimpleSoupBaseBuilder {
-    private final ResourceLocation name;
+    private final Identifier name;
 
     private ItemStack displayStack = Items.APPLE.getDefaultInstance();
-    private ResourceLocation soupBaseTexture = StockpotVisuals.DEFAULT_COOKING_TEXTURE;
+    private Identifier soupBaseTexture = StockpotVisuals.DEFAULT_COOKING_TEXTURE;
     private int bubbleColor = StockpotVisuals.DEFAULT_COOKING_BUBBLE_COLOR;
 
     private Predicate<ItemStack> soupBasePredicate = stack -> false;
@@ -32,7 +32,7 @@ public final class SimpleSoupBaseBuilder {
     private TriFunction<Level, LivingEntity, ItemStack, ItemStack> returnSoupBaseFunction =
             (level, entity, stack) -> ItemStack.EMPTY;
 
-    private SimpleSoupBaseBuilder(ResourceLocation name) {
+    private SimpleSoupBaseBuilder(Identifier name) {
         this.name = name;
     }
 
@@ -40,7 +40,7 @@ public final class SimpleSoupBaseBuilder {
             Create a soup base, need to provide an id, this id will be used in subsequent stockpot recipes. <br>
             创建一个汤底，需要填写 id，这个 id 将用于后续汤锅配方。
             """)
-    public static SimpleSoupBaseBuilder create(ResourceLocation name) {
+    public static SimpleSoupBaseBuilder create(Identifier name) {
         return new SimpleSoupBaseBuilder(name);
     }
 
@@ -57,7 +57,7 @@ public final class SimpleSoupBaseBuilder {
             The texture used to render the soup base in the soup pot. Supports dynamic textures. The texture needs to be registered in atlases/block.json. <br>
             在汤锅中用于渲染汤底的材质，支持动态材质。材质需要在 atlases/block.json 中注册。
             """)
-    public SimpleSoupBaseBuilder soupBaseTexture(ResourceLocation soupBaseTexture) {
+    public SimpleSoupBaseBuilder soupBaseTexture(Identifier soupBaseTexture) {
         this.soupBaseTexture = soupBaseTexture;
         return this;
     }

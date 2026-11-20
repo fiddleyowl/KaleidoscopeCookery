@@ -4,7 +4,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 public class ItemRenderReplacerReloadListener implements ResourceManagerReloadListener {
     public static final ItemRenderReplacer INSTANCE = new ItemRenderReplacer();
 
-    private static final ResourceLocation FILE_PATH = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "models/item_render_replacer.json");
+    private static final Identifier FILE_PATH = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "models/item_render_replacer.json");
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {

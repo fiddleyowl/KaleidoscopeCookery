@@ -16,13 +16,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
 import org.joml.Vector3f;
 
 public class TrashCanBlockEntityRender implements BlockEntityRenderer<TrashCanBlockEntity> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/block/trash_can.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/block/trash_can.png");
     private static final Vector3f ANIMATION_VECTOR_CACHE = new Vector3f();
 
     private final BlockEntityRendererProvider.Context context;

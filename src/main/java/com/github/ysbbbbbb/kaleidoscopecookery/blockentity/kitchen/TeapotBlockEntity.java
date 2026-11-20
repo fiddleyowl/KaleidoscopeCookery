@@ -19,7 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -63,7 +63,7 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
     private final RecipeManager.CachedCheck<TeapotInput, TeapotRecipe> quickCheck = RecipeManager.createCheck(ModRecipes.TEAPOT_RECIPE);
 
     private ItemStack input = ItemStack.EMPTY;
-    private ResourceLocation teaFluidId = TeapotRecipeSerializer.EMPTY_TEA_FLUID;
+    private Identifier teaFluidId = TeapotRecipeSerializer.EMPTY_TEA_FLUID;
     private ItemStack result = ItemStack.EMPTY;
 
     private int status = PUT_INGREDIENT;
@@ -199,7 +199,7 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
         FluidStack fluidInTank = cap.getFluidInTank(0);
         Fluid fluid = fluidInTank.getFluid();
 
-        ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
+        Identifier id = BuiltInRegistries.FLUID.getKey(fluid);
 
         // 固定扣 1000 mb
         int amount = fluidInTank.getAmount();
@@ -420,7 +420,7 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         this.input = ItemStack.parseOptional(registries, tag.getCompound(INPUT));
-        this.teaFluidId = ResourceLocation.parse(tag.getString(TEA_FLUID_ID));
+        this.teaFluidId = Identifier.parse(tag.getString(TEA_FLUID_ID));
         this.result = ItemStack.parseOptional(registries, tag.getCompound(RESULT));
         this.status = tag.getInt(STATUS);
         this.currentTick = tag.getInt(CURRENT_TICK);
@@ -477,7 +477,7 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
         this.refresh();
     }
 
-    public ResourceLocation getTeaFluidId() {
+    public Identifier getTeaFluidId() {
         return teaFluidId;
     }
 

@@ -7,16 +7,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record StockpotVisuals(
-        ResourceLocation cookingTexture,
-        ResourceLocation finishedTexture,
+        Identifier cookingTexture,
+        Identifier finishedTexture,
         int cookingBubbleColor,
         int finishedBubbleColor
 ) {
-    public static final ResourceLocation DEFAULT_COOKING_TEXTURE = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "stockpot/default_cooking");
-    public static final ResourceLocation DEFAULT_FINISHED_TEXTURE = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "stockpot/default_finished");
+    public static final Identifier DEFAULT_COOKING_TEXTURE = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "stockpot/default_cooking");
+    public static final Identifier DEFAULT_FINISHED_TEXTURE = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "stockpot/default_finished");
 
     public static final int DEFAULT_COOKING_BUBBLE_COLOR = 0xFFECC3;
     public static final int DEFAULT_FINISHED_BUBBLE_COLOR = 0xF4AA8B;
@@ -27,15 +27,15 @@ public record StockpotVisuals(
     );
 
     public static final MapCodec<StockpotVisuals> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ResourceLocation.CODEC.optionalFieldOf("cooking_texture", DEFAULT_COOKING_TEXTURE).forGetter(StockpotVisuals::cookingTexture),
-            ResourceLocation.CODEC.optionalFieldOf("finished_texture", DEFAULT_FINISHED_TEXTURE).forGetter(StockpotVisuals::finishedTexture),
+            Identifier.CODEC.optionalFieldOf("cooking_texture", DEFAULT_COOKING_TEXTURE).forGetter(StockpotVisuals::cookingTexture),
+            Identifier.CODEC.optionalFieldOf("finished_texture", DEFAULT_FINISHED_TEXTURE).forGetter(StockpotVisuals::finishedTexture),
             Codec.INT.optionalFieldOf("cooking_bubble_color", DEFAULT_COOKING_BUBBLE_COLOR).forGetter(StockpotVisuals::cookingBubbleColor),
             Codec.INT.optionalFieldOf("finished_bubble_color", DEFAULT_FINISHED_BUBBLE_COLOR).forGetter(StockpotVisuals::finishedBubbleColor)
     ).apply(instance, StockpotVisuals::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, StockpotVisuals> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC, StockpotVisuals::cookingTexture,
-            ResourceLocation.STREAM_CODEC, StockpotVisuals::finishedTexture,
+            Identifier.STREAM_CODEC, StockpotVisuals::cookingTexture,
+            Identifier.STREAM_CODEC, StockpotVisuals::finishedTexture,
             ByteBufCodecs.INT, StockpotVisuals::cookingBubbleColor,
             ByteBufCodecs.INT, StockpotVisuals::finishedBubbleColor,
             StockpotVisuals::new

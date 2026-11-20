@@ -9,12 +9,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.animal.chicken.Chicken;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -35,7 +35,7 @@ public class RightClickEvent {
         InteractionHand hand = event.getHand();
         ItemStack itemInHand = player.getItemInHand(hand);
         Item item = itemInHand.getItem();
-        Item maidItem = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("touhou_little_maid", "smart_slab_has_maid"));
+        Item maidItem = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("touhou_little_maid", "smart_slab_has_maid"));
         if (player.isSecondaryUseActive() && hand == InteractionHand.MAIN_HAND
             && !itemInHand.is(Items.DEBUG_STICK)
             && !itemInHand.is(Items.FIREWORK_ROCKET)

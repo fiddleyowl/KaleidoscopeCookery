@@ -9,7 +9,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -60,7 +60,7 @@ public class MillstoneRecipeSerializer implements RecipeSerializer<MillstoneReci
             MillstoneRecipe::new
     );
 
-    public static final ResourceLocation EMPTY_ID = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "millstone/empty");
+    public static final Identifier EMPTY_ID = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "millstone/empty");
 
     public static RecipeHolder<MillstoneRecipe> getEmptyRecipe() {
         MillstoneRecipe recipe = new MillstoneRecipe(Ingredient.EMPTY, NonNullList.withSize(4, RandomOutput.EMPTY));

@@ -1,19 +1,19 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.crafting.container;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public class TeapotInput extends SimpleInput {
-    private final ResourceLocation teaFluid;
+    private final Identifier teaFluid;
 
-    public TeapotInput(ItemStack itemStack, ResourceLocation teaFluid) {
+    public TeapotInput(ItemStack itemStack, Identifier teaFluid) {
         super(List.of(itemStack));
         this.teaFluid = teaFluid;
     }
 
-    public ResourceLocation getTeaFluid() {
+    public Identifier getTeaFluid() {
         return this.teaFluid;
     }
 

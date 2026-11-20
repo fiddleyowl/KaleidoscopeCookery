@@ -8,7 +8,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.item.OilPotItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -120,7 +120,7 @@ public class ModCreativeTabs {
     public static Supplier<CreativeModeTab> COOKERY_FOOD_TAB = TABS.register("cookery_food", () -> CreativeModeTab.builder()
             .title(Component.translatable("item_group.kaleidoscope_cookery.cookery_food.name"))
             .icon(() -> ModItems.RED_CHILI.get().getDefaultInstance())
-            .withTabsBefore(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "cookery_main"))
+            .withTabsBefore(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "cookery_main"))
             .displayItems((par, output) -> {
                 // 原材料
                 output.accept(ModItems.TOMATO.get());

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -18,7 +18,7 @@ public class QualityEvaluator {
     private static final int MAX_CAPACITY = 9;
 
     public static Quality evaluate(List<ItemStack> inputs, List<Ingredient> ingredients,
-                                   ResourceLocation recipeId, long worldSeed) {
+                                   Identifier recipeId, long worldSeed) {
         // 先剔除空占位符
         List<Ingredient> nonEmpty = Lists.newArrayList();
         ingredients.forEach(ingredient -> {
@@ -41,7 +41,7 @@ public class QualityEvaluator {
         return evalQuality(inputs, recipeVector);
     }
 
-    private static @NotNull Quality oneInputQuality(List<ItemStack> inputs, ResourceLocation recipeId, long worldSeed) {
+    private static @NotNull Quality oneInputQuality(List<ItemStack> inputs, Identifier recipeId, long worldSeed) {
         // 生成专属的种子
         long recipeSeed = worldSeed * 31 + recipeId.hashCode();
         Random random = new Random(recipeSeed);
@@ -67,7 +67,7 @@ public class QualityEvaluator {
     /**
      * 依据配方的 ID 和世界的 seed，生成随机但是固定的配方比例
      */
-    private static List<Pair<Ingredient, Integer>> randomVector(List<Ingredient> ingredients, ResourceLocation id, long seed) {
+    private static List<Pair<Ingredient, Integer>> randomVector(List<Ingredient> ingredients, Identifier id, long seed) {
         // 生成专属的种子
         long recipeSeed = seed * 31 + id.hashCode();
         Random random = new Random(recipeSeed);

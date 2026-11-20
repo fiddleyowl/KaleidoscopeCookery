@@ -25,7 +25,7 @@ public interface ModFoods {
     // 猪儿虫
     FoodProperties CATERPILLAR = (new FoodProperties.Builder())
             .nutrition(18).saturationModifier(0.2F).alwaysEdible()
-            .effect(() -> new MobEffectInstance(CONFUSION, 200), 1F)
+            .effect(() -> new MobEffectInstance(NAUSEA, 200), 1F)
             .build();
 
     // 刺身
@@ -114,7 +114,7 @@ public interface ModFoods {
     // 烤包子
     FoodProperties SAMSA = (new FoodProperties.Builder())
             .nutrition(8).saturationModifier(1)
-            .effect(() -> new MobEffectInstance(DIG_SPEED, 100 * 20, 1), 1.0F)
+            .effect(() -> new MobEffectInstance(HASTE, 100 * 20, 1), 1.0F)
             .alwaysEdible().build();
 
     // 馒头
@@ -215,22 +215,22 @@ public interface ModFoods {
     // 迷之炒菜
     FoodProperties SUSPICIOUS_STIR_FRY_BLOCK = (new FoodProperties.Builder())
             .nutrition(4).saturationModifier(0.4F).alwaysEdible()
-            .effect(() -> new MobEffectInstance(MOVEMENT_SPEED, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(JUMP, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(DIG_SPEED, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(SPEED, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(JUMP_BOOST, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(HASTE, 1200), 0.15F)
             .effect(() -> new MobEffectInstance(LUCK, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(DIG_SLOWDOWN, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(CONFUSION, 400), 0.15F)
+            .effect(() -> new MobEffectInstance(MINING_FATIGUE, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(NAUSEA, 400), 0.15F)
             .build();
 
     FoodProperties SUSPICIOUS_STIR_FRY_ITEM = (new FoodProperties.Builder())
             .nutrition(4).saturationModifier(0.4F).alwaysEdible()
-            .effect(() -> new MobEffectInstance(MOVEMENT_SPEED, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(JUMP, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(DIG_SPEED, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(SPEED, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(JUMP_BOOST, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(HASTE, 1200), 0.15F)
             .effect(() -> new MobEffectInstance(LUCK, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(DIG_SLOWDOWN, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(CONFUSION, 400), 0.15F)
+            .effect(() -> new MobEffectInstance(MINING_FATIGUE, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(NAUSEA, 400), 0.15F)
             .build();
 
     // 粘液饭
@@ -302,13 +302,13 @@ public interface ModFoods {
     // 黄金沙拉
     FoodProperties GOLDEN_SALAD_BLOCK = (new FoodProperties.Builder())
             .nutrition(5).saturationModifier(0.55F)
-            .effect(() -> new MobEffectInstance(DAMAGE_RESISTANCE, 2000), 1.0F)
+            .effect(() -> new MobEffectInstance(RESISTANCE, 2000), 1.0F)
             .effect(() -> new MobEffectInstance(REGENERATION, 200), 1.0F)
             .alwaysEdible().build();
 
     FoodProperties GOLDEN_SALAD_ITEM = (new FoodProperties.Builder())
             .nutrition(20).saturationModifier(0.55F)
-            .effect(() -> new MobEffectInstance(DAMAGE_RESISTANCE, 2000), 1.0F)
+            .effect(() -> new MobEffectInstance(RESISTANCE, 2000), 1.0F)
             .effect(() -> new MobEffectInstance(REGENERATION, 200), 1.0F)
             .alwaysEdible().build();
 
@@ -337,12 +337,12 @@ public interface ModFoods {
     // 水晶羊排
     FoodProperties CRYSTAL_LAMB_CHOP_BLOCK = (new FoodProperties.Builder())
             .nutrition(4).saturationModifier(0.625F)
-            .effect(() -> new MobEffectInstance(DIG_SPEED, 5 * 60 * 20, 1), 1.0F)
+            .effect(() -> new MobEffectInstance(HASTE, 5 * 60 * 20, 1), 1.0F)
             .alwaysEdible().build();
 
     FoodProperties CRYSTAL_LAMB_CHOP_ITEM = (new FoodProperties.Builder())
             .nutrition(13).saturationModifier(0.615F)
-            .effect(() -> new MobEffectInstance(DIG_SPEED, 5 * 60 * 20, 1), 1.0F)
+            .effect(() -> new MobEffectInstance(HASTE, 5 * 60 * 20, 1), 1.0F)
             .alwaysEdible().build();
 
     // 下界风味刺身
@@ -530,12 +530,12 @@ public interface ModFoods {
     // 谜之炒菜盖饭
     FoodProperties SUSPICIOUS_STIR_FRY_RICE_BOWL = (new FoodProperties.Builder())
             .nutrition(8).saturationModifier(0.4F)
-            .effect(() -> new MobEffectInstance(MOVEMENT_SPEED, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(JUMP, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(DIG_SPEED, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(SPEED, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(JUMP_BOOST, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(HASTE, 1200), 0.15F)
             .effect(() -> new MobEffectInstance(LUCK, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(DIG_SLOWDOWN, 1200), 0.15F)
-            .effect(() -> new MobEffectInstance(CONFUSION, 400), 0.15F)
+            .effect(() -> new MobEffectInstance(MINING_FATIGUE, 1200), 0.15F)
+            .effect(() -> new MobEffectInstance(NAUSEA, 400), 0.15F)
             .alwaysEdible().build();
 
     // 番茄炒蛋盖饭
@@ -619,7 +619,7 @@ public interface ModFoods {
     // 野菌兔肉汤
     FoodProperties WILD_MUSHROOM_RABBIT_SOUP = (new FoodProperties.Builder())
             .nutrition(6).saturationModifier(0.667f)
-            .effect(() -> new MobEffectInstance(MOVEMENT_SPEED, 8 * 60 * 20), 1.0F)
+            .effect(() -> new MobEffectInstance(SPEED, 8 * 60 * 20), 1.0F)
             .alwaysEdible().build();
 
     // 番茄牛腩汤

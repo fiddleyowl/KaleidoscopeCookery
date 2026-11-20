@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -23,7 +23,7 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class TrashCanOverlay implements LayeredDraw.Layer {
-    private static final ResourceLocation TRASH_CAN_OVERLAY = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/trash_can_overlay.png");
+    private static final Identifier TRASH_CAN_OVERLAY = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/trash_can_overlay.png");
 
     @Override
     public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
@@ -77,7 +77,7 @@ public class TrashCanOverlay implements LayeredDraw.Layer {
         }
     }
 
-    private void renderTextureOverlay(GuiGraphics guiGraphics, ResourceLocation shaderLocation, float alpha) {
+    private void renderTextureOverlay(GuiGraphics guiGraphics, Identifier shaderLocation, float alpha) {
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();

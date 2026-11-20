@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -28,7 +28,7 @@ public class FluidSoupBaseRender implements ISoupBaseRender {
     @Override
     public void renderWhenCooking(StockpotBlockEntity stockpot, float partialTick, PoseStack poseStack,
                                   MultiBufferSource buffer, int packedLight, int packedOverlay,
-                                  ResourceLocation cookingTexture, float soupHeight) {
+                                  Identifier cookingTexture, float soupHeight) {
         var atlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
         TextureAtlasSprite sprite = atlas.apply(cookingTexture);
         ISoupBaseRender.renderSurface(sprite, 0xFFFFFFFF, poseStack, buffer, packedLight, soupHeight);
@@ -37,7 +37,7 @@ public class FluidSoupBaseRender implements ISoupBaseRender {
     @Override
     public void renderWhenFinished(StockpotBlockEntity stockpot, float partialTick, PoseStack poseStack,
                                    MultiBufferSource buffer, int packedLight, int packedOverlay,
-                                   ResourceLocation finishedTexture, float soupHeight) {
+                                   Identifier finishedTexture, float soupHeight) {
         var atlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
         TextureAtlasSprite sprite = atlas.apply(finishedTexture);
         ISoupBaseRender.renderSurface(sprite, 0xFFFFFFFF, poseStack, buffer, packedLight, soupHeight);
@@ -45,7 +45,7 @@ public class FluidSoupBaseRender implements ISoupBaseRender {
 
     private TextureAtlasSprite getStillFluidSprite(Fluid fluid) {
         IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
-        ResourceLocation fluidStill = renderProperties.getStillTexture();
+        Identifier fluidStill = renderProperties.getStillTexture();
         return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
     }
 

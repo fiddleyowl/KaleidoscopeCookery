@@ -12,7 +12,7 @@ import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -74,7 +74,7 @@ public class TeapotOverlay implements LayeredDraw.Layer {
                 getFluidName(teapot.getTeaFluidId()), getItemName(teapot.getInput()));
     }
 
-    private static Component getFluidName(ResourceLocation id) {
+    private static Component getFluidName(Identifier id) {
         if (id.equals(TeapotRecipeSerializer.EMPTY_TEA_FLUID)) {
             return Component.translatable("mco.configure.world.slot.empty");
         }

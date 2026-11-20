@@ -7,7 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
@@ -22,13 +22,13 @@ import java.util.List;
 @EventBusSubscriber(modid = KaleidoscopeCookery.MOD_ID)
 public class AddVillageStructuresEvent {
     private static final ResourceKey<StructureProcessorList> CROP_REPLACE_PROCESSOR_LIST_KEY = ResourceKey.create(
-            Registries.PROCESSOR_LIST, ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "crop_replace"));
+            Registries.PROCESSOR_LIST, Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "crop_replace"));
 
-    private static final ResourceLocation PLAINS = ResourceLocation.parse("minecraft:village/plains/houses");
-    private static final ResourceLocation SNOWY = ResourceLocation.parse("minecraft:village/snowy/houses");
-    private static final ResourceLocation SAVANNA = ResourceLocation.parse("minecraft:village/savanna/houses");
-    private static final ResourceLocation DESERT = ResourceLocation.parse("minecraft:village/desert/houses");
-    private static final ResourceLocation TAIGA = ResourceLocation.parse("minecraft:village/taiga/houses");
+    private static final Identifier PLAINS = Identifier.parse("minecraft:village/plains/houses");
+    private static final Identifier SNOWY = Identifier.parse("minecraft:village/snowy/houses");
+    private static final Identifier SAVANNA = Identifier.parse("minecraft:village/savanna/houses");
+    private static final Identifier DESERT = Identifier.parse("minecraft:village/desert/houses");
+    private static final Identifier TAIGA = Identifier.parse("minecraft:village/taiga/houses");
 
     @SubscribeEvent
     public static void addVillageStructures(ServerAboutToStartEvent event) {
@@ -44,7 +44,7 @@ public class AddVillageStructuresEvent {
     /**
      * 参考自：<a href="https://gist.github.com/TelepathicGrunt/4fdbc445ebcbcbeb43ac748f4b18f342">GitHub TelepathicGrunt</a>
      */
-    public static void addBuildingToPool(RegistryAccess registryAccess, ResourceLocation poolId, String structId, int weight) {
+    public static void addBuildingToPool(RegistryAccess registryAccess, Identifier poolId, String structId, int weight) {
         var templatePools = registryAccess.registry(Registries.TEMPLATE_POOL);
         if (templatePools.isEmpty()) {
             return;
@@ -58,7 +58,7 @@ public class AddVillageStructuresEvent {
             return;
         }
         Holder<StructureProcessorList> holder = processorLists.get().getHolderOrThrow(CROP_REPLACE_PROCESSOR_LIST_KEY);
-        ResourceLocation structLocation = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, structId);
+        Identifier structLocation = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, structId);
         SinglePoolElement piece = SinglePoolElement.legacy(structLocation.toString(), holder).apply(StructureTemplatePool.Projection.RIGID);
         for (int i = 0; i < weight; i++) {
             pool.templates.add(piece);

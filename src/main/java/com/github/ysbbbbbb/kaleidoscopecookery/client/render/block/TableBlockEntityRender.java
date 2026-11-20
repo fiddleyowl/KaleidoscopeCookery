@@ -6,7 +6,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.decoration.TableBlock
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
@@ -30,15 +30,15 @@ public class TableBlockEntityRender implements BlockEntityRenderer<TableBlockEnt
     private static final BiFunction<DyeColor, Integer, ModelResourceLocation> CACHE_MODEL = Util.memoize((color, position) -> {
         String name = color.getName();
         if (position == TableBlock.SINGLE) {
-            return ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/carpet/table/" + name + "_single"));
+            return ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/carpet/table/" + name + "_single"));
         }
         if (position == TableBlock.MIDDLE) {
-            return ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/carpet/table/" + name + "_middle"));
+            return ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/carpet/table/" + name + "_middle"));
         }
         if (position == TableBlock.LEFT) {
-            return ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/carpet/table/" + name + "_left"));
+            return ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/carpet/table/" + name + "_left"));
         }
-        return ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/carpet/table/" + name + "_right"));
+        return ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/carpet/table/" + name + "_right"));
     });
 
     private final BlockEntityRendererProvider.Context context;

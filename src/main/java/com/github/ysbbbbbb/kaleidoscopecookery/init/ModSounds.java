@@ -2,7 +2,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.init;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -20,6 +20,6 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> ITEM_DOUGH_TRANSFORM = registerSound("item.dough_transform");
 
     private static DeferredHolder<SoundEvent, SoundEvent> registerSound(String name) {
-        return SOUND_EVENTS.register(name, () -> SoundEvent.createFixedRangeEvent(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, name), 16.0F));
+        return SOUND_EVENTS.register(name, () -> SoundEvent.createFixedRangeEvent(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, name), 16.0F));
     }
 }

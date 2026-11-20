@@ -1,7 +1,7 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
@@ -13,10 +13,10 @@ import java.util.List;
 
 public class ChoppingBoardRecipe extends SingleItemRecipe {
     private final int cutCount;
-    private final ResourceLocation modelId;
+    private final Identifier modelId;
     private final List<ItemStack> results;
 
-    public ChoppingBoardRecipe(Ingredient ingredient, List<ItemStack> results, int cutCount, ResourceLocation modelId) {
+    public ChoppingBoardRecipe(Ingredient ingredient, List<ItemStack> results, int cutCount, Identifier modelId) {
         super(ModRecipes.CHOPPING_BOARD_RECIPE, ModRecipes.CHOPPING_BOARD_SERIALIZER.get(), StringUtils.EMPTY, ingredient,
                 results.isEmpty() ? ItemStack.EMPTY : results.get(0));
         this.cutCount = Math.max(cutCount, 1);
@@ -50,7 +50,7 @@ public class ChoppingBoardRecipe extends SingleItemRecipe {
         return cutCount;
     }
 
-    public ResourceLocation getModelId() {
+    public Identifier getModelId() {
         return modelId;
     }
 }

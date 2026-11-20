@@ -3,7 +3,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.api.event;
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.StockpotBlockEntity;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.container.StockpotInput;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.StockpotRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.Event;
@@ -59,9 +59,9 @@ public abstract class StockpotMatchRecipeEvent extends Event {
      * 在汤锅检索自己配方之后触发
      */
     public static class Post extends StockpotMatchRecipeEvent {
-        private final ResourceLocation rawOutput;
+        private final Identifier rawOutput;
 
-        public Post(Level level, StockpotBlockEntity stockpot, StockpotInput container, ResourceLocation rawOutput) {
+        public Post(Level level, StockpotBlockEntity stockpot, StockpotInput container, Identifier rawOutput) {
             super(level, stockpot, container);
             this.rawOutput = rawOutput;
         }
@@ -71,7 +71,7 @@ public abstract class StockpotMatchRecipeEvent extends Event {
          * <p>
          * 如果原来没有匹配到配方，那么该值为 StockpotRecipeSerializer.EMPTY_ID
          */
-        public ResourceLocation getRawOutput() {
+        public Identifier getRawOutput() {
             return rawOutput;
         }
     }

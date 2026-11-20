@@ -24,7 +24,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -34,7 +34,7 @@ import java.util.Optional;
 
 public class ReiPotRecipeCategory implements DisplayCategory<ReiPotRecipeCategory.PotRecipeDisplay> {
     public static final CategoryIdentifier<PotRecipeDisplay> ID = CategoryIdentifier.of(KaleidoscopeCookery.MOD_ID, "plugin/pot");
-    private static final ResourceLocation BG = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/jei/pot.png");
+    private static final Identifier BG = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/jei/pot.png");
     private static final Component TITLE = ComponentUtils.formatList(List.of(
             Component.translatable("jei.kaleidoscope_cookery.strict_recipe"),
             Component.translatable("block.kaleidoscope_cookery.pot")
@@ -134,7 +134,7 @@ public class ReiPotRecipeCategory implements DisplayCategory<ReiPotRecipeCategor
         public final EntryIngredient carrier;
         public final int stirFryCount;
 
-        public PotRecipeDisplay(ResourceLocation location, List<EntryIngredient> inputs, List<EntryIngredient> outputs, EntryIngredient carrier, int stirFryCount) {
+        public PotRecipeDisplay(Identifier location, List<EntryIngredient> inputs, List<EntryIngredient> outputs, EntryIngredient carrier, int stirFryCount) {
             super(inputs, outputs, Optional.of(location));
             this.carrier = carrier;
             this.stirFryCount = stirFryCount;

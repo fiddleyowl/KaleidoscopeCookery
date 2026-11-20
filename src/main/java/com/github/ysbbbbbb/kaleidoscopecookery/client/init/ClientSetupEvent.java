@@ -18,7 +18,7 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -77,9 +77,9 @@ public class ClientSetupEvent {
 
     @SubscribeEvent
     public static void onRegisterGuiOverlays(RegisterGuiLayersEvent event) {
-        event.registerAbove(CROSSHAIR, ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot_overlay"), new PotOverlay());
-        event.registerAbove(CROSSHAIR, ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "teapot_overlay"), new TeapotOverlay());
-        event.registerAbove(CROSSHAIR, ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "trash_can_overlay"), new TrashCanOverlay());
+        event.registerAbove(CROSSHAIR, Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot_overlay"), new PotOverlay());
+        event.registerAbove(CROSSHAIR, Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "teapot_overlay"), new TeapotOverlay());
+        event.registerAbove(CROSSHAIR, Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "trash_can_overlay"), new TrashCanOverlay());
     }
 
     @SubscribeEvent

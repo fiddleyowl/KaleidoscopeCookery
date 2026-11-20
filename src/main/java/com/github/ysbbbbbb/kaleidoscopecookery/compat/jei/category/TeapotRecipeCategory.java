@@ -20,7 +20,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,9 +32,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TeapotRecipeCategory implements IRecipeCategory<RecipeHolder<TeapotRecipe>> {
-    public static final RecipeType<RecipeHolder<TeapotRecipe>> TYPE = RecipeType.createRecipeHolderType(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "teapot"));
+    public static final RecipeType<RecipeHolder<TeapotRecipe>> TYPE = RecipeType.createRecipeHolderType(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "teapot"));
 
-    private static final ResourceLocation BG = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/jei/teapot.png");
+    private static final Identifier BG = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/jei/teapot.png");
     private static final MutableComponent TITLE = Component.translatable("block.kaleidoscope_cookery.teapot");
 
     public static final int WIDTH = 176;

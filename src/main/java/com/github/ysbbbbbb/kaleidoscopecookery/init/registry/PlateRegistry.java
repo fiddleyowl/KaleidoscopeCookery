@@ -5,7 +5,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -20,19 +20,19 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class PlateRegistry {
-    public static final Map<ResourceLocation, PlateData> PLATE_DATA_MAP = Maps.newLinkedHashMap();
+    public static final Map<Identifier, PlateData> PLATE_DATA_MAP = Maps.newLinkedHashMap();
 
-    public static ResourceLocation SHENGJIAN_MANTOU_PLATE;
-    public static ResourceLocation BAOZI_PLATE;
-    public static ResourceLocation QINGTUAN_PLATE;
-    public static ResourceLocation STICKY_CANDY_PLATE;
-    public static ResourceLocation STICKY_RICE_CAKE_PLATE;
-    public static ResourceLocation ZONGZI_PLATE;
-    public static ResourceLocation BERRY_PLATTER;
-    public static ResourceLocation APPLE_PLATTER;
-    public static ResourceLocation TOMATO_PLATTER;
-    public static ResourceLocation WATERMELON_PLATTER;
-    public static ResourceLocation CHORUS_FRUIT_PLATTER;
+    public static Identifier SHENGJIAN_MANTOU_PLATE;
+    public static Identifier BAOZI_PLATE;
+    public static Identifier QINGTUAN_PLATE;
+    public static Identifier STICKY_CANDY_PLATE;
+    public static Identifier STICKY_RICE_CAKE_PLATE;
+    public static Identifier ZONGZI_PLATE;
+    public static Identifier BERRY_PLATTER;
+    public static Identifier APPLE_PLATTER;
+    public static Identifier TOMATO_PLATTER;
+    public static Identifier WATERMELON_PLATTER;
+    public static Identifier CHORUS_FRUIT_PLATTER;
 
     public static void init() {
         PlateRegistry registry = new PlateRegistry();
@@ -98,27 +98,27 @@ public class PlateRegistry {
         );
     }
 
-    public ResourceLocation registerPlateData(ResourceLocation id, PlateData data) {
+    public Identifier registerPlateData(Identifier id, PlateData data) {
         PLATE_DATA_MAP.put(id, data);
         return id;
     }
 
-    public ResourceLocation registerPlateData(String name, PlateData data) {
-        return registerPlateData(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, name), data);
+    public Identifier registerPlateData(String name, PlateData data) {
+        return registerPlateData(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, name), data);
     }
 
-    public static int getCount(ResourceLocation id) {
+    public static int getCount(Identifier id) {
         if (PLATE_DATA_MAP.containsKey(id)) {
             return PLATE_DATA_MAP.get(id).getMaxCount();
         }
         return 0;
     }
 
-    public static Item getItem(ResourceLocation name) {
+    public static Item getItem(Identifier name) {
         return BuiltInRegistries.ITEM.get(name);
     }
 
-    public static Block getBlock(ResourceLocation name) {
+    public static Block getBlock(Identifier name) {
         return BuiltInRegistries.BLOCK.get(name);
     }
 

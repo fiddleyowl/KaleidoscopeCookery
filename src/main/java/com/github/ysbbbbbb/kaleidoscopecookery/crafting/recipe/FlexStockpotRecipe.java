@@ -5,7 +5,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.google.common.collect.Sets;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -20,10 +20,10 @@ import java.util.Set;
 import static com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.StockpotRecipeSerializer.DEFAULT_SOUP_BASE;
 
 public record FlexStockpotRecipe(NonNullList<Ingredient> ingredients,
-                                 ResourceLocation soupBase, ItemStack result, int time,
+                                 Identifier soupBase, ItemStack result, int time,
                                  Ingredient carrier, StockpotVisuals visuals) implements BaseRecipe<StockpotInput> {
     public FlexStockpotRecipe(List<Ingredient> ingredients,
-                              ResourceLocation soupBase, ItemStack result,
+                              Identifier soupBase, ItemStack result,
                               int time, Ingredient carrier, StockpotVisuals visuals
     ) {
         this(NonNullList.of(Ingredient.EMPTY, BaseRecipe.fillInputs(ingredients)),
@@ -37,11 +37,11 @@ public record FlexStockpotRecipe(NonNullList<Ingredient> ingredients,
         );
     }
 
-    public ResourceLocation cookingTexture() {
+    public Identifier cookingTexture() {
         return this.visuals.cookingTexture();
     }
 
-    public ResourceLocation finishedTexture() {
+    public Identifier finishedTexture() {
         return this.visuals.finishedTexture();
     }
 

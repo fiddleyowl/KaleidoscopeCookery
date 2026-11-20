@@ -5,7 +5,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.decoration.ChairBlock
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +23,7 @@ import java.util.function.Function;
 
 public class ChairBlockEntityRender implements BlockEntityRenderer<ChairBlockEntity> {
     private static final Function<DyeColor, ModelResourceLocation> CACHE_MODEL = Util.memoize(color -> {
-        ResourceLocation location = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/carpet/chair/" + color.getName());
+        Identifier location = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/carpet/chair/" + color.getName());
         return ModelResourceLocation.standalone(location);
     });
 

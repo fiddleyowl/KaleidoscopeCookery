@@ -29,7 +29,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -56,9 +56,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class RecipeItem extends BlockItem {
-    public static final ResourceLocation HAS_RECIPE_PROPERTY = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "has_recipe");
-    public static final ResourceLocation POT = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot");
-    public static final ResourceLocation STOCKPOT = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "stockpot");
+    public static final Identifier HAS_RECIPE_PROPERTY = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "has_recipe");
+    public static final Identifier POT = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot");
+    public static final Identifier STOCKPOT = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "stockpot");
 
     private static final int NO_RECIPE = 0;
     private static final int HAS_RECIPE = 1;
@@ -321,7 +321,7 @@ public class RecipeItem extends BlockItem {
     }
 
     private void setQuality(Level level, List<ItemStack> inputs, List<Ingredient> ingredients,
-                            ResourceLocation recipeId, ItemStack result, ItemStack recordStack) {
+                            Identifier recipeId, ItemStack result, ItemStack recordStack) {
         if (level instanceof ServerLevel serverLevel) {
             Quality quality = QualityEvaluator.evaluate(inputs, ingredients, recipeId, serverLevel.getSeed());
             QualityUtils.setQuality(result, quality);
@@ -353,11 +353,11 @@ public class RecipeItem extends BlockItem {
     private record RecipeResult(ItemStack output, boolean flexRecipe) {
     }
 
-    public record RecipeRecord(List<ItemStack> input, ItemStack output, ResourceLocation type, boolean flexRecipe) {
+    public record RecipeRecord(List<ItemStack> input, ItemStack output, Identifier type, boolean flexRecipe) {
         public static final Codec<RecipeRecord> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ItemStack.OPTIONAL_CODEC.listOf().fieldOf("input").forGetter(RecipeRecord::input),
                 ItemStack.CODEC.fieldOf("output").forGetter(RecipeRecord::output),
-                ResourceLocation.CODEC.fieldOf("type").forGetter(RecipeRecord::type),
+                Identifier.CODEC.fieldOf("type").forGetter(RecipeRecord::type),
                 Codec.BOOL.fieldOf("flex_recipe").forGetter(RecipeRecord::flexRecipe)
         ).apply(instance, RecipeRecord::new));
 
@@ -370,7 +370,7 @@ public class RecipeItem extends BlockItem {
                     inputs.add(ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer));
                 }
                 ItemStack output = ItemStack.STREAM_CODEC.decode(buffer);
-                ResourceLocation type = buffer.readResourceLocation();
+                Identifier type = buffer.readIdentifier();
                 boolean flexRecipe = buffer.readBoolean();
                 return new RecipeRecord(inputs, output, type, flexRecipe);
             }
@@ -382,7 +382,7 @@ public class RecipeItem extends BlockItem {
                     ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, s);
                 }
                 ItemStack.STREAM_CODEC.encode(buffer, value.output());
-                buffer.writeResourceLocation(value.type());
+                buffer.writeIdentifier(value.type());
                 buffer.writeBoolean(value.flexRecipe());
             }
         };

@@ -3,7 +3,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.init;
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.advancements.critereon.ModEventTrigger;
 import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.advancements.critereon.DistanceTrigger;
+import net.minecraft.advancements.criterion.DistanceTrigger;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;

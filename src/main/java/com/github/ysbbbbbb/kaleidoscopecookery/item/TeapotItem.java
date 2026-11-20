@@ -16,7 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -122,7 +122,7 @@ public class TeapotItem extends BlockItem {
             return false;
         }
         // 执行流体添加
-        ResourceLocation key = BuiltInRegistries.FLUID.getKey((fluid));
+        Identifier key = BuiltInRegistries.FLUID.getKey((fluid));
         tag.putString(TeapotBlockEntity.TEA_FLUID_ID, key.toString());
         BlockItem.setBlockEntityData(stack, ModBlocks.TEAPOT_BE.get(), tag);
 
@@ -284,7 +284,7 @@ public class TeapotItem extends BlockItem {
             if (fluidId.equals(EMPTY_TEA_FLUID.toString())) {
                 return 0x9df7ff;
             }
-            Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(fluidId));
+            Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(fluidId));
             // 熔岩特殊
             if (fluid.equals(Fluids.LAVA)) {
                 return 0xfba800;
@@ -340,7 +340,7 @@ public class TeapotItem extends BlockItem {
             if (fluidId.equals(EMPTY_TEA_FLUID.toString())) {
                 return;
             }
-            ResourceLocation key = ResourceLocation.parse(fluidId);
+            Identifier key = Identifier.parse(fluidId);
             Fluid fluid = BuiltInRegistries.FLUID.get(key);
             list.add(Component.translatable(fluid.getFluidType().getDescriptionId()).withStyle(ChatFormatting.GRAY));
         }

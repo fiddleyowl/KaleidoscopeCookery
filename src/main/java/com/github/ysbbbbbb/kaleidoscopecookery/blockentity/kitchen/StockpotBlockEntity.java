@@ -30,7 +30,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -77,8 +77,8 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
     public @Nullable Entity renderEntity = null;
 
     private NonNullList<ItemStack> inputs = NonNullList.withSize(StockpotRecipe.RECIPES_SIZE, ItemStack.EMPTY);
-    private ResourceLocation recipeId = StockpotRecipeSerializer.EMPTY_ID;
-    private ResourceLocation soupBaseId = ModSoupBases.WATER;
+    private Identifier recipeId = StockpotRecipeSerializer.EMPTY_ID;
+    private Identifier soupBaseId = ModSoupBases.WATER;
     private ItemStack result = ItemStack.EMPTY;
     private int status = PUT_SOUP_BASE;
     private int currentTick = -1;
@@ -330,7 +330,7 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
     }
 
     @Nullable
-    private Either<RecipeHolder<StockpotRecipe>, RecipeHolder<FlexStockpotRecipe>> getRecipeById(Level level, ResourceLocation recipeId) {
+    private Either<RecipeHolder<StockpotRecipe>, RecipeHolder<FlexStockpotRecipe>> getRecipeById(Level level, Identifier recipeId) {
         RecipeManager manager = level.getRecipeManager();
         RecipeHolder<StockpotRecipe> stockpotRecipe = manager.byKeyTyped(ModRecipes.STOCKPOT_RECIPE, recipeId);
         if (stockpotRecipe != null) {
@@ -354,7 +354,7 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
             return false;
         }
         for (var entry : SoupBaseManager.getAllSoupBases().entrySet()) {
-            ResourceLocation key = entry.getKey();
+            Identifier key = entry.getKey();
             ISoupBase soupBase = entry.getValue();
             if (soupBase.isSoupBase(bucket)) {
                 this.soupBaseId = key;
@@ -578,7 +578,7 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
             ContainerHelper.loadAllItems(tag.getCompound(INPUTS), this.inputs, registries);
         }
         if (tag.contains(RECIPE_ID)) {
-            this.recipeId = ResourceLocation.tryParse(tag.getString(RECIPE_ID));
+            this.recipeId = Identifier.tryParse(tag.getString(RECIPE_ID));
             if (this.level != null && this.recipeId != null) {
                 var recipe = this.getRecipeById(this.level, this.recipeId);
                 if (recipe != null) {
@@ -588,7 +588,7 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
             }
         }
         if (tag.contains(SOUP_BASE_ID)) {
-            this.soupBaseId = ResourceLocation.tryParse(tag.getString(SOUP_BASE_ID));
+            this.soupBaseId = Identifier.tryParse(tag.getString(SOUP_BASE_ID));
         }
         if (tag.contains(RESULT)) {
             this.result = ItemStack.parseOptional(registries, tag.getCompound(RESULT));
@@ -631,7 +631,7 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
         return result;
     }
 
-    public ResourceLocation getSoupBaseId() {
+    public Identifier getSoupBaseId() {
         return soupBaseId;
     }
 

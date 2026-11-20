@@ -9,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class SteamerItem extends BlockItem {
-    public static final ResourceLocation HAS_ITEMS = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "has_items");
+    public static final Identifier HAS_ITEMS = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "has_items");
     private static final int NONE = 0;
     private static final int HAS = 1;
 

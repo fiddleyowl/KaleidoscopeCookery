@@ -20,7 +20,7 @@ public class HinderEvent {
         }
         DamageSource source = event.getSource();
         if (source.getEntity() instanceof LivingEntity attacker && attacker.hasEffect(ModEffects.HINDER)) {
-            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 1));
+            target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 100, 1));
         }
     }
 }

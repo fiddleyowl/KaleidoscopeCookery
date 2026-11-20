@@ -6,7 +6,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
@@ -22,7 +22,7 @@ import java.util.List;
 import static com.github.ysbbbbbb.kaleidoscopecookery.init.ModDataComponents.OIL_POT_OIL_COUNT;
 
 public class OilPotItem extends BlockItem {
-    public static final ResourceLocation HAS_OIL_PROPERTY = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "has_oil");
+    public static final Identifier HAS_OIL_PROPERTY = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "has_oil");
 
     private static final String OIL_COUNT = "oil_count";
     private static final int NO_OIL = 0;

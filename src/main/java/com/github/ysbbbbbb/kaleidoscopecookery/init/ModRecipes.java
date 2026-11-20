@@ -5,7 +5,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.*;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -42,15 +42,15 @@ public class ModRecipes {
     @SubscribeEvent
     public static void register(RegisterEvent evt) {
         if (evt.getRegistryKey().equals(Registries.RECIPE_SERIALIZER)) {
-            POT_RECIPE = RecipeType.simple(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot"));
-            FLEX_POT_RECIPE = RecipeType.simple(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "flex_pot"));
-            CHOPPING_BOARD_RECIPE = RecipeType.simple(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "chopping_board"));
-            STOCKPOT_RECIPE = RecipeType.simple(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "stockpot"));
-            FLEX_STOCKPOT_RECIPE = RecipeType.simple(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "flex_stockpot"));
-            MILLSTONE_RECIPE = RecipeType.simple(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "millstone"));
-            STEAMER_RECIPE = RecipeType.simple(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "steamer"));
-            TEAPOT_RECIPE = RecipeType.simple(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "teapot"));
-            BAMBOO_TRAY_RECIPE = RecipeType.simple(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "bamboo_tray"));
+            POT_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot"));
+            FLEX_POT_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "flex_pot"));
+            CHOPPING_BOARD_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "chopping_board"));
+            STOCKPOT_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "stockpot"));
+            FLEX_STOCKPOT_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "flex_stockpot"));
+            MILLSTONE_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "millstone"));
+            STEAMER_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "steamer"));
+            TEAPOT_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "teapot"));
+            BAMBOO_TRAY_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "bamboo_tray"));
         }
     }
 }

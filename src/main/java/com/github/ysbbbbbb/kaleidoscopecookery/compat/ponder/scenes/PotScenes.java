@@ -11,10 +11,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -168,7 +168,7 @@ public class PotScenes {
         scene.idle(43);
         scene.overlay().showControls(vector.blockSurface(potPos, Direction.UP), Pointing.DOWN, 35)
                 .withItem(new ItemStack(BuiltInRegistries.ITEM.get(
-                        ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "spicy_chicken"))
+                        Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "spicy_chicken"))
                 ));
         scene.idle(40);
     }

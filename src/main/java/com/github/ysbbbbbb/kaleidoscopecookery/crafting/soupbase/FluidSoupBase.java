@@ -3,7 +3,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.crafting.soupbase;
 import com.github.ysbbbbbb.kaleidoscopecookery.api.client.render.ISoupBaseRender;
 import com.github.ysbbbbbb.kaleidoscopecookery.api.recipe.soupbase.ISoupBase;
 import com.github.ysbbbbbb.kaleidoscopecookery.client.render.soupbase.FluidSoupBaseRender;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,16 +19,16 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.SoundActions;
 
 public class FluidSoupBase implements ISoupBase {
-    protected final ResourceLocation name;
+    protected final Identifier name;
     protected final Item bucketItem;
     protected final Fluid fluid;
     protected final int bubbleColor;
 
-    public FluidSoupBase(ResourceLocation name, Item bucketItem, int bubbleColor) {
+    public FluidSoupBase(Identifier name, Item bucketItem, int bubbleColor) {
         this(name, bucketItem, getBucketFluid(bucketItem), bubbleColor);
     }
 
-    public FluidSoupBase(ResourceLocation name, Item bucketItem, Fluid fluid, int bubbleColor) {
+    public FluidSoupBase(Identifier name, Item bucketItem, Fluid fluid, int bubbleColor) {
         this.name = name;
         this.bucketItem = bucketItem;
         this.fluid = fluid;
@@ -43,7 +43,7 @@ public class FluidSoupBase implements ISoupBase {
     }
 
     @Override
-    public ResourceLocation getName() {
+    public Identifier getName() {
         return name;
     }
 

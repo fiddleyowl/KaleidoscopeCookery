@@ -3,7 +3,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.compat.jade.block;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.food.FoodBiteBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.compat.jade.ModPlugin;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.quality.Quality;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -24,7 +24,7 @@ public enum FoodBiteBlockComponentProvider implements IBlockComponentProvider {
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return ModPlugin.FOOD_BITE_BLOCK;
     }
 }

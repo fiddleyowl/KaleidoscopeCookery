@@ -22,7 +22,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ import java.util.Optional;
 public class ReiBambooTrayRecipeCategory implements DisplayCategory<ReiBambooTrayRecipeCategory.BambooTrayRecipeDisplay> {
     public static final CategoryIdentifier<BambooTrayRecipeDisplay> ID = CategoryIdentifier.of(KaleidoscopeCookery.MOD_ID, "plugin/bamboo_tray");
     private static final MutableComponent TITLE = Component.translatable("block.kaleidoscope_cookery.bamboo_tray");
-    private static final ResourceLocation BG = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/jei/bamboo_tray.png");
+    private static final Identifier BG = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/gui/jei/bamboo_tray.png");
     public static final int WIDTH = 176;
     public static final int HEIGHT = 78;
 
@@ -110,7 +110,7 @@ public class ReiBambooTrayRecipeCategory implements DisplayCategory<ReiBambooTra
         private final BambooTrayRecipe.Subtype subtype;
         private final int duration;
 
-        public BambooTrayRecipeDisplay(ResourceLocation location, List<EntryIngredient> inputs,
+        public BambooTrayRecipeDisplay(Identifier location, List<EntryIngredient> inputs,
                                        List<EntryIngredient> outputs, BambooTrayRecipe.Subtype subtype, int duration) {
             super(inputs, outputs, Optional.of(location));
             this.subtype = subtype;

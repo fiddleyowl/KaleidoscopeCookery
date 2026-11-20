@@ -3,7 +3,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.compat.jade.block;
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.decoration.FruitBasketBlockEntity;
 import com.github.ysbbbbbb.kaleidoscopecookery.compat.jade.ModPlugin;
 import com.google.common.collect.Lists;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +40,7 @@ public enum FruitBasketComponentProvider implements IServerExtensionProvider<Ite
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return ModPlugin.FRUIT_BASKET;
     }
 }

@@ -3,14 +3,14 @@ package com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.container.TeapotInput;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-public record TeapotRecipe(ResourceLocation teaFluid,
+public record TeapotRecipe(Identifier teaFluid,
                            Ingredient ingredient, int ingredientCount,
                            int time, ItemStack result
 ) implements BaseRecipe<TeapotInput> {
@@ -22,7 +22,7 @@ public record TeapotRecipe(ResourceLocation teaFluid,
     @Override
     public boolean matches(TeapotInput container, Level level) {
         ItemStack stack = container.getItemStack();
-        ResourceLocation fluid = container.getTeaFluid();
+        Identifier fluid = container.getTeaFluid();
         return teaFluid.equals(fluid) && ingredient.test(stack) && stack.getCount() >= ingredientCount;
     }
 

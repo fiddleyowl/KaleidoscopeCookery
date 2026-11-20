@@ -4,7 +4,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.client.resources.ItemRenderReplacer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -30,21 +30,21 @@ public class ModModelEvent {
 
         // 额外添加的模型注册
         // 蜂蜜瓶，用来替换锅内渲染
-        event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/honey")));
+        event.register(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/honey")));
         // 鸡蛋，用来替换锅内渲染
-        event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/egg")));
+        event.register(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/egg")));
         // 油
-        event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/oil_in_millstone")));
+        event.register(ModelResourceLocation.standalone(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/oil_in_millstone")));
 
         // 重置缓存
         ItemRenderReplacer.resetCache();
     }
 
-    private static ModelResourceLocation handleModelId(ResourceLocation input) {
+    private static ModelResourceLocation handleModelId(Identifier input) {
         String namespace = input.getNamespace();
         String path = input.getPath();
         String substring = path.substring(MODELS.length(), path.length() - JSON.length());
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace, substring);
+        Identifier id = Identifier.fromNamespaceAndPath(namespace, substring);
         return ModelResourceLocation.standalone(id);
     }
 }
