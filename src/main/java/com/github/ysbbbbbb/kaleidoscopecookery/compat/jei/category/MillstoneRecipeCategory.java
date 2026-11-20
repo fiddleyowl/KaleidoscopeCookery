@@ -1,7 +1,7 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.compat.jei.category;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
-import com.github.ysbbbbbb.kaleidoscopecookery.compat.create.CreateCompat;
+// import com.github.ysbbbbbb.kaleidoscopecookery.compat.create.CreateCompat;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.output.RandomOutput;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.MillstoneRecipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
@@ -58,7 +58,7 @@ public class MillstoneRecipeCategory implements IRecipeCategory<RecipeHolder<Mil
         millstoneRecipes.addAll(level.getRecipeManager().getAllRecipesFor(ModRecipes.MILLSTONE_RECIPE));
 
         // 机械动力兼容
-        CreateCompat.getTransformRecipeForSearch(level, millstoneRecipes);
+        // CreateCompat.getTransformRecipeForSearch(level, millstoneRecipes);
 
         return millstoneRecipes;
     }

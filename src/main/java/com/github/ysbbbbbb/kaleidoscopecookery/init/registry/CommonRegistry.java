@@ -9,8 +9,8 @@ import com.github.ysbbbbbb.kaleidoscopecookery.block.dispenser.TeapotDispenseBeh
 import com.github.ysbbbbbb.kaleidoscopecookery.block.drink.TeacupBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.food.FoodBiteBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.food.FoodBiteOneByTwoBlock;
-import com.github.ysbbbbbb.kaleidoscopecookery.compat.create.CreateCompat;
-import com.github.ysbbbbbb.kaleidoscopecookery.compat.farmersdelight.FarmersDelightCompat;
+// import com.github.ysbbbbbb.kaleidoscopecookery.compat.create.CreateCompat;
+// import com.github.ysbbbbbb.kaleidoscopecookery.compat.farmersdelight.FarmersDelightCompat;
 import com.github.ysbbbbbb.kaleidoscopecookery.compat.harvest.HarvestCompat;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModSoupBases;
@@ -106,8 +106,8 @@ public class CommonRegistry {
     }
 
     private static void modCompat() {
-        FarmersDelightCompat.init();
-        CreateCompat.init();
+        // FarmersDelightCompat.init();
+        // CreateCompat.init();
         HarvestCompat.init();
     }
 

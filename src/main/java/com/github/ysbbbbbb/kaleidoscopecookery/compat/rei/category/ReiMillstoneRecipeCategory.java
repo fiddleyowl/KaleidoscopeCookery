@@ -1,7 +1,7 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.compat.rei.category;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
-import com.github.ysbbbbbb.kaleidoscopecookery.compat.create.CreateCompat;
+// import com.github.ysbbbbbb.kaleidoscopecookery.compat.create.CreateCompat;
 import com.github.ysbbbbbb.kaleidoscopecookery.compat.rei.ReiUtil;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.MillstoneRecipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
@@ -19,8 +19,8 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
+// import net.minecraft.client.Minecraft;
+// import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -108,10 +108,10 @@ public class ReiMillstoneRecipeCategory implements DisplayCategory<ReiMillstoneR
         millstoneRecipes.addAll(registry.getRecipeManager().getAllRecipesFor(ModRecipes.MILLSTONE_RECIPE));
 
         // 机械动力兼容
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level != null) {
-            CreateCompat.getTransformRecipeForSearch(level, millstoneRecipes);
-        }
+        // ClientLevel level = Minecraft.getInstance().level;
+        // if (level != null) {
+        //     CreateCompat.getTransformRecipeForSearch(level, millstoneRecipes);
+        // }
 
         millstoneRecipes.forEach(r -> {
             List<EntryIngredient> input = ReiUtil.ofIngredients(r.value().getIngredients());

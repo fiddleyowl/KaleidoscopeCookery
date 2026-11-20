@@ -170,7 +170,7 @@ dependencies {
     runtimeOnly "maven.modrinth:carry-on:c2uJiLoV" // 2.10.0
     // runtimeOnly "curse.maven:ecliptic-seasons-1118306:7041469"
 
-    runtimeOnly "maven.modrinth:nbtedit-reborn:5.2.11+mc1.21.1-neoforge"
+    // runtimeOnly "maven.modrinth:nbtedit-reborn:5.2.11+mc1.21.1-neoforge"
     runtimeOnly "maven.modrinth:kiwi:26.0.18+neoforge"
 
     runtimeOnly "maven.modrinth:architectury-api:20.1.17+neoforge"
