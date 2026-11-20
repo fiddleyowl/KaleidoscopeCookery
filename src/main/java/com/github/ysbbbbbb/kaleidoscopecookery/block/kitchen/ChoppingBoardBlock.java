@@ -12,7 +12,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -84,8 +83,8 @@ public class ChoppingBoardBlock extends HorizontalDirectionalBlock implements En
             }
             if (choppingBoard.onCutItem(level, player, itemInHand)) {
                 // 切菜成功时，有 25% 的概率消耗耐久度
-                if (level.random.nextDouble() < DURABILITY_COST_PROBABILITY) {
-                    itemInHand.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+                if (level.getRandom().nextDouble() < DURABILITY_COST_PROBABILITY) {
+                    itemInHand.hurtAndBreak(1, player, hand.asEquipmentSlot());
                 }
                 ModTrigger.EVENT.get().trigger(player, ModEventTriggerType.USE_CHOPPING_BOARD);
                 return ItemInteractionResult.SUCCESS;

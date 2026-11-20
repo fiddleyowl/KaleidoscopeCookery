@@ -54,7 +54,7 @@ public class TeaTreeBlock extends BushBlock implements BonemealableBlock {
     public TeaTreeBlock() {
         super(Properties.of()
                 .mapColor(MapColor.PLANT)
-                .noCollission()
+                .noCollision()
                 .randomTicks()
                 .instabreak()
                 .sound(SoundType.CROP)
@@ -142,7 +142,7 @@ public class TeaTreeBlock extends BushBlock implements BonemealableBlock {
         BlockState harvestedState = state.setValue(AGE, 3);
         level.setBlock(pos, harvestedState, Block.UPDATE_CLIENTS);
         level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, harvestedState));
-        return ItemInteractionResult.sidedSuccess(level.isClientSide);
+        return ItemInteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override

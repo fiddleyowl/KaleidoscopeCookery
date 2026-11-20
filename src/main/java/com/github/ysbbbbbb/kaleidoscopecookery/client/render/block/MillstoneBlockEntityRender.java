@@ -10,7 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -74,7 +74,7 @@ public class MillstoneBlockEntityRender implements BlockEntityRenderer<Millstone
         poseStack.translate(0.5, 1.5, 0.5);
         poseStack.mulPose(Axis.ZN.rotationDegrees(180));
         poseStack.mulPose(Axis.YN.rotationDegrees(180 - facingDeg));
-        VertexConsumer checkerBoardBuff = bufferIn.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
+        VertexConsumer checkerBoardBuff = bufferIn.getBuffer(RenderTypes.entityCutout(TEXTURE));
         bodyModel.renderToBuffer(poseStack, checkerBoardBuff, combinedLightIn, combinedOverlayIn);
         poseStack.popPose();
 

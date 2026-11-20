@@ -6,8 +6,8 @@ import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.StockpotBlock
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.RecipeItem;
-import net.createmod.catnip.math.Pointing;
-import net.createmod.ponder.api.scene.*;
+import net.createmod.catnip.api.math.Pointing;
+import net.createmod.ponder.api.client.scene.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

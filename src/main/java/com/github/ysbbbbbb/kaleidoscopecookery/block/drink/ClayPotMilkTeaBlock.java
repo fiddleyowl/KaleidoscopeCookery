@@ -43,12 +43,12 @@ public class ClayPotMilkTeaBlock extends HorizontalDirectionalBlock {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ItemUtils.getItemToLivingEntity(player, new ItemStack(this));
             level.removeBlock(pos, false);
             level.playSound(null, pos, SoundEvents.DECORATED_POT_BREAK, SoundSource.BLOCKS);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override

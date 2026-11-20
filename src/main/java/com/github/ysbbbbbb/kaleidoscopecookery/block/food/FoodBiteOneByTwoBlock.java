@@ -63,7 +63,7 @@ public class FoodBiteOneByTwoBlock extends FoodBiteBlock {
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!level.isClientSide && player.isCreative() && state.getValue(POSITION) == LEFT) {
+        if (!level.isClientSide() && player.isCreative() && state.getValue(POSITION) == LEFT) {
             BlockPos right = pos.relative(state.getValue(FACING).getCounterClockWise());
             BlockState rightState = level.getBlockState(right);
             if (rightState.is(state.getBlock()) && rightState.getValue(POSITION) == RIGHT) {

@@ -100,7 +100,7 @@ public class ThrowableBaoziEntity extends ThrowableItemProjectile {
     @Override
     protected void onHit(HitResult hitResult) {
         super.onHit(hitResult);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.level().broadcastEntityEvent(this, EntityEvent.DEATH);
             this.playSound(SoundEvents.SNOW_HIT, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             this.discard();

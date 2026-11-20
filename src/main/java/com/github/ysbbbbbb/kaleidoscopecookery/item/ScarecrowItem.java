@@ -12,8 +12,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -47,19 +47,19 @@ public class ScarecrowItem extends Item {
         if (level.noCollision(null, aabb) && level.getEntities(null, aabb).isEmpty()) {
             if (level instanceof ServerLevel serverLevel) {
                 Consumer<ScarecrowEntity> consumer = EntityType.createDefaultStackConfig(serverLevel, stack, context.getPlayer());
-                ScarecrowEntity scarecrow = ScarecrowEntity.TYPE.create(serverLevel, consumer, clickedPos, MobSpawnType.SPAWN_EGG, true, true);
+                ScarecrowEntity scarecrow = ScarecrowEntity.TYPE.create(serverLevel, consumer, clickedPos, EntitySpawnReason.SPAWN_ITEM_USE, true, true);
                 if (scarecrow == null) {
                     return InteractionResult.FAIL;
                 }
                 float rotation = Mth.floor((Mth.wrapDegrees(context.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
-                scarecrow.moveTo(scarecrow.getX(), scarecrow.getY(), scarecrow.getZ(), rotation, 0);
+                scarecrow.snapTo(scarecrow.getX(), scarecrow.getY(), scarecrow.getZ(), rotation, 0);
                 serverLevel.addFreshEntityWithPassengers(scarecrow);
                 level.playSound(null, scarecrow.getX(), scarecrow.getY(), scarecrow.getZ(), SoundEvents.ARMOR_STAND_PLACE, SoundSource.BLOCKS, 0.75F, 0.8F);
                 scarecrow.gameEvent(GameEvent.ENTITY_PLACE, context.getPlayer());
                 ModTrigger.EVENT.get().trigger(context.getPlayer(), ModEventTriggerType.PLACE_SCARECROW);
             }
             stack.shrink(1);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.FAIL;
     }

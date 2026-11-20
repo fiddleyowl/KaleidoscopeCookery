@@ -6,7 +6,7 @@ import net.minecraft.util.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.registries.DeferredHolder;

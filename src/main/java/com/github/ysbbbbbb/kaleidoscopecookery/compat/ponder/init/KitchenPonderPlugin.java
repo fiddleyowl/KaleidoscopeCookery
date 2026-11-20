@@ -1,10 +1,10 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.compat.ponder.init;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
-import net.createmod.ponder.api.registration.PonderPlugin;
-import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
-import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
-import net.createmod.ponder.foundation.PonderIndex;
+import net.createmod.ponder.api.client.registration.PonderPlugin;
+import net.createmod.ponder.api.client.registration.PonderSceneRegistrationHelper;
+import net.createmod.ponder.api.client.registration.PonderTagRegistrationHelper;
+import net.createmod.ponder.api.client.PonderIndex;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.Identifier;
 

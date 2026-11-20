@@ -71,7 +71,7 @@ public class DecorationRecipeProvider extends ModRecipeProvider {
                 .pattern("DLD")
                 .pattern("PDP")
                 .define('P', Items.PAPER)
-                .define('C', Items.CHAIN)
+                .define('C', Items.IRON_CHAIN)
                 .define('D', Items.RED_DYE)
                 .define('L', Items.CANDLE)
                 .unlockedBy("has_red_dye", has(Items.RED_DYE))

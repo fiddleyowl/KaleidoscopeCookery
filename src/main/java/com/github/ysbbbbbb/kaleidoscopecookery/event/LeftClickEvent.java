@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 @EventBusSubscriber(modid = KaleidoscopeCookery.MOD_ID)
 public class LeftClickEvent {
@@ -20,7 +20,7 @@ public class LeftClickEvent {
         if (player.isSecondaryUseActive() && event.getHand() == InteractionHand.MAIN_HAND) {
             ItemStack mainHandItem = player.getMainHandItem();
             if (mainHandItem.is(ModItems.BAOZI.get())) {
-                PacketDistributor.sendToServer(new SimpleC2SModMessage(SimpleC2SModMessage.THROW_BAOZI));
+                ClientPacketDistributor.sendToServer(new SimpleC2SModMessage(SimpleC2SModMessage.THROW_BAOZI));
             }
         }
     }

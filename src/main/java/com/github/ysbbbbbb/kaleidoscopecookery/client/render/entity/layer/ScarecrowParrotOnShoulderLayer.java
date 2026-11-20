@@ -4,7 +4,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.client.model.ScarecrowModel;
 import com.github.ysbbbbbb.kaleidoscopecookery.entity.ScarecrowEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.ParrotModel;
+import net.minecraft.client.model.animal.parrot.ParrotModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -31,10 +31,10 @@ public class ScarecrowParrotOnShoulderLayer extends RenderLayer<ScarecrowEntity,
         if (tag.isEmpty()) {
             return;
         }
-        EntityType.byString(tag.getString("id")).filter(type -> type == EntityType.PARROT).ifPresent(type -> {
+        EntityType.byString(tag.getStringOr("id", "")).filter(type -> type == EntityType.PARROT).ifPresent(type -> {
             poseStack.pushPose();
             poseStack.translate(0.625F, -1.675F, 0.0625F);
-            Parrot.Variant variant = Parrot.Variant.byId(tag.getInt("Variant"));
+            Parrot.Variant variant = Parrot.Variant.byId(tag.getIntOr("Variant", 0));
             VertexConsumer vertexconsumer = source.getBuffer(this.model.renderType(ParrotRenderer.getVariantTexture(variant)));
             this.model.renderOnShoulder(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY,
                     limbSwing, limbSwingAmount, netHeadYaw, headPitch, scarecrow.tickCount);

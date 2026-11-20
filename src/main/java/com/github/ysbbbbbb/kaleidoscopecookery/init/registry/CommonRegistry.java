@@ -27,7 +27,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = KaleidoscopeCookery.MOD_ID)
+@EventBusSubscriber(modid = KaleidoscopeCookery.MOD_ID)
 public class CommonRegistry {
     @SubscribeEvent
     public static void onSetupEvent(FMLCommonSetupEvent event) {
@@ -84,7 +84,7 @@ public class CommonRegistry {
 
         if (event.getRegistry().equals(BuiltInRegistries.ITEM)) {
             FoodBiteRegistry.FOOD_DATA_MAP.forEach((resourceLocation, data) -> {
-                Block block = BuiltInRegistries.BLOCK.get(resourceLocation);
+                Block block = BuiltInRegistries.BLOCK.getValue(resourceLocation);
                 // 选取第一个掉落物作为 usingConvertsTo
                 ItemLike first = data.getLootItems().getFirst();
                 event.register(BuiltInRegistries.ITEM.key(), resourceLocation,
@@ -92,13 +92,13 @@ public class CommonRegistry {
             });
 
             TeacupRegistry.TEACUP_DATA_MAP.forEach((resourceLocation, data) -> {
-                Block block = BuiltInRegistries.BLOCK.get(resourceLocation);
+                Block block = BuiltInRegistries.BLOCK.getValue(resourceLocation);
                 event.register(BuiltInRegistries.ITEM.key(), resourceLocation,
                         () -> new TeacupItem(block, data.getEffects()));
             });
 
             PlateRegistry.PLATE_DATA_MAP.forEach((resourceLocation, data) -> {
-                Block block = BuiltInRegistries.BLOCK.get(resourceLocation);
+                Block block = BuiltInRegistries.BLOCK.getValue(resourceLocation);
                 event.register(BuiltInRegistries.ITEM.key(), resourceLocation,
                         () -> new PlateBlockItem(block, resourceLocation.getPath()));
             });

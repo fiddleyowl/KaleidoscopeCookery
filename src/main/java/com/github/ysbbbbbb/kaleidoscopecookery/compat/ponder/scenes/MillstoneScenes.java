@@ -3,10 +3,10 @@ package com.github.ysbbbbbb.kaleidoscopecookery.compat.ponder.scenes;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.kitchen.MillstoneBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.MillstoneBlockEntity;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
-import net.createmod.catnip.math.Pointing;
-import net.createmod.ponder.api.element.ElementLink;
-import net.createmod.ponder.api.element.EntityElement;
-import net.createmod.ponder.api.scene.*;
+import net.createmod.catnip.api.math.Pointing;
+import net.createmod.ponder.api.client.element.ElementLink;
+import net.createmod.ponder.api.client.element.EntityElement;
+import net.createmod.ponder.api.client.scene.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -98,7 +98,7 @@ public class MillstoneScenes {
             Vec3 pos = (new Vec3(0.0F, 0.0F, 2.5F))
                     .yRot(0)
                     .add(millstonePos.getCenter().relative(Direction.DOWN, 0.5f));
-            e.moveTo(pos.x, pos.y, pos.z);
+            e.snapTo(pos.x, pos.y, pos.z);
             e.setYBodyRot(-90);
             e.setYHeadRot(-90);
             pre.set(pos);

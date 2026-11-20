@@ -14,12 +14,12 @@ public final class BlockDrop {
     }
 
     public static void popResource(Level level, BlockPos pos, double yOffset, ItemStack stack) {
-        if (!level.isClientSide && !stack.isEmpty() && level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !level.restoringBlockSnapshots) {
+        if (!level.isClientSide() && !stack.isEmpty() && level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !level.restoringBlockSnapshots) {
             double itemHalfHeight = EntityType.ITEM.getHeight() / 2.0;
             double range = 0.1;
-            double x = pos.getX() + 0.5 + Mth.nextDouble(level.random, -range, range);
-            double y = pos.getY() + 0.5 + Mth.nextDouble(level.random, -range, range) - itemHalfHeight + yOffset;
-            double z = pos.getZ() + 0.5 + Mth.nextDouble(level.random, -range, range);
+            double x = pos.getX() + 0.5 + Mth.nextDouble(level.getRandom(), -range, range);
+            double y = pos.getY() + 0.5 + Mth.nextDouble(level.getRandom(), -range, range) - itemHalfHeight + yOffset;
+            double z = pos.getZ() + 0.5 + Mth.nextDouble(level.getRandom(), -range, range);
             ItemEntity itemEntity = new ItemEntity(level, x, y, z, stack);
             itemEntity.setDefaultPickUpDelay();
             level.addFreshEntity(itemEntity);

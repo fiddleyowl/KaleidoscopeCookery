@@ -9,7 +9,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +45,7 @@ public class TagItem extends ItemTagsProvider {
                         ModItems.GOLD_KITCHEN_KNIFE.get(),
                         ModItems.DIAMOND_KITCHEN_KNIFE.get(),
                         ModItems.NETHERITE_KITCHEN_KNIFE.get())
-                .addOptionalTag(ResourceLocation.parse("farmersdelight:tools/knives"));
+                .addOptionalTag(Identifier.parse("farmersdelight:tools/knives"));
 
         tag(KITCHEN_SHOVEL).add(ModItems.KITCHEN_SHOVEL.get());
 
@@ -95,7 +95,7 @@ public class TagItem extends ItemTagsProvider {
         BuiltInRegistries.ITEM.keySet().stream()
                 .filter(id -> id.getNamespace().equals(KaleidoscopeCookery.MOD_ID))
                 .forEach(id -> {
-                    Item item = BuiltInRegistries.ITEM.get(id);
+                    Item item = BuiltInRegistries.ITEM.getValue(id);
                     if (item == null) {
                         return;
                     }
@@ -210,7 +210,7 @@ public class TagItem extends ItemTagsProvider {
         tag(TagCommon.COOKED_EGGS).add(ModItems.FRIED_EGG.get());
         tag(TagCommon.COOKED_RICE).add(ModItems.COOKED_RICE.get())
                 // 农夫乐事没加此标签，只能我们来主动修正了……
-                .addOptional(ResourceLocation.parse("farmersdelight:cooked_rice"));
+                .addOptional(Identifier.parse("farmersdelight:cooked_rice"));
 
         tag(TagCommon.RAW_BEEF).add(ModItems.RAW_COW_OFFAL.get(), BEEF);
         tag(TagCommon.RAW_CHICKEN).add(CHICKEN);
@@ -257,7 +257,7 @@ public class TagItem extends ItemTagsProvider {
     private void addModItems() {
         IntrinsicTagAppender<Item> modTags = tag(COOKERY_MOD_ITEMS);
         for (Item item : BuiltInRegistries.ITEM) {
-            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
+            Identifier itemId = BuiltInRegistries.ITEM.getKey(item);
             if (itemId.getNamespace().equals(KaleidoscopeCookery.MOD_ID)) {
                 modTags.add(item);
             }

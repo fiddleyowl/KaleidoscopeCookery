@@ -7,7 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.data.DataMapProvider;
 import net.neoforged.neoforge.registries.DeferredItem;

@@ -61,7 +61,7 @@ public class FoodBiteThreeByThreeBlock extends FoodBiteBlock implements EntityBl
     }
 
     private static void handleRemove(Level world, BlockPos pos, BlockState state, @Nullable Player player) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return;
         }
         NinePart part = state.getValue(PART);
@@ -98,7 +98,7 @@ public class FoodBiteThreeByThreeBlock extends FoodBiteBlock implements EntityBl
             handleRemove(level, centerPos, centerState, player);
             return InteractionResult.SUCCESS;
         }
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             if (eat(level, centerPos, centerState, player).consumesAction()) {
                 return InteractionResult.SUCCESS;
             }
@@ -136,7 +136,7 @@ public class FoodBiteThreeByThreeBlock extends FoodBiteBlock implements EntityBl
     @Override
     public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(worldIn, pos, state, placer, stack);
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             return;
         }
         for (int i = -1; i < 2; i++) {

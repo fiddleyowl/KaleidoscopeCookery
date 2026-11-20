@@ -75,8 +75,8 @@ public class SickleItem extends SwordItem {
         BlockPos pos = context.getClickedPos();
         ItemStack stack = context.getItemInHand();
 
-        int sweepLevel = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT)
-                .getHolder(ModEnchantments.SWEEP)
+        int sweepLevel = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+                .get(ModEnchantments.SWEEP)
                 .map(stack::getEnchantmentLevel)
                 .orElse(0);
         int radius = 2 + sweepLevel;

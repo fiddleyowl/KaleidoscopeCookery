@@ -6,7 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -49,6 +49,6 @@ public class GlobalLootModifier extends GlobalLootModifierProvider {
     }
 
     public ResourceKey<LootTable> modLoc(String name) {
-        return ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, name));
+        return ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, name));
     }
 }

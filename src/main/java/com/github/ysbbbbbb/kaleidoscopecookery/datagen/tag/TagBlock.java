@@ -7,7 +7,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -105,7 +105,7 @@ public class TagBlock extends BlockTagsProvider {
         this.tag(TagMod.SITTABLE).addTag(TagMod.COOK_STOOL).addTag(TagMod.CHAIR)
                 .add(ModBlocks.LONG_BENCH.get(), ModBlocks.TRASH_CAN.get());
 
-        this.tag(TagMod.RICE_PLANTABLE).addOptional(ResourceLocation.parse("farmersdelight:rich_soil_farmland"));
+        this.tag(TagMod.RICE_PLANTABLE).addOptional(Identifier.parse("farmersdelight:rich_soil_farmland"));
 
         this.tag(TagMod.SICKLE_HARVEST_BLACKLIST)
                 .add(Blocks.MELON_STEM, Blocks.PUMPKIN_STEM)
@@ -147,7 +147,7 @@ public class TagBlock extends BlockTagsProvider {
         // carry on 模组黑名单
         IntrinsicTagAppender<Block> carryOn = this.tag(TagCommon.CARRYON_BLOCK_BLACKLIST);
         BuiltInRegistries.BLOCK.keySet().stream().filter(id -> id.getNamespace().equals(KaleidoscopeCookery.MOD_ID))
-                .forEach(id -> carryOn.add(BuiltInRegistries.BLOCK.get(id)));
+                .forEach(id -> carryOn.add(BuiltInRegistries.BLOCK.getValue(id)));
 
         // FTB 连锁模组黑名单
         this.tag(TagCommon.FTB_SINGLE_CROP_HARVESTING_BLACKLIST).add(ModBlocks.RICE_CROP.get());

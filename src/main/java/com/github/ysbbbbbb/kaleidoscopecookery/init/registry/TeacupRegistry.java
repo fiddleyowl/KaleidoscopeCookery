@@ -78,11 +78,11 @@ public class TeacupRegistry {
     }
 
     public static Item getItem(Identifier name) {
-        return BuiltInRegistries.ITEM.get(name);
+        return BuiltInRegistries.ITEM.getValue(name);
     }
 
     public static Block getBlock(Identifier name) {
-        return BuiltInRegistries.BLOCK.get(name);
+        return BuiltInRegistries.BLOCK.getValue(name);
     }
 
     public static final class TeacupData {

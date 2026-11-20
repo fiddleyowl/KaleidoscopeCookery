@@ -53,7 +53,7 @@ public class BambooTrayBlockEntity extends BaseBlockEntity implements WorldlyCon
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, BambooTrayBlockEntity tray) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 
@@ -122,7 +122,7 @@ public class BambooTrayBlockEntity extends BaseBlockEntity implements WorldlyCon
         if (level.canSeeSky(above)) {
             return true;
         }
-        for (int y = above.getY(); y < level.getMaxBuildHeight(); y++) {
+        for (int y = above.getY(); y <= level.getMaxY(); y++) {
             BlockState state = level.getBlockState(new BlockPos(pos.getX(), y, pos.getZ()));
             if (state.isAir() || state.is(GLASS_BLOCKS_COLORLESS) || state.is(GLASS_PANES_COLORLESS) || state.is(ModBlocks.BAMBOO_TRAY.get())) {
                 continue;

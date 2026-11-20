@@ -83,7 +83,7 @@ public class TeacupItem extends BlockItem implements IHasContainer {
         for (var entry : this.effects) {
             MobEffectInstance instance = entry.getFirst().get();
             float probability = entry.getSecond();
-            if (!level.isClientSide && level.random.nextFloat() < probability) {
+            if (!level.isClientSide() && level.getRandom().nextFloat() < probability) {
                 entity.addEffect(instance);
             }
         }

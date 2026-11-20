@@ -4,11 +4,11 @@ import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.StockpotBlock
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
@@ -26,7 +26,7 @@ public interface ISoupBaseRender {
      * @param y         汤底的高度
      */
     static void renderSurface(TextureAtlasSprite sprite, int color, PoseStack poseStack, MultiBufferSource buffer, int light, float y) {
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucentCull(InventoryMenu.BLOCK_ATLAS));
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucentCull(TextureAtlas.LOCATION_BLOCKS));
         Matrix4f matrix = poseStack.last().pose();
 
         // 锅内水面的位置和大小（根据实际锅模型调整）

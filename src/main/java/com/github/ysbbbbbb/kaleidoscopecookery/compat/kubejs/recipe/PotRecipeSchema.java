@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface PotRecipeSchema {
     RecipeKey<ItemStack> OUTPUT = ItemStackComponent.ITEM_STACK.outputKey("result");
-    RecipeKey<List<Ingredient>> INGREDIENTS = IngredientComponent.INGREDIENT.instance().asListOrSelf()
+    RecipeKey<List<Ingredient>> INGREDIENTS = IngredientComponent.INGREDIENT.asListOrSelf()
             .inputKey("ingredients");
     RecipeKey<Ingredient> CARRIER = IngredientComponent.OPTIONAL_INGREDIENT.inputKey("carrier").optional(Ingredient.EMPTY);
     RecipeKey<Integer> TIME = NumberComponent.INT.otherKey("time").optional(200);

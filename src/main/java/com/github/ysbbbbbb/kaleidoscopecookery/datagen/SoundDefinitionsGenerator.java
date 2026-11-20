@@ -3,7 +3,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.datagen;
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModSounds;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
@@ -65,7 +65,7 @@ public class SoundDefinitionsGenerator extends SoundDefinitionsProvider {
     }
 
     protected static SoundDefinition.Sound sound(final String name) {
-        return sound(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, name));
+        return sound(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, name));
     }
 
     protected static String subtitle(String subtitle) {

@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 
 public class MillstoneModel extends Model {
@@ -20,7 +20,7 @@ public class MillstoneModel extends Model {
     private final ModelPart rotStick;
 
     public MillstoneModel(ModelPart root) {
-        super(RenderType::entityCutoutNoCull);
+        super(RenderTypes::entityCutout);
         this.base = root.getChild("base");
         this.wheel = root.getChild("wheel");
         this.roll = this.wheel.getChild("roll");

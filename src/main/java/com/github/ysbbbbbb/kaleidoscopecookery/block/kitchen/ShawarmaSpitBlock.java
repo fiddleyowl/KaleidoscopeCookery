@@ -144,7 +144,7 @@ public class ShawarmaSpitBlock extends HorizontalDirectionalBlock implements Sim
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!level.isClientSide && player.isCreative()) {
+        if (!level.isClientSide() && player.isCreative()) {
             if (state.getValue(HALF) == DoubleBlockHalf.UPPER) {
                 BlockPos below = pos.below();
                 BlockState belowState = level.getBlockState(below);
@@ -179,7 +179,7 @@ public class ShawarmaSpitBlock extends HorizontalDirectionalBlock implements Sim
         BlockPos pos = context.getClickedPos();
         Level level = context.getLevel();
         FluidState fluidState = context.getLevel().getFluidState(pos);
-        if (pos.getY() < level.getMaxBuildHeight() - 1 && level.getBlockState(pos.above()).canBeReplaced(context)) {
+        if (pos.getY() <= level.getMaxY() - 1 && level.getBlockState(pos.above()).canBeReplaced(context)) {
             boolean isPowered = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
             return this.defaultBlockState()
                     .setValue(FACING, context.getHorizontalDirection())

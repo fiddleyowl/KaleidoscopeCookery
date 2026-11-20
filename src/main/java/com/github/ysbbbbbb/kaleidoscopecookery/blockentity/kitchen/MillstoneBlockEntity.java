@@ -163,7 +163,7 @@ public class MillstoneBlockEntity extends BaseBlockEntity implements IMillstone 
                 .add(this.offset)
                 .yRot(rot * Mth.DEG_TO_RAD)
                 .add(center);
-        this.bindEntity.moveTo(pos.x, pos.y, pos.z, -rot - 90, 0);
+        this.bindEntity.snapTo(pos.x, pos.y, pos.z, -rot - 90, 0);
 
         // 如果实体带有库存，那么可以尝试往磨盘里放物品
         if (this.bindEntity.tickCount % 10 == 0 && this.isOutputEmpty() && this.input.isEmpty() && this.progress <= 0) {
@@ -235,7 +235,7 @@ public class MillstoneBlockEntity extends BaseBlockEntity implements IMillstone 
 
         // 播放音频
         if (serverLevel.getGameTime() % 25 == 0) {
-            float pitch = level.random.nextFloat() * 0.2f + 0.9f;
+            float pitch = level.getRandom().nextFloat() * 0.2f + 0.9f;
             serverLevel.playSound(null, this.worldPosition,
                     ModSounds.BLOCK_MILLSTONE.get(), SoundSource.BLOCKS, 0.5f, pitch);
         }
@@ -292,7 +292,7 @@ public class MillstoneBlockEntity extends BaseBlockEntity implements IMillstone 
             this.refresh();
             level.playSound(null, this.worldPosition,
                     SoundEvents.STONE_HIT, SoundSource.BLOCKS, 0.8f,
-                    level.random.nextFloat() * 0.2f + 0.9f);
+                    level.getRandom().nextFloat() * 0.2f + 0.9f);
             return true;
         }).orElse(false);
     }
@@ -316,7 +316,7 @@ public class MillstoneBlockEntity extends BaseBlockEntity implements IMillstone 
     }
 
     public boolean canBindEntity(LivingEntity entity) {
-        if (entity.getBbHeight() < 1 || entity.getType().is(TagMod.MILLSTONE_BIND_BLACKLIST)) {
+        if (entity.getBbHeight() < 1 || entity.getType().builtInRegistryHolder().is(TagMod.MILLSTONE_BIND_BLACKLIST)) {
             return false;
         }
         if (entity.getVehicle() != null) {
@@ -330,7 +330,7 @@ public class MillstoneBlockEntity extends BaseBlockEntity implements IMillstone 
     }
 
     public void bindEntity(LivingEntity entity) {
-        if (this.level == null || this.level.isClientSide) {
+        if (this.level == null || this.level.isClientSide()) {
             // 仅在服务器端绑定实体
             return;
         }

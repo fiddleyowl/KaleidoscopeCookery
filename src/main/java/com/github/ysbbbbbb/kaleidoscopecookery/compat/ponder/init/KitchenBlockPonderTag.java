@@ -2,7 +2,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.compat.ponder.init;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
-import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
+import net.createmod.ponder.api.client.registration.PonderTagRegistrationHelper;
 import net.minecraft.resources.Identifier;
 
 import java.util.Objects;

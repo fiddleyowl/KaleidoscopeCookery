@@ -13,7 +13,7 @@ public class MillstoneEntityEvent {
     @SubscribeEvent
     public static void onLivingAttack(LivingIncomingDamageEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity.level().isClientSide) {
+        if (entity.level().isClientSide()) {
             return;
         }
         BlockPos origin = entity.blockPosition();

@@ -62,7 +62,7 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
     }
 
     public static void popResource(Level level, BlockPos pos, ItemStack stack) {
-        if (!level.isClientSide && !stack.isEmpty()) {
+        if (!level.isClientSide() && !stack.isEmpty()) {
             ItemEntity entity = new ItemEntity(level,
                     pos.getX() + 0.5,
                     pos.getY() + 0.25,
@@ -112,12 +112,12 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
             level.playSound(null, this.worldPosition,
                     SoundEvents.WOOD_PLACE,
                     SoundSource.BLOCKS,
-                    1, 2 + level.random.nextFloat() * 0.2f);
+                    1, 2 + level.getRandom().nextFloat() * 0.2f);
             return true;
         } else if (cutterItem.is(TagMod.KITCHEN_KNIFE)) {
             // 否则，检测是否是刀具，进行切菜逻辑
-            int enchantmentLevel = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT)
-                    .getHolder(ModEnchantments.QUICK_KNIFE)
+            int enchantmentLevel = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+                    .get(ModEnchantments.QUICK_KNIFE)
                     .map(cutterItem::getEnchantmentLevel)
                     .orElse(0);
             enchantmentLevel = Mth.clamp(enchantmentLevel, 0, 2);
@@ -142,7 +142,7 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
             level.playSound(null, this.worldPosition,
                     SoundEvents.ITEM_FRAME_REMOVE_ITEM,
                     SoundSource.BLOCKS,
-                    1, 1.2f + level.random.nextFloat() * 0.2f);
+                    1, 1.2f + level.getRandom().nextFloat() * 0.2f);
             return true;
         }
         return false;
@@ -160,7 +160,7 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
             serverLevel.playSound(null, this.worldPosition,
                     SoundEvents.WOOD_PLACE,
                     SoundSource.BLOCKS,
-                    1, 1.5f + level.random.nextFloat() * 0.4f);
+                    1, 1.5f + level.getRandom().nextFloat() * 0.4f);
         }
     }
 

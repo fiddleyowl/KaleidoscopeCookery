@@ -195,7 +195,7 @@ public class ModCreativeTabs {
                     if (foodName.equals(FoodBiteRegistry.DOUGH_DROP_SOUP)) {
                         output.accept(ModItems.COLD_CUT_HAM_SLICES.get());
                     }
-                    var foodItem = BuiltInRegistries.ITEM.get(foodName);
+                    var foodItem = BuiltInRegistries.ITEM.getValue(foodName);
                     output.accept(foodItem);
                 });
 
@@ -204,7 +204,7 @@ public class ModCreativeTabs {
 
                 // 盘装食物
                 PlateRegistry.PLATE_DATA_MAP.keySet().forEach(plateName -> {
-                    var plateItem = BuiltInRegistries.ITEM.get(plateName);
+                    var plateItem = BuiltInRegistries.ITEM.getValue(plateName);
                     output.accept(plateItem);
                 });
 
@@ -219,7 +219,7 @@ public class ModCreativeTabs {
                 // 茶水
                 output.accept(ModItems.EMPTY_CUP.get());
                 TeacupRegistry.TEACUP_DATA_MAP.keySet().forEach(teacupName -> {
-                    var teacupItem = BuiltInRegistries.ITEM.get(teacupName);
+                    var teacupItem = BuiltInRegistries.ITEM.getValue(teacupName);
                     output.accept(teacupItem);
                 });
             }).build());

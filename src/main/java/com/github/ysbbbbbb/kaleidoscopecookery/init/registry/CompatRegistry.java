@@ -9,7 +9,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.compat.tetra.TetraCompat;
 import static com.github.ysbbbbbb.kaleidoscopecookery.compat.tetra.TetraCompat.TETRA_ID;
 
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class CompatRegistry {
     public static boolean SHOW_POTION_EFFECT_TOOLTIPS = true;
 

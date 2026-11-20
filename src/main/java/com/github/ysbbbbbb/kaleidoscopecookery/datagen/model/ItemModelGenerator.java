@@ -9,7 +9,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.item.*;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
@@ -135,63 +135,63 @@ public class ItemModelGenerator extends ItemModelProvider {
 
         withExistingParent("bamboo_tray", modLoc("block/bamboo_tray/base"));
 
-        ResourceLocation chileRistra = BuiltInRegistries.ITEM.getKey(ModItems.CHILI_RISTRA.get());
+        Identifier chileRistra = BuiltInRegistries.ITEM.getKey(ModItems.CHILI_RISTRA.get());
         getBuilder(chileRistra.toString()).parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/chili_ristra/head"));
+                .texture("layer0", Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/chili_ristra/head"));
 
-        ResourceLocation strungMushrooms = BuiltInRegistries.ITEM.getKey(ModItems.STRUNG_MUSHROOMS.get());
+        Identifier strungMushrooms = BuiltInRegistries.ITEM.getKey(ModItems.STRUNG_MUSHROOMS.get());
         getBuilder(strungMushrooms.toString()).parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/strung_mushrooms/head"));
+                .texture("layer0", Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/strung_mushrooms/head"));
 
-        ResourceLocation shovel = BuiltInRegistries.ITEM.getKey(ModItems.KITCHEN_SHOVEL.get());
-        ItemModelBuilder shovelNoOil = handheldItem(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "kitchen_shovel_no_oil"));
-        ItemModelBuilder shovelHasOil = handheldItem(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "kitchen_shovel_has_oil"));
+        Identifier shovel = BuiltInRegistries.ITEM.getKey(ModItems.KITCHEN_SHOVEL.get());
+        ItemModelBuilder shovelNoOil = handheldItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "kitchen_shovel_no_oil"));
+        ItemModelBuilder shovelHasOil = handheldItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "kitchen_shovel_has_oil"));
         getBuilder(shovel.toString())
                 .override().model(shovelNoOil).predicate(KitchenShovelItem.HAS_OIL_PROPERTY, 0).end()
                 .override().model(shovelHasOil).predicate(KitchenShovelItem.HAS_OIL_PROPERTY, 1).end();
 
-        ResourceLocation stockpotLid = BuiltInRegistries.ITEM.getKey(ModItems.STOCKPOT_LID.get());
-        ModelFile normal = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/stockpot_lid_normal"));
-        ModelFile using = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/stockpot_lid_using"));
+        Identifier stockpotLid = BuiltInRegistries.ITEM.getKey(ModItems.STOCKPOT_LID.get());
+        ModelFile normal = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/stockpot_lid_normal"));
+        ModelFile using = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/stockpot_lid_using"));
         getBuilder(stockpotLid.toString())
                 .override().model(normal).predicate(StockpotLidItem.USING_PROPERTY, 0).end()
                 .override().model(using).predicate(StockpotLidItem.USING_PROPERTY, 1).end();
 
-        ResourceLocation oilPot = BuiltInRegistries.ITEM.getKey(ModItems.OIL_POT.get());
+        Identifier oilPot = BuiltInRegistries.ITEM.getKey(ModItems.OIL_POT.get());
         if (oilPot != null) {
-            ItemModelBuilder potNoOil = basicItem(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot_no_oil"));
-            ItemModelBuilder potHasOil = basicItem(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot_has_oil"));
+            ItemModelBuilder potNoOil = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot_no_oil"));
+            ItemModelBuilder potHasOil = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot_has_oil"));
             getBuilder(oilPot.toString())
                     .override().model(potNoOil).predicate(OilPotItem.HAS_OIL_PROPERTY, 0).end()
                     .override().model(potHasOil).predicate(OilPotItem.HAS_OIL_PROPERTY, 1).end();
         }
 
-        ResourceLocation recipeItem = BuiltInRegistries.ITEM.getKey(ModItems.RECIPE_ITEM.get());
+        Identifier recipeItem = BuiltInRegistries.ITEM.getKey(ModItems.RECIPE_ITEM.get());
         if (recipeItem != null) {
-            ItemModelBuilder noRecipe = basicItem(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "recipe_item_no_recipe"));
-            ItemModelBuilder hasRecipe = basicItem(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "recipe_item_has_recipe"));
+            ItemModelBuilder noRecipe = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "recipe_item_no_recipe"));
+            ItemModelBuilder hasRecipe = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "recipe_item_has_recipe"));
             getBuilder(recipeItem.toString())
                     .override().model(noRecipe).predicate(RecipeItem.HAS_RECIPE_PROPERTY, 0).end()
                     .override().model(hasRecipe).predicate(RecipeItem.HAS_RECIPE_PROPERTY, 1).end();
         }
 
-        ResourceLocation bagItem = BuiltInRegistries.ITEM.getKey(ModItems.TRANSMUTATION_LUNCH_BAG.get());
+        Identifier bagItem = BuiltInRegistries.ITEM.getKey(ModItems.TRANSMUTATION_LUNCH_BAG.get());
         if (bagItem != null) {
-            ItemModelBuilder noItems = basicItem(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "transmutation_lunch_bag_no_items"));
-            ItemModelBuilder hasItems = basicItem(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "transmutation_lunch_bag_has_items"));
+            ItemModelBuilder noItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "transmutation_lunch_bag_no_items"));
+            ItemModelBuilder hasItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "transmutation_lunch_bag_has_items"));
             getBuilder(bagItem.toString())
                     .override().model(noItems).predicate(TransmutationLunchBagItem.HAS_ITEMS_PROPERTY, 0).end()
                     .override().model(hasItems).predicate(TransmutationLunchBagItem.HAS_ITEMS_PROPERTY, 1).end();
         }
 
-        ResourceLocation rawDough = BuiltInRegistries.ITEM.getKey(ModItems.RAW_DOUGH.get());
+        Identifier rawDough = BuiltInRegistries.ITEM.getKey(ModItems.RAW_DOUGH.get());
         if (rawDough != null) {
             ItemModelBuilder builder = getBuilder(rawDough.toString());
-            ModelFile.UncheckedModelFile file0 = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_0"));
-            ModelFile.UncheckedModelFile file1 = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_1"));
-            ModelFile.UncheckedModelFile file2 = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_2"));
-            ModelFile.UncheckedModelFile file3 = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_3"));
-            ModelFile.UncheckedModelFile file4 = new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_4"));
+            ModelFile.UncheckedModelFile file0 = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_0"));
+            ModelFile.UncheckedModelFile file1 = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_1"));
+            ModelFile.UncheckedModelFile file2 = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_2"));
+            ModelFile.UncheckedModelFile file3 = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_3"));
+            ModelFile.UncheckedModelFile file4 = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_4"));
 
             builder.override().model(file0).predicate(RawDoughItem.PULL_PROPERTY, 0).end();
             builder.override().model(file1).predicate(RawDoughItem.PULL_PROPERTY, 0.1f).end();
@@ -200,28 +200,28 @@ public class ItemModelGenerator extends ItemModelProvider {
             builder.override().model(file4).predicate(RawDoughItem.PULL_PROPERTY, 3).end();
         }
 
-        ResourceLocation steamerItem = BuiltInRegistries.ITEM.getKey(ModItems.STEAMER.get());
+        Identifier steamerItem = BuiltInRegistries.ITEM.getKey(ModItems.STEAMER.get());
         if (steamerItem != null) {
-            ItemModelBuilder noItems = basicItem(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "steamer_no_items"));
-            ItemModelBuilder hasItems = basicItem(ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "steamer_has_items"));
+            ItemModelBuilder noItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "steamer_no_items"));
+            ItemModelBuilder hasItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "steamer_has_items"));
             getBuilder(steamerItem.toString())
                     .override().model(noItems).predicate(SteamerItem.HAS_ITEMS, 0).end()
                     .override().model(hasItems).predicate(SteamerItem.HAS_ITEMS, 1).end();
         }
 
         FoodBiteRegistry.FOOD_DATA_MAP.forEach((key, value) -> {
-            Item item = BuiltInRegistries.ITEM.get(key);
+            Item item = BuiltInRegistries.ITEM.getValue(key);
             basicItem(item);
         });
 
         PlateRegistry.PLATE_DATA_MAP.forEach((key, value) -> {
-            Item item = BuiltInRegistries.ITEM.get(key);
+            Item item = BuiltInRegistries.ITEM.getValue(key);
             basicItem(item);
         });
 
         basicItem(ModItems.EMPTY_CUP.get());
         TeacupRegistry.TEACUP_DATA_MAP.forEach((key, value) -> {
-            Item item = BuiltInRegistries.ITEM.get(key);
+            Item item = BuiltInRegistries.ITEM.getValue(key);
             basicItem(item);
         });
 
@@ -313,9 +313,9 @@ public class ItemModelGenerator extends ItemModelProvider {
     }
 
     @Override
-    public ItemModelBuilder handheldItem(ResourceLocation item) {
+    public ItemModelBuilder handheldItem(Identifier item) {
         return getBuilder(item.toString())
                 .parent(new ModelFile.UncheckedModelFile("item/handheld"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));
+                .texture("layer0", Identifier.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));
     }
 }

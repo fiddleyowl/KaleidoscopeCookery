@@ -12,7 +12,7 @@ import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
@@ -56,7 +56,7 @@ public class TrashCanBlockEntityRender implements BlockEntityRenderer<TrashCanBl
         poseStack.translate(0.5, 1.5, 0.5);
         poseStack.mulPose(Axis.ZN.rotationDegrees(180));
         poseStack.mulPose(Axis.YN.rotationDegrees(180 - facingDeg));
-        VertexConsumer checkerBoardBuff = buffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
+        VertexConsumer checkerBoardBuff = buffer.getBuffer(RenderTypes.entityCutout(TEXTURE));
         model.renderToBuffer(poseStack, checkerBoardBuff, packedLight, packedOverlay);
         poseStack.popPose();
     }

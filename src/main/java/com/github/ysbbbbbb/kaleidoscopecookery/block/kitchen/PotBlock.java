@@ -116,7 +116,7 @@ public class PotBlock extends HorizontalDirectionalBlock implements EntityBlock,
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         ItemStack itemInHand = player.getItemInHand(hand);
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
         // 先检查执行配菜取出逻辑
         if ((itemInHand.isEmpty() || itemInHand.is(TagMod.INGREDIENT_CONTAINER)) && pot.removeIngredient(level, player)) {
             return ItemInteractionResult.SUCCESS;
@@ -141,7 +141,7 @@ public class PotBlock extends HorizontalDirectionalBlock implements EntityBlock,
         }
         // 如果拿着锅铲，那么开始执行锅铲逻辑
         if (itemInHand.is(TagMod.KITCHEN_SHOVEL)) {
-            if (level.random.nextDouble() < DURABILITY_COST_PROBABILITY) {
+            if (level.getRandom().nextDouble() < DURABILITY_COST_PROBABILITY) {
                 itemInHand.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
             }
             pot.onShovelHit(level, player, itemInHand);
@@ -172,7 +172,7 @@ public class PotBlock extends HorizontalDirectionalBlock implements EntityBlock,
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return null;
         }
         if (!state.getValue(HAS_OIL)) {

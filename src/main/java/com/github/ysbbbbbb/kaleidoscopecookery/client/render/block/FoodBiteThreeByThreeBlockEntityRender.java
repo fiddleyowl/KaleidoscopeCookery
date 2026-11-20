@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
@@ -45,7 +45,7 @@ public class FoodBiteThreeByThreeBlockEntityRender implements BlockEntityRendere
         poseStack.translate(0.5, 1.5, 0.5);
         poseStack.mulPose(Axis.ZN.rotationDegrees(180));
         poseStack.mulPose(Axis.YN.rotationDegrees(180 - facingDeg));
-        VertexConsumer checkerBoardBuff = buffer.getBuffer(RenderType.entityCutoutNoCull(COLD_CUT_HAM_SLICES_TEXTURE));
+        VertexConsumer checkerBoardBuff = buffer.getBuffer(RenderTypes.entityCutout(COLD_CUT_HAM_SLICES_TEXTURE));
         coldCutHamSlicesModel.renderToBuffer(poseStack, checkerBoardBuff, packedLight, packedOverlay, -1);
 
         coldCutHamSlicesModel.resetBites();

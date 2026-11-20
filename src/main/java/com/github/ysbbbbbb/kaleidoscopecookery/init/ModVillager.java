@@ -4,7 +4,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 

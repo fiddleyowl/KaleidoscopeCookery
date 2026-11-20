@@ -18,12 +18,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MobBucketItemMixin {
     @Inject(method = "checkExtraContent", at = @At("RETURN"))
     private void onCheckExtraContent(Player player, Level level, ItemStack containerStack, BlockPos pos, CallbackInfo ci) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         // 检查桶内鱼类是否是所需的
         MobBucketItem bucket = (MobBucketItem) (Object) this;
-        if (!bucket.type.is(TagMod.RICE_GROWTH_BOOSTER)) {
+        if (!bucket.type.builtInRegistryHolder().is(TagMod.RICE_GROWTH_BOOSTER)) {
             return;
         }
         // 搜索周围 3x3x1 范围，看有没有水稻

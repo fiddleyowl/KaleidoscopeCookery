@@ -97,7 +97,7 @@ public class MillstoneBlock extends HorizontalDirectionalBlock implements Entity
     }
 
     private static void handleRemove(Level world, BlockPos pos, BlockState state, @Nullable Player player) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return;
         }
         NinePart part = state.getValue(PART);
@@ -136,7 +136,7 @@ public class MillstoneBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return null;
         }
         return createTickerHelper(blockEntityType, ModBlocks.MILLSTONE_BE.get(),
@@ -164,7 +164,7 @@ public class MillstoneBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
         // 每 5 tick 检查一次
-        if (entity instanceof LivingEntity livingEntity && !level.isClientSide && level.getGameTime() % 5 == 4) {
+        if (entity instanceof LivingEntity livingEntity && !level.isClientSide() && level.getGameTime() % 5 == 4) {
             NinePart part = state.getValue(PART);
             BlockPos centerPos = pos.subtract(new Vec3i(part.getPosX(), 0, part.getPosY()));
             BlockEntity blockEntity = level.getBlockEntity(centerPos);
@@ -209,7 +209,7 @@ public class MillstoneBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(worldIn, pos, state, placer, stack);
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             return;
         }
         for (int i = -1; i < 2; i++) {

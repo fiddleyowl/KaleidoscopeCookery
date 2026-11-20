@@ -47,7 +47,7 @@ public record SimpleC2SModMessage(int index) implements CustomPacketPayload {
 
     private static void handleFlatulenceEffect(IPayloadContext context) {
         if (context.player() instanceof ServerPlayer player && player.hasEffect(ModEffects.FLATULENCE)) {
-            ServerLevel serverLevel = player.serverLevel();
+            ServerLevel serverLevel = player.level();
             serverLevel.sendParticles(ParticleTypes.CLOUD, player.getX(),
                     player.getY() + 0.25, player.getZ(),
                     10, 0.25, 0.25, 0.25, 0.1);

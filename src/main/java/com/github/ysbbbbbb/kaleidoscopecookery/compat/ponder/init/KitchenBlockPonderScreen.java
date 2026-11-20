@@ -2,7 +2,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.compat.ponder.init;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.compat.ponder.scenes.*;
-import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
+import net.createmod.ponder.api.client.registration.PonderSceneRegistrationHelper;
 import net.minecraft.resources.Identifier;
 
 public class KitchenBlockPonderScreen {

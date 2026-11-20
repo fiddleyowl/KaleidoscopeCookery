@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 
 public class NormalBannerModel extends Model {
@@ -19,7 +19,7 @@ public class NormalBannerModel extends Model {
     private final ModelPart back;
 
     public NormalBannerModel(ModelPart root) {
-        super(RenderType::entityCutoutNoCull);
+        super(RenderTypes::entityCutout);
         this.bone = root.getChild("bone");
         this.front = this.bone.getChild("front");
         this.back = this.bone.getChild("back");

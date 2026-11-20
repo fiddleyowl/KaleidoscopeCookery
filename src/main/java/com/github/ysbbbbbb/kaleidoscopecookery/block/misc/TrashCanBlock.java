@@ -83,7 +83,7 @@ public class TrashCanBlock extends HorizontalDirectionalBlock implements SimpleW
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return createTickerHelper(blockEntityType, ModBlocks.TRASH_CAN_BE.get(),
                     (lvl, blockPos, blockState, trashCan) -> trashCan.clientTick(lvl));
         }
@@ -139,7 +139,7 @@ public class TrashCanBlock extends HorizontalDirectionalBlock implements SimpleW
             if (!entities.isEmpty()) {
                 return;
             }
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 SitEntity entitySit = new SitEntity(level, pos, 0.875, SitEntity.TRASH_CAN);
                 entitySit.setYRot(state.getValue(FACING).toYRot());
                 level.addFreshEntity(entitySit);

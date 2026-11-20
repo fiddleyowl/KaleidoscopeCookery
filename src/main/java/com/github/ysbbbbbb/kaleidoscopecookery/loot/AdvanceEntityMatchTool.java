@@ -12,7 +12,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
+import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
@@ -40,14 +40,14 @@ public class AdvanceEntityMatchTool implements LootItemCondition {
     }
 
     @Override
-    public Set<LootContextParam<?>> getReferencedContextParams() {
+    public Set<ContextKey<?>> getReferencedContextParams() {
         return ImmutableSet.of(LootContextParams.ATTACKING_ENTITY);
     }
 
     @Override
     public boolean test(LootContext context) {
-        if (context.hasParam(LootContextParams.ATTACKING_ENTITY)) {
-            Entity entity = context.getParam(LootContextParams.ATTACKING_ENTITY);
+        if (context.hasParameter(LootContextParams.ATTACKING_ENTITY)) {
+            Entity entity = context.getParameter(LootContextParams.ATTACKING_ENTITY);
             if (entity instanceof LivingEntity livingEntity) {
                 ItemStack stack = livingEntity.getItemBySlot(this.slot);
                 return this.predicate.test(stack);

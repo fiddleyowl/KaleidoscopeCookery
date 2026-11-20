@@ -48,7 +48,7 @@ public class TrashCanBlockEntity extends BaseBlockEntity {
         if (Math.floorMod(offset, 61) == 0) {
             List<SitEntity> sits = level.getEntitiesOfClass(SitEntity.class, new AABB(this.worldPosition));
             if (!sits.isEmpty()) {
-                if (level.random.nextBoolean()) {
+                if (level.getRandom().nextBoolean()) {
                     this.player2State.stop();
                     this.player1State.start((int) level.getGameTime());
                 } else {

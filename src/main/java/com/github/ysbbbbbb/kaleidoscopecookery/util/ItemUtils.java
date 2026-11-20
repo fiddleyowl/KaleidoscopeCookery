@@ -27,7 +27,7 @@ public class ItemUtils {
             return;
         }
         if (entity.getMainHandItem().isEmpty()) {
-            RandomSource random = entity.level().random;
+            RandomSource random = entity.level().getRandom();
             entity.setItemInHand(InteractionHand.MAIN_HAND, stack);
             entity.playSound(SoundEvents.ITEM_PICKUP, 0.2F, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
         } else if (entity instanceof Player player) {

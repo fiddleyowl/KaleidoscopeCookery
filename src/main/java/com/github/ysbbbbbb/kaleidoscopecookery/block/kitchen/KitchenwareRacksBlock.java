@@ -122,7 +122,7 @@ public class KitchenwareRacksBlock extends HorizontalDirectionalBlock implements
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!level.isClientSide && player.isCreative() && level.getBlockEntity(pos) instanceof KitchenwareRacksBlockEntity racks) {
+        if (!level.isClientSide() && player.isCreative() && level.getBlockEntity(pos) instanceof KitchenwareRacksBlockEntity racks) {
             if (!racks.getItemLeft().isEmpty()) {
                 popResource(level, pos, racks.getItemLeft());
                 racks.setItemLeft(ItemStack.EMPTY);

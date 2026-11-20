@@ -5,8 +5,8 @@ import com.github.ysbbbbbb.kaleidoscopecookery.block.kitchen.PotBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.kitchen.StoveBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.PotBlockEntity;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
-import net.createmod.catnip.math.Pointing;
-import net.createmod.ponder.api.scene.*;
+import net.createmod.catnip.api.math.Pointing;
+import net.createmod.ponder.api.client.scene.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -167,7 +167,7 @@ public class PotScenes {
                 .setValue(PotBlock.SHOW_OIL, false), false);
         scene.idle(43);
         scene.overlay().showControls(vector.blockSurface(potPos, Direction.UP), Pointing.DOWN, 35)
-                .withItem(new ItemStack(BuiltInRegistries.ITEM.get(
+                .withItem(new ItemStack(BuiltInRegistries.ITEM.getValue(
                         Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "spicy_chicken"))
                 ));
         scene.idle(40);

@@ -231,7 +231,7 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
             return false;
         }
 
-        Fluid fluid = BuiltInRegistries.FLUID.get(this.teaFluidId);
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(this.teaFluidId);
         if (fluid == Fluids.EMPTY) {
             return false;
         }
@@ -311,7 +311,7 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
         }
 
         level.playSound(null, worldPosition, SoundEvents.LANTERN_BREAK, SoundSource.BLOCKS, 0.6f,
-                0.8f + level.random.nextFloat() * 0.2F);
+                0.8f + level.getRandom().nextFloat() * 0.2F);
         level.setBlock(worldPosition, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 
         return true;
@@ -359,32 +359,32 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
     }
 
     private void onProcessingEffects(Level level) {
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
         level.playSound(null, worldPosition, ModSounds.BLOCK_TEAPOT_PROCESSING.get(), SoundSource.BLOCKS, 0.6f,
                 0.8f + random.nextFloat() * 0.2F);
         this.onFinishEffects(level);
     }
 
     private void onBoilingEffects(Level level) {
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
         level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.4f,
                 0.8f + random.nextFloat() * 0.2F);
 
         if (level instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(ModParticles.COOKING.get(),
-                    worldPosition.getX() + 0.5 + (level.random.nextFloat() - 0.5F),
-                    worldPosition.getY() + 0.6 + level.random.nextDouble() / 5,
-                    worldPosition.getZ() + 0.5 + (level.random.nextFloat() - 0.5F),
+                    worldPosition.getX() + 0.5 + (level.getRandom().nextFloat() - 0.5F),
+                    worldPosition.getY() + 0.6 + level.getRandom().nextDouble() / 5,
+                    worldPosition.getZ() + 0.5 + (level.getRandom().nextFloat() - 0.5F),
                     3,
-                    (level.random.nextFloat() - 0.5) * 0.05F,
+                    (level.getRandom().nextFloat() - 0.5) * 0.05F,
                     0.1,
-                    (level.random.nextFloat() - 0.5) * 0.05F,
+                    (level.getRandom().nextFloat() - 0.5) * 0.05F,
                     0.02);
         }
     }
 
     private void onFinishEffects(Level level) {
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
 
         if (level instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(ModParticles.COOKING.get(),
@@ -392,9 +392,9 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
                     worldPosition.getY() + 0.8 + random.nextDouble() / 3,
                     worldPosition.getZ() + 0.5 + random.nextDouble() / 4 * (random.nextBoolean() ? 1 : -1),
                     1,
-                    (level.random.nextFloat() - 0.5) * 0.05F,
+                    (level.getRandom().nextFloat() - 0.5) * 0.05F,
                     0.1,
-                    (level.random.nextFloat() - 0.5) * 0.05F,
+                    (level.getRandom().nextFloat() - 0.5) * 0.05F,
                     0.02);
         }
     }

@@ -18,7 +18,7 @@ public record MillstoneBindableData(int rotSpeedTick, float liftAngle, Vec3 offs
     ).apply(instance, MillstoneBindableData::new));
 
     private static final Codec<EntityType<?>> ENTITY_TYPE_CODEC = Identifier.CODEC.comapFlatMap(id -> {
-        EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(id);
+        EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getValue(id);
         return DataResult.success(type);
     }, BuiltInRegistries.ENTITY_TYPE::getKey);
 

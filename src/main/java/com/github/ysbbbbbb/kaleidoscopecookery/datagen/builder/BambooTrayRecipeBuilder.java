@@ -6,7 +6,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.BambooTrayRec
 import net.minecraft.advancements.Criterion;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -88,20 +88,20 @@ public class BambooTrayRecipeBuilder implements RecipeBuilder {
     @Override
     public void save(RecipeOutput output) {
         String path = RecipeBuilder.getDefaultRecipeId(this.getResult()).getPath();
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID,
+        Identifier id = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID,
                 NAME + "/" + this.subtype.getSerializedName() + "/" + path);
         this.save(output, id);
     }
 
     @Override
     public void save(RecipeOutput output, String recipeId) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID,
+        Identifier id = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID,
                 NAME + "/" + this.subtype.getSerializedName() + "/" + recipeId);
         this.save(output, id);
     }
 
     @Override
-    public void save(RecipeOutput output, ResourceLocation id) {
+    public void save(RecipeOutput output, Identifier id) {
         output.accept(id, new BambooTrayRecipe(this.ingredient, this.result, this.subtype, this.duration), null);
     }
 }

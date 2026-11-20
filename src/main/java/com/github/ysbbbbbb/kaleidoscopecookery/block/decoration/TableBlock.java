@@ -160,7 +160,7 @@ public class TableBlock extends Block implements SimpleWaterloggedBlock, EntityB
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!level.isClientSide && player.isCreative() && level.getBlockEntity(pos) instanceof TableBlockEntity tableBlockEntity) {
+        if (!level.isClientSide() && player.isCreative() && level.getBlockEntity(pos) instanceof TableBlockEntity tableBlockEntity) {
             ItemStackHandler items = tableBlockEntity.getItems();
             for (int i = 0; i < items.getSlots(); i++) {
                 ItemStack stack = items.getStackInSlot(i);

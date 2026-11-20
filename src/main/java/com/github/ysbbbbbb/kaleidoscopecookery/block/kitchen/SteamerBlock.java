@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -51,7 +51,7 @@ import java.util.List;
 
 public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWaterloggedBlock {
     public static final MapCodec<SteamerBlock> CODEC = simpleCodec(p -> new SteamerBlock());
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty HALF = BooleanProperty.create("half");
     public static final BooleanProperty HAS_LID = BooleanProperty.create("has_lid");
     public static final BooleanProperty HAS_BASE = BooleanProperty.create("has_base");
@@ -101,7 +101,7 @@ public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWat
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         BlockState below = level.getBlockState(pos.below());
-        if (isFree(below) && pos.getY() >= level.getMinBuildHeight()) {
+        if (isFree(below) && pos.getY() >= level.getMinY()) {
             CompoundTag blockEntityTag = null;
             if (level.getBlockEntity(pos) instanceof SteamerBlockEntity steamer) {
                 blockEntityTag = steamer.saveWithoutMetadata(level.registryAccess());
@@ -149,7 +149,7 @@ public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWat
         Boolean hasLid = state.getValue(HAS_LID);
         if (itemInHand.isEmpty() && player.isSecondaryUseActive() && (hasLid || !level.getBlockState(pos.above()).is(this))) {
             level.setBlock(pos, state.setValue(HAS_LID, !hasLid), Block.UPDATE_ALL);
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return ItemInteractionResult.sidedSuccess(level.isClientSide());
         }
 
         // 手持蒸笼，右击可以摞上去
@@ -174,14 +174,14 @@ public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWat
                 if (result == InteractionResult.FAIL) {
                     return ItemInteractionResult.FAIL;
                 }
-                return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                return ItemInteractionResult.sidedSuccess(level.isClientSide());
             } else if (blockState.is(this) && blockState.getValue(HALF) && !blockState.getValue(HAS_LID)) {
                 // 当最终位置为未加盖的单层蒸笼方块，放置蒸笼
                 InteractionResult result = steamerItem.place(placeContext);
                 if (result == InteractionResult.FAIL) {
                     return ItemInteractionResult.FAIL;
                 }
-                return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                return ItemInteractionResult.sidedSuccess(level.isClientSide());
             } else {
                 return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
@@ -191,11 +191,11 @@ public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWat
         if (level.getBlockEntity(pos) instanceof ISteamer steamer) {
             // 先尝试放入物品
             if (steamer.placeFood(level, player, itemInHand)) {
-                return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                return ItemInteractionResult.sidedSuccess(level.isClientSide());
             }
             // 再尝试取出物品
             if (steamer.takeFood(level, player)) {
-                return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                return ItemInteractionResult.sidedSuccess(level.isClientSide());
             }
         }
 

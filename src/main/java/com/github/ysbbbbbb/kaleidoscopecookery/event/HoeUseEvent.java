@@ -8,7 +8,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
@@ -53,10 +52,10 @@ public class HoeUseEvent {
         }
 
         // 替换为耕地
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             level.setBlockAndUpdate(pos, Blocks.FARMLAND.defaultBlockState());
             level.playSound(null, pos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(event.getHand()));
+            stack.hurtAndBreak(1, player, event.getHand().asEquipmentSlot());
             ModTrigger.EVENT.get().trigger(player, ModEventTriggerType.USE_HOE_ON_WATER_FIELD);
         }
         event.setCanceled(true);

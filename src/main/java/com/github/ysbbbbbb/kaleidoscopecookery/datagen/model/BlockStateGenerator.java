@@ -18,7 +18,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.TeacupRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -128,7 +128,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         });
 
         FoodBiteRegistry.FOOD_DATA_MAP.forEach((key, value) -> {
-            Block block = BuiltInRegistries.BLOCK.get(key);
+            Block block = BuiltInRegistries.BLOCK.getValue(key);
             if (value.blockType() == FoodBiteRegistry.BlockType.ONE_BY_TWO) {
                 addOneByTwoFoodBiteBlock(block, key);
             } else {
@@ -137,13 +137,13 @@ public class BlockStateGenerator extends BlockStateProvider {
         });
 
         PlateRegistry.PLATE_DATA_MAP.forEach((key, value) -> {
-            Block block = BuiltInRegistries.BLOCK.get(key);
+            Block block = BuiltInRegistries.BLOCK.getValue(key);
             addPlateBlock(block, key);
         });
 
         horizontalBlock(ModBlocks.EMPTY_CUP.get(), blockState -> {
             int count = blockState.getValue(EmptyCupBlock.CUP_COUNT);
-            ResourceLocation model = modLoc("block/teacup/empty_cup/count%d".formatted(count));
+            Identifier model = modLoc("block/teacup/empty_cup/count%d".formatted(count));
             return new ModelFile.UncheckedModelFile(model);
         });
 
@@ -151,7 +151,7 @@ public class BlockStateGenerator extends BlockStateProvider {
                 new ModelFile.UncheckedModelFile(modLoc("block/clay_pot_milk_tea")));
 
         TeacupRegistry.TEACUP_DATA_MAP.forEach((key, value) -> {
-            Block block = BuiltInRegistries.BLOCK.get(key);
+            Block block = BuiltInRegistries.BLOCK.getValue(key);
             addTeacupBlock(block, key);
         });
 
@@ -281,7 +281,7 @@ public class BlockStateGenerator extends BlockStateProvider {
     public void crop(DeferredBlock<Block> block, String name) {
         getVariantBuilder(block.get()).forAllStates(state -> {
             int age = state.getValue(CropBlock.AGE);
-            ResourceLocation file = modLoc("block/crop/%s/stage%d".formatted(name, age));
+            Identifier file = modLoc("block/crop/%s/stage%d".formatted(name, age));
             return ConfiguredModel.builder()
                     .modelFile(new ModelFile.UncheckedModelFile(file))
                     .build();
@@ -291,7 +291,7 @@ public class BlockStateGenerator extends BlockStateProvider {
     public void teaTree() {
         getVariantBuilder(ModBlocks.TEA_TREE.get()).forAllStates(state -> {
             int age = state.getValue(TeaTreeBlock.AGE);
-            ResourceLocation file = modLoc("block/crop/tea_tree/stage%d".formatted(age));
+            Identifier file = modLoc("block/crop/tea_tree/stage%d".formatted(age));
             return ConfiguredModel.builder()
                     .modelFile(new ModelFile.UncheckedModelFile(file))
                     .build();
@@ -302,7 +302,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         getVariantBuilder(ModBlocks.RICE_CROP.get()).forAllStates(state -> {
             int age = state.getValue(CropBlock.AGE);
             int location = state.getValue(RiceCropBlock.LOCATION);
-            ResourceLocation file;
+            Identifier file;
             if (location == RiceCropBlock.DOWN) {
                 file = modLoc("block/crop/rice/stage%d_down".formatted(age));
             } else if (location == RiceCropBlock.MIDDLE) {
@@ -391,7 +391,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         });
     }
 
-    public void addTeacupBlock(Block block, ResourceLocation id) {
+    public void addTeacupBlock(Block block, Identifier id) {
         horizontalBlock(block, blockState -> {
             if (!(blockState.getBlock() instanceof TeacupBlock teacupBlock)) {
                 throw new IllegalArgumentException("Block must be an instance of TeacupBlock");
@@ -405,18 +405,18 @@ public class BlockStateGenerator extends BlockStateProvider {
 
             String modelName = "count%d_%d".formatted(cupCount, teaCount);
             String modelPath = "block/teacup/%s/%s".formatted(id.getPath(), modelName);
-            ResourceLocation modelLoc = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), modelPath);
+            Identifier modelLoc = Identifier.fromNamespaceAndPath(id.getNamespace(), modelPath);
             return new ModelFile.UncheckedModelFile(modelLoc);
         });
     }
 
-    public void addFoodBiteBlock(Block block, ResourceLocation id) {
+    public void addFoodBiteBlock(Block block, Identifier id) {
         horizontalBlock(block, blockState -> {
             if (!(blockState.getBlock() instanceof FoodBiteBlock foodBiteBlock)) {
                 throw new IllegalArgumentException("Block must be an instance of FoodBiteBlock");
             }
             int bites = blockState.getValue(foodBiteBlock.getBites());
-            ResourceLocation model = ResourceLocation.fromNamespaceAndPath(
+            Identifier model = Identifier.fromNamespaceAndPath(
                     id.getNamespace(),
                     "block/food/%s/%s_%d".formatted(id.getPath(), id.getPath(), bites)
             );
@@ -424,21 +424,21 @@ public class BlockStateGenerator extends BlockStateProvider {
         });
     }
 
-    public void addOneByTwoFoodBiteBlock(Block block, ResourceLocation id) {
+    public void addOneByTwoFoodBiteBlock(Block block, Identifier id) {
         horizontalBlock(block, blockState -> {
             if (!(blockState.getBlock() instanceof FoodBiteOneByTwoBlock foodBiteBlock)) {
                 throw new IllegalArgumentException("Block must be an instance of OneByTwoFoodBiteBlock");
             }
             int bites = blockState.getValue(foodBiteBlock.getBites());
             int position = blockState.getValue(FoodBiteOneByTwoBlock.POSITION);
-            ResourceLocation model;
+            Identifier model;
             if (position == FoodBiteOneByTwoBlock.LEFT) {
-                model = ResourceLocation.fromNamespaceAndPath(
+                model = Identifier.fromNamespaceAndPath(
                         id.getNamespace(),
                         "block/food/%s/%s_left_%d".formatted(id.getPath(), id.getPath(), bites)
                 );
             } else {
-                model = ResourceLocation.fromNamespaceAndPath(
+                model = Identifier.fromNamespaceAndPath(
                         id.getNamespace(),
                         "block/food/%s/%s_right_%d".formatted(id.getPath(), id.getPath(), bites)
                 );
@@ -447,26 +447,26 @@ public class BlockStateGenerator extends BlockStateProvider {
         });
     }
 
-    public void addStackableFoodBlock(Block block, ResourceLocation id) {
+    public void addStackableFoodBlock(Block block, Identifier id) {
         horizontalBlock(block, blockState -> {
             if (!(blockState.getBlock() instanceof StackableFoodBlock stackableFoodBlock)) {
                 throw new IllegalArgumentException("Block must be an instance of StackableFoodBlock");
             }
             int count = blockState.getValue(stackableFoodBlock.getCountProperty());
-            ResourceLocation model = ResourceLocation.fromNamespaceAndPath(
+            Identifier model = Identifier.fromNamespaceAndPath(
                     id.getNamespace(), "block/food/%s/%s_%d".formatted(id.getPath(), id.getPath(), count)
             );
             return new ModelFile.UncheckedModelFile(model);
         });
     }
 
-    public void addPlateBlock(Block block, ResourceLocation id) {
+    public void addPlateBlock(Block block, Identifier id) {
         horizontalBlock(block, blockState -> {
             if (!(blockState.getBlock() instanceof PlateBlock plateBlock)) {
                 throw new IllegalArgumentException("Block must be an instance of PlateBlock");
             }
             int count = blockState.getValue(plateBlock.getServingsProperty());
-            ResourceLocation model = ResourceLocation.fromNamespaceAndPath(
+            Identifier model = Identifier.fromNamespaceAndPath(
                     id.getNamespace(), "block/plate/%s/%s_%d".formatted(id.getPath(), id.getPath(), count)
             );
             return new ModelFile.UncheckedModelFile(model);

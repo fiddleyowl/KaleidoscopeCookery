@@ -125,7 +125,7 @@ public class TransmutationLunchBagItem extends Item {
             TransmutationLunchBagItem.setItems(bag, bagItems);
             fruitBasket.refresh();
             playRemoveOneSound(player);
-            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+            return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
         }
 
         // 果篮不为空，尝试取出物品
@@ -139,7 +139,7 @@ public class TransmutationLunchBagItem extends Item {
         TransmutationLunchBagItem.setItems(bag, bagItems);
         fruitBasket.refresh();
         playDropContentsSound(player);
-        return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
     }
 
 

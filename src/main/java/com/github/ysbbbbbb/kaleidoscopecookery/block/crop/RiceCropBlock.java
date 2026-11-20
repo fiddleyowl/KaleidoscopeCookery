@@ -51,7 +51,7 @@ public class RiceCropBlock extends BaseCropBlock implements SimpleWaterloggedBlo
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty LOCATION = IntegerProperty.create("location", DOWN, UP);
 
-    private static final Predicate<LivingEntity> RICE_GROWTH_BOOSTER = e -> e.isAlive() && e.getType().is(TagMod.RICE_GROWTH_BOOSTER);
+    private static final Predicate<LivingEntity> RICE_GROWTH_BOOSTER = e -> e.isAlive() && e.getType().builtInRegistryHolder().is(TagMod.RICE_GROWTH_BOOSTER);
 
     private static final VoxelShape BASE_SHAPE = Block.box(2, 0, 2, 14, 16, 14);
     private static final VoxelShape EMPTY_SHAPE = Shapes.empty();
@@ -115,7 +115,7 @@ public class RiceCropBlock extends BaseCropBlock implements SimpleWaterloggedBlo
         boolean isWaterlogged = level.getFluidState(blockPos).is(FluidTags.WATER);
         boolean aboveMatches = level.getBlockState(blockPos.above(MIDDLE)).isAir();
         boolean above2Matches = level.getBlockState(blockPos.above(UP)).isAir();
-        if (blockPos.getY() < level.getMaxBuildHeight() - 2 && isWaterlogged && aboveMatches && above2Matches) {
+        if (blockPos.getY() <= level.getMaxY() - 2 && isWaterlogged && aboveMatches && above2Matches) {
             return this.defaultBlockState().setValue(WATERLOGGED, true);
         }
         return null;
@@ -188,7 +188,7 @@ public class RiceCropBlock extends BaseCropBlock implements SimpleWaterloggedBlo
         if (state.getValue(LOCATION) != DOWN) {
             return;
         }
-        if (serverLevel.isNight()) {
+        if (serverLevel.isDarkOutside()) {
             serverLevel.playSound(null,
                     pos.above(),
                     ModSounds.BLOCK_PADDY.get(),
@@ -234,7 +234,7 @@ public class RiceCropBlock extends BaseCropBlock implements SimpleWaterloggedBlo
 
     @Override
     protected int getBonemealAgeIncrease(Level level) {
-        return Mth.nextInt(level.random, 1, 2);
+        return Mth.nextInt(level.getRandom(), 1, 2);
     }
 
     @Override

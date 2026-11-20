@@ -7,7 +7,7 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public class TeapotBuilder implements RecipeBuilder {
     private static final String NAME = "teapot";
 
-    private ResourceLocation teaFluid = TeapotRecipeSerializer.EMPTY_TEA_FLUID;
+    private Identifier teaFluid = TeapotRecipeSerializer.EMPTY_TEA_FLUID;
     private Ingredient ingredient = Ingredient.EMPTY;
     private int ingredientCount = TeapotRecipeSerializer.DEFAULT_INGREDIENT_COUNT;
     private int time = TeapotRecipeSerializer.DEFAULT_TIME;
@@ -30,7 +30,7 @@ public class TeapotBuilder implements RecipeBuilder {
         return new TeapotBuilder();
     }
 
-    public TeapotBuilder setTeaFluid(ResourceLocation baseTeaFluid) {
+    public TeapotBuilder setTeaFluid(Identifier baseTeaFluid) {
         this.teaFluid = baseTeaFluid;
         return this;
     }
@@ -96,18 +96,18 @@ public class TeapotBuilder implements RecipeBuilder {
     @Override
     public void save(RecipeOutput output) {
         String path = RecipeBuilder.getDefaultRecipeId(this.getResult()).getPath();
-        ResourceLocation filePath = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + path);
+        Identifier filePath = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + path);
         this.save(output, filePath);
     }
 
     @Override
     public void save(RecipeOutput output, String recipeId) {
-        ResourceLocation filePath = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + recipeId);
+        Identifier filePath = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + recipeId);
         this.save(output, filePath);
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, ResourceLocation id) {
+    public void save(RecipeOutput recipeOutput, Identifier id) {
         recipeOutput.accept(id, new TeapotRecipe(this.teaFluid, this.ingredient, this.ingredientCount, this.time, this.result), null);
     }
 }

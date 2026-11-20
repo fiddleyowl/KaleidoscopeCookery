@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import static net.neoforged.neoforge.client.gui.VanillaGuiLayers.CROSSHAIR;
 
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT, modid = KaleidoscopeCookery.MOD_ID)
+@EventBusSubscriber(value = Dist.CLIENT, modid = KaleidoscopeCookery.MOD_ID)
 public class ClientSetupEvent {
     @SubscribeEvent
     @SuppressWarnings("all")

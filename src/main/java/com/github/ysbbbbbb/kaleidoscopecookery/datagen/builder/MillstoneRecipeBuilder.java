@@ -6,7 +6,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.MillstoneRecipe;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -69,18 +69,18 @@ public class MillstoneRecipeBuilder implements RecipeBuilder {
     @Override
     public void save(RecipeOutput output) {
         String path = RecipeBuilder.getDefaultRecipeId(this.getResult()).getPath();
-        ResourceLocation filePath = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + path);
+        Identifier filePath = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + path);
         this.save(output, filePath);
     }
 
     @Override
     public void save(RecipeOutput output, String recipeId) {
-        ResourceLocation filePath = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + recipeId);
+        Identifier filePath = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + recipeId);
         this.save(output, filePath);
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, ResourceLocation id) {
+    public void save(RecipeOutput recipeOutput, Identifier id) {
         RandomOutput output = new RandomOutput(this.result, 1.0F);
         MillstoneRecipe recipe = new MillstoneRecipe(this.ingredient, List.of(output));
         recipeOutput.accept(id, recipe, null);

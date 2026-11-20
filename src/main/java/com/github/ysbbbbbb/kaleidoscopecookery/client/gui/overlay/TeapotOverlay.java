@@ -78,7 +78,7 @@ public class TeapotOverlay implements LayeredDraw.Layer {
         if (id.equals(TeapotRecipeSerializer.EMPTY_TEA_FLUID)) {
             return Component.translatable("mco.configure.world.slot.empty");
         }
-        Fluid fluid = BuiltInRegistries.FLUID.get(id);
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(id);
         return Component.translatable(fluid.getFluidType().getDescriptionId());
     }
 

@@ -174,7 +174,7 @@ public class TeapotItem extends BlockItem {
         }
 
 
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
         target.hurt(level.damageSources().inFire(), 3);
 
         double x = target.getX();
@@ -284,7 +284,7 @@ public class TeapotItem extends BlockItem {
             if (fluidId.equals(EMPTY_TEA_FLUID.toString())) {
                 return 0x9df7ff;
             }
-            Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(fluidId));
+            Fluid fluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(fluidId));
             // 熔岩特殊
             if (fluid.equals(Fluids.LAVA)) {
                 return 0xfba800;
@@ -341,7 +341,7 @@ public class TeapotItem extends BlockItem {
                 return;
             }
             Identifier key = Identifier.parse(fluidId);
-            Fluid fluid = BuiltInRegistries.FLUID.get(key);
+            Fluid fluid = BuiltInRegistries.FLUID.getValue(key);
             list.add(Component.translatable(fluid.getFluidType().getDescriptionId()).withStyle(ChatFormatting.GRAY));
         }
 

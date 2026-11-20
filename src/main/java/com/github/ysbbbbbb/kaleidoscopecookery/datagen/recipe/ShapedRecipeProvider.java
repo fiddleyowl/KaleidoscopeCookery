@@ -249,7 +249,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.SHAWARMA_SPIT.get())
                 .pattern("ICI")
                 .pattern("ICI")
-                .define('I', Items.CHAIN)
+                .define('I', Items.IRON_CHAIN)
                 .define('C', Items.CAMPFIRE)
                 .unlockedBy("has_campfire", has(Items.CAMPFIRE))
                 .save(consumer);

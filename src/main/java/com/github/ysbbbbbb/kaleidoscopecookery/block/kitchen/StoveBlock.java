@@ -43,7 +43,6 @@ import java.util.List;
 
 import static com.github.ysbbbbbb.kaleidoscopecookery.item.KitchenShovelItem.hasOil;
 import static com.github.ysbbbbbb.kaleidoscopecookery.item.KitchenShovelItem.setHasOil;
-import static net.minecraft.world.entity.LivingEntity.getSlotForHand;
 
 public class StoveBlock extends HorizontalDirectionalBlock {
     public static final MapCodec<StoveBlock> CODEC = simpleCodec(p -> new StoveBlock());
@@ -136,7 +135,7 @@ public class StoveBlock extends HorizontalDirectionalBlock {
                         SoundEvents.FLINTANDSTEEL_USE,
                         SoundSource.BLOCKS, 1.0F,
                         level.getRandom().nextFloat() * 0.4F + 0.8F);
-                itemInHand.hurtAndBreak(1, player, getSlotForHand(hand));
+                itemInHand.hurtAndBreak(1, player, hand.asEquipmentSlot());
             }
             ModTrigger.EVENT.get().trigger(player, ModEventTriggerType.LIT_THE_STOVE);
             return ItemInteractionResult.SUCCESS;
@@ -150,8 +149,8 @@ public class StoveBlock extends HorizontalDirectionalBlock {
             level.playSound(player, pos,
                     SoundEvents.FIRE_EXTINGUISH,
                     SoundSource.BLOCKS, 0.5F,
-                    2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
-            itemInHand.hurtAndBreak(1, player, getSlotForHand(hand));
+                    2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);
+            itemInHand.hurtAndBreak(1, player, hand.asEquipmentSlot());
             return ItemInteractionResult.SUCCESS;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
@@ -160,7 +159,7 @@ public class StoveBlock extends HorizontalDirectionalBlock {
     @Override
     public void onProjectileHit(Level level, BlockState state, BlockHitResult hitResult, Projectile projectile) {
         BlockPos hitBlockPos = hitResult.getBlockPos();
-        if (!level.isClientSide && projectile.isOnFire() && projectile.mayInteract(level, hitBlockPos) && !state.getValue(LIT)) {
+        if (!level.isClientSide() && projectile.isOnFire() && projectile.mayInteract(level, hitBlockPos) && !state.getValue(LIT)) {
             level.setBlock(hitBlockPos, state.setValue(BlockStateProperties.LIT, true), Block.UPDATE_ALL_IMMEDIATE);
             if (projectile.getOwner() instanceof Player player) {
                 ModTrigger.EVENT.get().trigger(player, ModEventTriggerType.LIT_THE_STOVE);
@@ -187,6 +186,6 @@ public class StoveBlock extends HorizontalDirectionalBlock {
     @Override
     @Nullable
     public PathType getBlockPathType(BlockState state, BlockGetter level, BlockPos pos, @Nullable Mob mob) {
-        return PathType.DANGER_FIRE;
+        return PathType.FIRE_IN_NEIGHBOR;
     }
 }

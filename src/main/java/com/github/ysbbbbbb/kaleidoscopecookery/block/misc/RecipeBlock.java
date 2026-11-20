@@ -72,7 +72,7 @@ public class RecipeBlock extends FaceAttachedHorizontalDirectionalBlock implemen
         if (!mainHandItem.isEmpty()) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return ItemInteractionResult.SUCCESS;
         }
         BlockEntity blockEntity = level.getBlockEntity(pos);
@@ -129,7 +129,7 @@ public class RecipeBlock extends FaceAttachedHorizontalDirectionalBlock implemen
 
     @Override
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity livingEntity, ItemStack stack) {
-        if (!pLevel.isClientSide) {
+        if (!pLevel.isClientSide()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
             if (blockEntity instanceof RecipeBlockEntity recipeBlockEntity) {
                 recipeBlockEntity.getItems().setStackInSlot(0, stack.copyWithCount(1));

@@ -93,7 +93,7 @@ public class ChairBlock extends HorizontalDirectionalBlock implements SimpleWate
 
     @NotNull
     private ItemInteractionResult tryToSitOn(BlockState state, Level level, BlockPos pos, Player player) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             List<SitEntity> entities = level.getEntitiesOfClass(SitEntity.class, new AABB(pos));
             if (entities.isEmpty()) {
                 SitEntity entitySit = new SitEntity(level, pos, 0.5125);

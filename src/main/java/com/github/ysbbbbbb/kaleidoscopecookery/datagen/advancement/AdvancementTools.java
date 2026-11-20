@@ -5,19 +5,19 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModTrigger;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.DistancePredicate;
-import net.minecraft.advancements.critereon.DistanceTrigger;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.LocationPredicate;
+import net.minecraft.advancements.criterion.DistancePredicate;
+import net.minecraft.advancements.criterion.DistanceTrigger;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.LocationPredicate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.Optional;
 
 public class AdvancementTools {
-    public static final ResourceLocation BG = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/advancement/background.png");
+    public static final Identifier BG = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/advancement/background.png");
 
     public static Advancement.Builder makeTask(ItemLike item, String key) {
         MutableComponent title = Component.translatable("advancements.kaleidoscope_cookery.%s.title".formatted(key));
@@ -46,7 +46,7 @@ public class AdvancementTools {
                 Optional.of(startPosition), Optional.of(distance)));
     }
 
-    public static ResourceLocation modLoc(String id) {
-        return ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, id);
+    public static Identifier modLoc(String id) {
+        return Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, id);
     }
 }

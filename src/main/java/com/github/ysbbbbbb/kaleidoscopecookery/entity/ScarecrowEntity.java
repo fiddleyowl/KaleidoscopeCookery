@@ -50,7 +50,7 @@ public class ScarecrowEntity extends LivingEntity {
             .build("scarecrow");
 
     private static final EntityDataAccessor<CompoundTag> DATA_SHOULDER = SynchedEntityData.defineId(ScarecrowEntity.class, EntityDataSerializers.COMPOUND_TAG);
-    private static final Predicate<Entity> RIDABLE_MINECARTS = e -> e instanceof AbstractMinecart minecart && minecart.canBeRidden();
+    private static final Predicate<Entity> RIDABLE_MINECARTS = e -> e instanceof AbstractMinecart minecart && minecart.isRideable();
     private static final Predicate<Entity> SHOULDER_RIDING_ENTITY = e -> e instanceof ShoulderRidingEntity entity && !entity.isOrderedToSit() && entity.canSitOnShoulder();
     private static final String HAND_ITEMS_TAG = "HandItems";
     private static final String ARMOR_ITEMS_TAG = "ArmorItems";
@@ -99,7 +99,7 @@ public class ScarecrowEntity extends LivingEntity {
         if (player.isSpectator()) {
             return InteractionResult.SUCCESS;
         }
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             return InteractionResult.CONSUME;
         }
         if (hand == InteractionHand.OFF_HAND) {
@@ -264,7 +264,7 @@ public class ScarecrowEntity extends LivingEntity {
     @Override
     public void handleEntityEvent(byte id) {
         if (id == 32) {
-            if (this.level().isClientSide) {
+            if (this.level().isClientSide()) {
                 this.lastHit = this.level().getGameTime();
             }
         } else {

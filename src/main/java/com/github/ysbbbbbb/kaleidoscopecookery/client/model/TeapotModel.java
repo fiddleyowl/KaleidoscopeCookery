@@ -9,7 +9,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
@@ -23,7 +23,7 @@ public class TeapotModel extends HierarchicalModel<Entity> {
     private final ModelPart base;
 
     public TeapotModel(ModelPart root) {
-        super(RenderType::entityCutoutNoCull);
+        super(RenderTypes::entityCutout);
         this.root = root.getChild("root");
         this.top = this.root.getChild("top");
         this.body = this.root.getChild("body");

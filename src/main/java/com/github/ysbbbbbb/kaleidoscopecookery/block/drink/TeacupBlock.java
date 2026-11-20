@@ -199,7 +199,7 @@ public class TeacupBlock extends HorizontalDirectionalBlock {
             return;
         }
 
-        RandomSource random = level.random;
+        RandomSource random = level.getRandom();
         serverLevel.sendParticles(ModParticles.COOKING.get(),
                 pos.getX() + 0.5,
                 pos.getY() + 0.35,

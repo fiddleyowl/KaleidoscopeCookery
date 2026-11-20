@@ -100,7 +100,7 @@ public class LongBenchBlock extends Block {
         if (player.isSecondaryUseActive()) {
             return InteractionResult.PASS;
         }
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             List<SitEntity> entities = level.getEntitiesOfClass(SitEntity.class, new AABB(pos));
             if (entities.isEmpty()) {
                 SitEntity sitEntity = new SitEntity(level, pos, 0.5);

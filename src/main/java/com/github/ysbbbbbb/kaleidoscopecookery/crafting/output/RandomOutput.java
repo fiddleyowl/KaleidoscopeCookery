@@ -12,16 +12,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import static net.minecraft.world.item.ItemStack.ITEM_NON_AIR_CODEC;
-
 public record RandomOutput(ItemStack stack, float chance) {
     public static final RandomOutput EMPTY = new RandomOutput(ItemStack.EMPTY, 1.0F);
 
     public static final Codec<RandomOutput> CODEC = Codec.lazyInitialized(
             () -> RecordCodecBuilder.create(instance -> instance.group(
-                    ITEM_NON_AIR_CODEC
+                    Item.CODEC
                             .fieldOf("id")
-                            .forGetter(r -> r.stack.getItemHolder()),
+                            .forGetter(r -> r.stack.typeHolder()),
 
                     ExtraCodecs.intRange(1, 99)
                             .optionalFieldOf("count", 1)

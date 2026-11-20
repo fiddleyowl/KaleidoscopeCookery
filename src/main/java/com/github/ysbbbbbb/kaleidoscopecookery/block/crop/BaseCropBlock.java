@@ -45,7 +45,7 @@ public class BaseCropBlock extends CropBlock {
     public BaseCropBlock(DeferredItem<Item> result, DeferredItem<Item> seed) {
         super(Properties.of()
                 .mapColor(MapColor.PLANT)
-                .noCollission()
+                .noCollision()
                 .randomTicks()
                 .instabreak()
                 .sound(SoundType.CROP)

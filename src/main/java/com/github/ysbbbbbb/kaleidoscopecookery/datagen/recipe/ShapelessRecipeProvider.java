@@ -10,7 +10,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -216,7 +216,7 @@ public class ShapelessRecipeProvider extends ModRecipeProvider {
         consumer.accept(modLoc(id), recipe, null);
     }
 
-    private void addPlateRecipe(RecipeOutput consumer, ItemLike ingredient, ResourceLocation result) {
+    private void addPlateRecipe(RecipeOutput consumer, ItemLike ingredient, Identifier result) {
         Item resultItem = PlateRegistry.getItem(result);
         int count = PlateRegistry.getCount(result);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.FOOD, resultItem, 1)

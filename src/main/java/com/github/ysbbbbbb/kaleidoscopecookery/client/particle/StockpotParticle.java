@@ -43,12 +43,12 @@ public class StockpotParticle extends TextureSheetParticle {
                                        double xSpeed, double ySpeed, double zSpeed) {
             StockpotParticle particle = new StockpotParticle(level, posX, posY, posZ, xSpeed, ySpeed, zSpeed, this.spriteSet);
             Vector3f color = options.getColor();
-            float scale = options.getScale() - 0.1f + level.random.nextFloat() * 0.2f;
+            float scale = options.getScale() - 0.1f + level.getRandom().nextFloat() * 0.2f;
             particle.setAlpha(1);
             particle.setColor(color.x, color.y, color.z);
             particle.setSize(scale, scale);
             particle.setParticleSpeed(xSpeed, ySpeed, zSpeed);
-            particle.setLifetime(level.random.nextInt(4) + 6);
+            particle.setLifetime(level.getRandom().nextInt(4) + 6);
             return particle;
         }
     }

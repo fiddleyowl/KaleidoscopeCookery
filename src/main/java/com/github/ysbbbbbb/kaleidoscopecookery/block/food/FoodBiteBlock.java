@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -37,7 +37,7 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class FoodBiteBlock extends FoodBlock {
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     /**
      * 数量比 Quality 的数量多 1，超出范围的表示默认（即旧版数据）
      */
@@ -100,7 +100,7 @@ public class FoodBiteBlock extends FoodBlock {
             level.destroyBlock(pos, true, player);
             return InteractionResult.SUCCESS;
         }
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             if (eat(level, pos, state, player).consumesAction()) {
                 return InteractionResult.SUCCESS;
             }
@@ -126,7 +126,7 @@ public class FoodBiteBlock extends FoodBlock {
 
         for (FoodProperties.PossibleEffect possibleEffect : foodProperties.effects()) {
             MobEffectInstance instance = possibleEffect.effect();
-            if (!level.isClientSide && level.random.nextFloat() < possibleEffect.probability()) {
+            if (!level.isClientSide() && level.getRandom().nextFloat() < possibleEffect.probability()) {
                 MobEffectInstance newInstance = new MobEffectInstance(
                         instance.getEffect(),
                         (int) Math.round(instance.getDuration() * radio),

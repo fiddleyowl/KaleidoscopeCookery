@@ -13,7 +13,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.List;
 
 public interface ChoppingBoardRecipeSchema {
-    RecipeKey<List<ItemStack>> OUTPUT = ItemStackComponent.ITEM_STACK.instance().asListOrSelf().outputKey("result");
+    RecipeKey<List<ItemStack>> OUTPUT = ItemStackComponent.ITEM_STACK.asListOrSelf().outputKey("result");
     RecipeKey<Ingredient> INGREDIENT = IngredientComponent.INGREDIENT.inputKey("ingredient");
     RecipeKey<String> MODEL_ID = StringComponent.ID.otherKey("model_id");
     RecipeKey<Integer> CUT_COUNT = NumberComponent.INT.otherKey("cut_count").optional(4);

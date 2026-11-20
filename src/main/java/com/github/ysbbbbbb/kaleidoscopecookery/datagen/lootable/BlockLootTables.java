@@ -12,14 +12,14 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.FoodBiteRegistry;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.PlateRegistry;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import com.github.ysbbbbbb.kaleidoscopecookery.loot.AdvanceBlockMatchTool;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
@@ -254,9 +254,9 @@ public class BlockLootTables extends BlockLootSubProvider {
                 .apply(ApplyBonusCount.addUniformBonusCount(enchantment.getOrThrow(Enchantments.FORTUNE), 2));
     }
 
-    private void dropFoodBite(ResourceLocation id, FoodBiteRegistry.FoodData data) {
-        Block block = BuiltInRegistries.BLOCK.get(id);
-        Item food = BuiltInRegistries.ITEM.get(id);
+    private void dropFoodBite(Identifier id, FoodBiteRegistry.FoodData data) {
+        Block block = BuiltInRegistries.BLOCK.getValue(id);
+        Item food = BuiltInRegistries.ITEM.getValue(id);
         ItemLike[] lootItems = data.getLootItems().toArray(new ItemLike[0]);
         dropFoodBite(block, food, lootItems);
     }
@@ -284,8 +284,8 @@ public class BlockLootTables extends BlockLootSubProvider {
         this.add(block, lootTable);
     }
 
-    private void dropPlate(ResourceLocation id, PlateRegistry.PlateData data) {
-        Block block = BuiltInRegistries.BLOCK.get(id);
+    private void dropPlate(Identifier id, PlateRegistry.PlateData data) {
+        Block block = BuiltInRegistries.BLOCK.getValue(id);
         ItemLike[] lootItems = data.getLootItems().toArray(new ItemLike[0]);
         dropOthers(block, lootItems);
     }
@@ -313,7 +313,7 @@ public class BlockLootTables extends BlockLootSubProvider {
         return this.knownBlocks;
     }
 
-    public ResourceLocation modLoc(String name) {
-        return ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, name);
+    public Identifier modLoc(String name) {
+        return Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, name);
     }
 }

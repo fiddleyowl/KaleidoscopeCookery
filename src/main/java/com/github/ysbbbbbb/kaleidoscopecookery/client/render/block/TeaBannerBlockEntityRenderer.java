@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
@@ -64,7 +64,7 @@ public class TeaBannerBlockEntityRenderer implements BlockEntityRenderer<TeaBann
         }
 
         Identifier baseTexture = Identifier.fromNamespaceAndPath(MOD_ID, "textures/entity/banner/" + teaBanner.getColor().getName() + ".png");
-        VertexConsumer baseBuffer = buffer.getBuffer(RenderType.entityCutoutNoCull(baseTexture));
+        VertexConsumer baseBuffer = buffer.getBuffer(RenderTypes.entityCutout(baseTexture));
         if (wallMounted) {
             this.wallBanner.renderToBuffer(poseStack, baseBuffer, packedLight, packedOverlay);
         } else {
@@ -83,7 +83,7 @@ public class TeaBannerBlockEntityRenderer implements BlockEntityRenderer<TeaBann
             poseStack.translate(0, 0, 0);
         }
 
-        VertexConsumer patternBuffer = buffer.getBuffer(RenderType.entityCutoutNoCull(patternTexture));
+        VertexConsumer patternBuffer = buffer.getBuffer(RenderTypes.entityCutout(patternTexture));
         this.patternModel.renderToBuffer(poseStack, patternBuffer, packedLight, packedOverlay);
         poseStack.popPose();
     }

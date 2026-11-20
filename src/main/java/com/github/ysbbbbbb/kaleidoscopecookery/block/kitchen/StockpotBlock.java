@@ -162,7 +162,7 @@ public class StockpotBlock extends HorizontalDirectionalBlock implements EntityB
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return createTickerHelper(blockEntityType, ModBlocks.STOCKPOT_BE.get(),
                     (lvl, blockPos, blockState, pot) -> pot.clientTick());
         }

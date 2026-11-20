@@ -52,7 +52,7 @@ public class ClayPotMilkTeaItem extends BlockItem implements IHasContainer {
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
             serverPlayer.awardStat(Stats.ITEM_USED.get(this));
         }
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             for (MobEffectInstance effect : new ArrayList<>(entity.getActiveEffects())) {
                 if (effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
                     entity.removeEffect(effect.getEffect());

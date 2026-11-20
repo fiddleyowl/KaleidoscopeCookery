@@ -2,7 +2,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.datagen.model;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -16,9 +16,9 @@ public class BlockModelGenerator extends BlockModelProvider {
 
     @Override
     protected void registerModels() {
-        ResourceLocation stoveSide = modLoc("block/stove_side");
-        ResourceLocation stoveTop = modLoc("block/stove_top");
-        ResourceLocation stoveTopLit = modLoc("block/stove_top_lit");
+        Identifier stoveSide = modLoc("block/stove_side");
+        Identifier stoveTop = modLoc("block/stove_top");
+        Identifier stoveTopLit = modLoc("block/stove_top_lit");
 
         cube("stove", stoveTop, stoveTop, modLoc("block/stove_front"), stoveSide, stoveSide, stoveSide).texture("particle", stoveSide);
         cube("stove_lit", stoveTopLit, stoveTopLit, modLoc("block/stove_front_lit"), stoveSide, stoveSide, stoveSide).texture("particle", stoveSide);
@@ -63,7 +63,7 @@ public class BlockModelGenerator extends BlockModelProvider {
         withExistingParent(chair, modLoc("block/chair/chair")).texture("particle", modLoc(chair));
 
         String tableSingle = "block/table/" + name + "_single";
-        ResourceLocation tableTexture = modLoc("block/table/" + name);
+        Identifier tableTexture = modLoc("block/table/" + name);
         withExistingParent(tableSingle, modLoc("block/table/single")).texture("particle", tableTexture);
 
         String tableLeft = "block/table/" + name + "_left";
@@ -88,7 +88,7 @@ public class BlockModelGenerator extends BlockModelProvider {
             String chairCarpet = "block/carpet/chair/" + name;
             withExistingParent(chairCarpet, modLoc("block/carpet/chair/chair_carpet")).texture("particle", modLoc(chairCarpet));
 
-            ResourceLocation tableCarpetTexture = modLoc("block/carpet/table/" + name);
+            Identifier tableCarpetTexture = modLoc("block/carpet/table/" + name);
             String tableCarpetSingle = "block/carpet/table/" + name + "_single";
             withExistingParent(tableCarpetSingle, modLoc("block/carpet/table/single")).texture("particle", tableCarpetTexture);
             String tableCarpetLeft = "block/carpet/table/" + name + "_left";

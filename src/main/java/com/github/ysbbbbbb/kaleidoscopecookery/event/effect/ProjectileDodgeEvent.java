@@ -66,14 +66,14 @@ public class ProjectileDodgeEvent {
      * @param maxAttempts 最大尝试次数
      */
     public static void randomTeleport(Level level, LivingEntity living, double range, int maxAttempts) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 
         double x = living.getX();
         double y = living.getY();
         double z = living.getZ();
-        int minH = level.getMinBuildHeight();
+        int minH = level.getMinY();
         int maxH = ((ServerLevel) level).getLogicalHeight();
 
         for (int i = 0; i < maxAttempts; ++i) {

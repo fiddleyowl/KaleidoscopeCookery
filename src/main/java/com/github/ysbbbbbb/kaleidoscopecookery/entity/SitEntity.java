@@ -77,7 +77,7 @@ public class SitEntity extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     public void tick() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.checkBelowWorld();
             this.checkPassengers();
 

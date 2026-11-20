@@ -6,7 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import java.util.function.BiConsumer;
 
 public class GiftLootTables implements LootTableSubProvider {
-    public static final ResourceLocation CHEF_GIFT = ResourceLocation.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "gameplay/hero_of_the_village/chef_gift");
+    public static final Identifier CHEF_GIFT = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "gameplay/hero_of_the_village/chef_gift");
 
     public GiftLootTables(HolderLookup.Provider registries) {
     }

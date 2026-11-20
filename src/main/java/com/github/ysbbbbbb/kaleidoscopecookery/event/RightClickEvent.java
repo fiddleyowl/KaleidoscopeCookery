@@ -35,7 +35,7 @@ public class RightClickEvent {
         InteractionHand hand = event.getHand();
         ItemStack itemInHand = player.getItemInHand(hand);
         Item item = itemInHand.getItem();
-        Item maidItem = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath("touhou_little_maid", "smart_slab_has_maid"));
+        Item maidItem = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath("touhou_little_maid", "smart_slab_has_maid"));
         if (player.isSecondaryUseActive() && hand == InteractionHand.MAIN_HAND
             && !itemInHand.is(Items.DEBUG_STICK)
             && !itemInHand.is(Items.FIREWORK_ROCKET)

@@ -11,7 +11,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 @EventBusSubscriber(modid = KaleidoscopeCookery.MOD_ID, value = Dist.CLIENT)
@@ -35,7 +35,7 @@ public class FlatulenceEvent {
             }
             keyShift.consumeClick();
             player.addDeltaMovement(new Vec3(0, 0.75, 0));
-            PacketDistributor.sendToServer(new SimpleC2SModMessage(SimpleC2SModMessage.FLATULENCE));
+            ClientPacketDistributor.sendToServer(new SimpleC2SModMessage(SimpleC2SModMessage.FLATULENCE));
         }
     }
 

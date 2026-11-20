@@ -45,19 +45,19 @@ public class AddVillageStructuresEvent {
      * 参考自：<a href="https://gist.github.com/TelepathicGrunt/4fdbc445ebcbcbeb43ac748f4b18f342">GitHub TelepathicGrunt</a>
      */
     public static void addBuildingToPool(RegistryAccess registryAccess, Identifier poolId, String structId, int weight) {
-        var templatePools = registryAccess.registry(Registries.TEMPLATE_POOL);
+        var templatePools = registryAccess.lookup(Registries.TEMPLATE_POOL);
         if (templatePools.isEmpty()) {
             return;
         }
-        var processorLists = registryAccess.registry(Registries.PROCESSOR_LIST);
+        var processorLists = registryAccess.lookup(Registries.PROCESSOR_LIST);
         if (processorLists.isEmpty()) {
             return;
         }
-        StructureTemplatePool pool = templatePools.get().get(poolId);
+        StructureTemplatePool pool = templatePools.get().getValue(poolId);
         if (pool == null) {
             return;
         }
-        Holder<StructureProcessorList> holder = processorLists.get().getHolderOrThrow(CROP_REPLACE_PROCESSOR_LIST_KEY);
+        Holder<StructureProcessorList> holder = processorLists.get().getOrThrow(CROP_REPLACE_PROCESSOR_LIST_KEY);
         Identifier structLocation = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, structId);
         SinglePoolElement piece = SinglePoolElement.legacy(structLocation.toString(), holder).apply(StructureTemplatePool.Projection.RIGID);
         for (int i = 0; i < weight; i++) {

@@ -276,8 +276,8 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
     }
 
     public void makeCookingParticles(Level level, BlockPos pos) {
-        if (level instanceof ServerLevel serverLevel && level.random.nextFloat() < 0.1F) {
-            RandomSource random = serverLevel.random;
+        if (level instanceof ServerLevel serverLevel && level.getRandom().nextFloat() < 0.1F) {
+            RandomSource random = serverLevel.getRandom();
             boolean half = this.getBlockState().getValue(SteamerBlock.HALF);
             double yOffset = half ? 0.5 : 1;
             serverLevel.sendParticles(ModParticles.COOKING.get(),
@@ -289,8 +289,8 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
     }
 
     public void makeRipeParticles(Level level, BlockPos pos) {
-        if (level instanceof ServerLevel serverLevel && level.random.nextFloat() < 0.5F) {
-            RandomSource random = serverLevel.random;
+        if (level instanceof ServerLevel serverLevel && level.getRandom().nextFloat() < 0.5F) {
+            RandomSource random = serverLevel.getRandom();
             boolean half = this.getBlockState().getValue(SteamerBlock.HALF);
             double yOffset = half ? 0.25 : 0.75;
             serverLevel.sendParticles(ModParticles.COOKING.get(),
@@ -361,7 +361,7 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
         boolean isAllEmpty = true;
 
         boolean half = blockState.getValue(SteamerBlock.HALF);
-        int preferredSlot = user instanceof Player player ? player.getInventory().selected : -1;
+        int preferredSlot = user instanceof Player player ? player.getInventory().getSelectedSlot() : -1;
         int endIndex = half ? 4 : 8;
 
         // 一次性取出所有物品
