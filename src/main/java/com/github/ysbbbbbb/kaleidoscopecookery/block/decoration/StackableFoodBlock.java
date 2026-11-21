@@ -8,7 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -72,10 +72,10 @@ public class StackableFoodBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack itemInHand, BlockState state, Level level, BlockPos pos,
+    public InteractionResult useItemOn(ItemStack itemInHand, BlockState state, Level level, BlockPos pos,
                                            Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (hand != InteractionHand.MAIN_HAND) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         if (itemInHand.is(this.item.get())) {
@@ -92,7 +92,7 @@ public class StackableFoodBlock extends HorizontalDirectionalBlock {
                 if (!player.isCreative()) {
                     itemInHand.shrink(1);
                 }
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -106,10 +106,10 @@ public class StackableFoodBlock extends HorizontalDirectionalBlock {
                 level.removeBlock(pos, false);
             }
             ItemHandlerHelper.giveItemToPlayer(player, item.get().getDefaultInstance());
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

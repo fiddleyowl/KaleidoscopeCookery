@@ -9,7 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -84,13 +84,13 @@ public class OilPotBlock extends HorizontalDirectionalBlock implements SimpleWat
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (hand != InteractionHand.MAIN_HAND) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         BlockEntity te = level.getBlockEntity(pos);
         if (!(te instanceof OilPotBlockEntity oilPot)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         ItemStack mainHandItem = player.getMainHandItem();
 
@@ -98,14 +98,14 @@ public class OilPotBlock extends HorizontalDirectionalBlock implements SimpleWat
         if (mainHandItem.isEmpty()) {
             int currentOilCount = oilPot.getOilCount();
             if (currentOilCount <= 0) {
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
             int needOilCount = Math.min(currentOilCount, 64);
             ItemStack oilStack = new ItemStack(ModItems.OIL.get(), needOilCount);
             player.setItemInHand(hand, oilStack);
             oilPot.setOilCount(currentOilCount - needOilCount);
             player.playSound(SoundEvents.LANTERN_HIT, 1.0F, player.getRandom().nextFloat() * 0.2F + 0.8F);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         // 如果是油，那么添加油
@@ -113,7 +113,7 @@ public class OilPotBlock extends HorizontalDirectionalBlock implements SimpleWat
             int currentOilCount = oilPot.getOilCount();
             int needOilCount = OilPotBlockEntity.MAX_OIL_COUNT - currentOilCount;
             if (needOilCount <= 0) {
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
             int addOilCount = Math.min(needOilCount, mainHandItem.getCount());
             oilPot.setOilCount(currentOilCount + addOilCount);
@@ -121,10 +121,10 @@ public class OilPotBlock extends HorizontalDirectionalBlock implements SimpleWat
                 mainHandItem.shrink(addOilCount);
             }
             player.playSound(SoundEvents.LANTERN_HIT, 1.0F, player.getRandom().nextFloat() * 0.2F + 0.4F);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

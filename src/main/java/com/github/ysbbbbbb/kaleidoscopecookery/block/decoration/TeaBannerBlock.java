@@ -7,7 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BannerPatternItem;
 import net.minecraft.world.item.DyeItem;
@@ -60,16 +60,16 @@ public class TeaBannerBlock extends FaceAttachedHorizontalDirectionalBlock imple
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         ItemStack heldStack = player.getItemInHand(hand);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (!(blockEntity instanceof TeaBannerBlockEntity teaBanner)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         if (heldStack.getItem() instanceof DyeItem dyeItem) {
             if (teaBanner.getColor() == dyeItem.getDyeColor()) {
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
             if (!level.isClientSide()) {
                 teaBanner.setColor(dyeItem.getDyeColor());
@@ -78,12 +78,12 @@ public class TeaBannerBlock extends FaceAttachedHorizontalDirectionalBlock imple
                 }
                 level.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
         }
 
         if (heldStack.getItem() instanceof BannerPatternItem && TeaBannerBlockEntity.isSupportedPattern(heldStack)) {
             if (ItemStack.isSameItemSameComponents(heldStack, teaBanner.getPatternItem())) {
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
             if (!level.isClientSide()) {
                 ItemStack previousPattern = teaBanner.setPatternItem(heldStack.copyWithCount(1));
@@ -95,7 +95,7 @@ public class TeaBannerBlock extends FaceAttachedHorizontalDirectionalBlock imple
                 }
                 level.playSound(null, pos, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
         }
 
         if (heldStack.is(Items.SHEARS) && teaBanner.hasPattern()) {
@@ -104,10 +104,10 @@ public class TeaBannerBlock extends FaceAttachedHorizontalDirectionalBlock imple
                 heldStack.hurtAndBreak(1, player, hand.asEquipmentSlot());
                 level.playSound(null, pos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

@@ -7,7 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -79,10 +79,10 @@ public class PlateBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack itemInHand, BlockState state, Level level, BlockPos pos,
+    public InteractionResult useItemOn(ItemStack itemInHand, BlockState state, Level level, BlockPos pos,
                                            Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (hand != InteractionHand.MAIN_HAND) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         int count = state.getValue(servings);
 
@@ -92,7 +92,7 @@ public class PlateBlock extends HorizontalDirectionalBlock {
                 itemInHand.shrink(1);
                 level.playSound(player, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.setBlockAndUpdate(pos, state.cycle(servings));
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -111,7 +111,7 @@ public class PlateBlock extends HorizontalDirectionalBlock {
             level.destroyBlock(pos, true, player);
         }
 
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     private boolean canRefill(ItemStack itemStack) {

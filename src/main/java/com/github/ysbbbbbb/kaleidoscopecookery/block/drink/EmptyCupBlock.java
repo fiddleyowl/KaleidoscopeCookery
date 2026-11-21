@@ -13,7 +13,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -63,9 +63,9 @@ public class EmptyCupBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (hand != InteractionHand.MAIN_HAND) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         ItemStack itemInHand = player.getItemInHand(hand);
 
@@ -73,11 +73,11 @@ public class EmptyCupBlock extends HorizontalDirectionalBlock {
         if (itemInHand.is(ModItems.TEAPOT.get())) {
             ItemStack pourOut = TeapotItem.getPourOut(itemInHand, level);
             if (pourOut.isEmpty()) {
-                return ItemInteractionResult.CONSUME;
+                return InteractionResult.CONSUME;
             }
             // 必须是茶
             if (!(pourOut.getItem() instanceof TeacupItem teacupItem && teacupItem.getBlock() instanceof TeacupBlock teacupBlock)) {
-                return ItemInteractionResult.CONSUME;
+                return InteractionResult.CONSUME;
             }
             // 检查当前茶杯数量，是否超过转换的茶的上限，否则需要退回
             int currentCount = state.getValue(CUP_COUNT);
@@ -93,7 +93,7 @@ public class EmptyCupBlock extends HorizontalDirectionalBlock {
                     .setValue(teacupBlock.getCupCountProperty(), Math.min(currentCount, teacupBlock.getMaxCount()))
                     .setValue(teacupBlock.getTeaCountProperty(), 1)
                     .setValue(FACING, state.getValue(FACING)));
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         // 如果是茶杯，将空杯转换为对应的茶杯
@@ -107,9 +107,9 @@ public class EmptyCupBlock extends HorizontalDirectionalBlock {
                         .setValue(FACING, state.getValue(FACING)));
                 level.playSound(player, pos, this.soundType.getPlaceSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
                 itemInHand.shrink(1);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            return ItemInteractionResult.CONSUME;
+            return InteractionResult.CONSUME;
         }
 
         // 如果是空杯
@@ -120,9 +120,9 @@ public class EmptyCupBlock extends HorizontalDirectionalBlock {
                 level.setBlockAndUpdate(pos, state.setValue(CUP_COUNT, count + 1));
                 level.playSound(player, pos, this.soundType.getPlaceSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
                 itemInHand.shrink(1);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            return ItemInteractionResult.CONSUME;
+            return InteractionResult.CONSUME;
         }
 
         // 如果是空手，先取下茶杯，空杯
@@ -138,11 +138,11 @@ public class EmptyCupBlock extends HorizontalDirectionalBlock {
                     level.setBlockAndUpdate(pos, state.setValue(CUP_COUNT, cupCountNum - 1));
                 }
                 level.playSound(player, pos, this.soundType.getBreakSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     private static void spawnPourParticles(Level level, BlockPos pos) {

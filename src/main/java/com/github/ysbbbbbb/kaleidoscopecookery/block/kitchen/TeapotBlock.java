@@ -10,7 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static net.minecraft.world.ItemInteractionResult.*;
+import static net.minecraft.world.InteractionResult.*;
 
 @SuppressWarnings({"deprecation", "unchecked"})
 public class TeapotBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock, EntityBlock {
@@ -154,13 +154,13 @@ public class TeapotBlock extends HorizontalDirectionalBlock implements SimpleWat
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (hand != InteractionHand.MAIN_HAND) {
-            return PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return TRY_WITH_EMPTY_HAND;
         }
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (!(blockEntity instanceof ITeapot teapot)) {
-            return PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return TRY_WITH_EMPTY_HAND;
         }
         ItemStack mainHandItem = player.getMainHandItem();
         var capability = mainHandItem.getCapability(Capabilities.FluidHandler.ITEM);
@@ -192,7 +192,7 @@ public class TeapotBlock extends HorizontalDirectionalBlock implements SimpleWat
         if (mainHandItem.isEmpty() && !player.isSecondaryUseActive()) {
             return teapot.takeTeapot(level, player) ? SUCCESS : CONSUME;
         }
-        return PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return TRY_WITH_EMPTY_HAND;
     }
 
     @Override

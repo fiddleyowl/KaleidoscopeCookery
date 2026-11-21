@@ -16,7 +16,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
@@ -141,7 +140,7 @@ public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWat
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         ItemStack itemInHand = player.getItemInHand(hand);
 
         // 空手 Shift 右击盖盖子、去掉盖子
@@ -149,7 +148,7 @@ public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWat
         Boolean hasLid = state.getValue(HAS_LID);
         if (itemInHand.isEmpty() && player.isSecondaryUseActive() && (hasLid || !level.getBlockState(pos.above()).is(this))) {
             level.setBlock(pos, state.setValue(HAS_LID, !hasLid), Block.UPDATE_ALL);
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
         }
 
         // 手持蒸笼，右击可以摞上去
@@ -172,18 +171,18 @@ public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWat
                 // 当最终位置为可替换方块，放置蒸笼
                 InteractionResult result = steamerItem.place(placeContext);
                 if (result == InteractionResult.FAIL) {
-                    return ItemInteractionResult.FAIL;
+                    return InteractionResult.FAIL;
                 }
-                return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
             } else if (blockState.is(this) && blockState.getValue(HALF) && !blockState.getValue(HAS_LID)) {
                 // 当最终位置为未加盖的单层蒸笼方块，放置蒸笼
                 InteractionResult result = steamerItem.place(placeContext);
                 if (result == InteractionResult.FAIL) {
-                    return ItemInteractionResult.FAIL;
+                    return InteractionResult.FAIL;
                 }
-                return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
             } else {
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
         }
 
@@ -191,11 +190,11 @@ public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWat
         if (level.getBlockEntity(pos) instanceof ISteamer steamer) {
             // 先尝试放入物品
             if (steamer.placeFood(level, player, itemInHand)) {
-                return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
             }
             // 再尝试取出物品
             if (steamer.takeFood(level, player)) {
-                return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
             }
         }
 

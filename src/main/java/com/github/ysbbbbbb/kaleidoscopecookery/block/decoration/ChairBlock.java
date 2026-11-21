@@ -8,7 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -82,7 +82,7 @@ public class ChairBlock extends HorizontalDirectionalBlock implements SimpleWate
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         ItemStack itemInHand = player.getItemInHand(hand);
         if (hand == InteractionHand.MAIN_HAND && itemInHand.is(ItemTags.WOOL_CARPETS)) {
             return useWithCarpets(state, level, pos, player, itemInHand);
@@ -92,7 +92,7 @@ public class ChairBlock extends HorizontalDirectionalBlock implements SimpleWate
     }
 
     @NotNull
-    private ItemInteractionResult tryToSitOn(BlockState state, Level level, BlockPos pos, Player player) {
+    private InteractionResult tryToSitOn(BlockState state, Level level, BlockPos pos, Player player) {
         if (!level.isClientSide()) {
             List<SitEntity> entities = level.getEntitiesOfClass(SitEntity.class, new AABB(pos));
             if (entities.isEmpty()) {
@@ -100,22 +100,22 @@ public class ChairBlock extends HorizontalDirectionalBlock implements SimpleWate
                 entitySit.setYRot(state.getValue(FACING).toYRot());
                 level.addFreshEntity(entitySit);
                 player.startRiding(entitySit, true);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         } else {
             // todo-check
             // 不知有无炸弹:(, 但这样能够将抱着的生物（使用 carryOn 模组）放置在方块上，而不是抱着生物坐在凳子上
-            return ItemInteractionResult.sidedSuccess(true);
+            return InteractionResult.SUCCESS;
         }
     }
 
     @NotNull
-    private ItemInteractionResult useWithCarpets(BlockState state, Level level, BlockPos pos, Player player, ItemStack itemInHand) {
+    private InteractionResult useWithCarpets(BlockState state, Level level, BlockPos pos, Player player, ItemStack itemInHand) {
         @Nullable DyeColor dyeColor = getColorByCarpet(itemInHand.getItem());
         boolean hasCarpet = state.getValue(HAS_CARPET);
         if (dyeColor == null) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         // 第一种情况，椅子上没有地毯
@@ -126,7 +126,7 @@ public class ChairBlock extends HorizontalDirectionalBlock implements SimpleWate
                 chairBlockEntity.setColor(dyeColor);
                 chairBlockEntity.refresh();
                 itemInHand.shrink(1);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -142,10 +142,10 @@ public class ChairBlock extends HorizontalDirectionalBlock implements SimpleWate
             chairBlockEntity.refresh();
             level.setBlockAndUpdate(pos, state.setValue(HAS_CARPET, true));
             itemInHand.shrink(1);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

@@ -16,7 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -103,9 +103,9 @@ public class TeacupBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (hand != InteractionHand.MAIN_HAND) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         ItemStack itemInHand = player.getItemInHand(hand);
 
@@ -120,7 +120,7 @@ public class TeacupBlock extends HorizontalDirectionalBlock {
                     level.playSound(player, pos, SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 1.0F, 1.0F);
                     TeapotItem.pourOut(itemInHand, level);
                     spawnPourParticles(level, pos);
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             }
         }
@@ -133,7 +133,7 @@ public class TeacupBlock extends HorizontalDirectionalBlock {
                 level.setBlockAndUpdate(pos, state.setValue(cupCount, count + 1));
                 level.playSound(player, pos, this.soundType.getPlaceSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
                 itemInHand.shrink(1);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -149,9 +149,9 @@ public class TeacupBlock extends HorizontalDirectionalBlock {
                             .setValue(teaCount, teaCountNum + 1));
                     level.playSound(player, pos, this.soundType.getPlaceSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
                     itemInHand.shrink(1);
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
-                return ItemInteractionResult.CONSUME;
+                return InteractionResult.CONSUME;
             }
         }
 
@@ -176,7 +176,7 @@ public class TeacupBlock extends HorizontalDirectionalBlock {
                         .setValue(cupCount, cupCountNum - 1));
             }
             level.playSound(player, pos, this.soundType.getBreakSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         // 茶倒完后仍允许空手取回剩余空杯。
@@ -188,10 +188,10 @@ public class TeacupBlock extends HorizontalDirectionalBlock {
                 level.setBlockAndUpdate(pos, state.setValue(cupCount, cupCountNum - 1));
             }
             level.playSound(player, pos, this.soundType.getBreakSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     private static void spawnPourParticles(Level level, BlockPos pos) {

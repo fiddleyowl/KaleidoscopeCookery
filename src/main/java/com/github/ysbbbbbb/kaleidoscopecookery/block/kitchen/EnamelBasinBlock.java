@@ -10,7 +10,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -77,7 +77,7 @@ public class EnamelBasinBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (hand != InteractionHand.MAIN_HAND) {
             super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
@@ -86,27 +86,27 @@ public class EnamelBasinBlock extends Block implements SimpleWaterloggedBlock {
         if (mainHandItem.is(Items.STICK)) {
             float pitch = 0.6F + (float) Math.random() * 0.2F;
             level.playSound(player, pos, SoundEvents.LANTERN_BREAK, SoundSource.BLOCKS, 2, pitch);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         // 再判断开盖
         boolean hasLid = state.getValue(HAS_LID);
         if (hasLid) {
             level.playSound(player, pos, SoundEvents.LANTERN_BREAK, SoundSource.BLOCKS, 0.8f, 0.8f);
             level.setBlockAndUpdate(pos, state.setValue(HAS_LID, false));
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         // 没有盖子，并且是空手，那么盖上盖子
         if (mainHandItem.isEmpty()) {
             level.playSound(player, pos, SoundEvents.LANTERN_BREAK, SoundSource.BLOCKS, 0.8f, 0.4f);
             level.setBlockAndUpdate(pos, state.setValue(HAS_LID, true));
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         // 手持油脂时，消耗油脂添加进去
         if (mainHandItem.is(ModItems.OIL.get())) {
             int value = state.getValue(OIL_COUNT);
             // 如果油已经满了，不能再放油
             if (value >= MAX_OIL_COUNT) {
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
             }
             // 尝试直接放满
             int needCount = MAX_OIL_COUNT - value;
@@ -114,7 +114,7 @@ public class EnamelBasinBlock extends Block implements SimpleWaterloggedBlock {
             level.playSound(player, pos, SoundEvents.HONEY_BLOCK_BREAK, SoundSource.BLOCKS, 0.8f, 0.8f);
             mainHandItem.shrink(consumeCount);
             level.setBlockAndUpdate(pos, state.setValue(OIL_COUNT, value + consumeCount));
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         // 当用铲子右击时
         if (mainHandItem.is(ModItems.KITCHEN_SHOVEL.get())) {
@@ -124,7 +124,7 @@ public class EnamelBasinBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @NotNull
-    private ItemInteractionResult onShovelClick(BlockState state, Level level, BlockPos pos, Player player, ItemStack mainHandItem) {
+    private InteractionResult onShovelClick(BlockState state, Level level, BlockPos pos, Player player, ItemStack mainHandItem) {
         int value = state.getValue(OIL_COUNT);
         boolean shovelHasOil = KitchenShovelItem.hasOil(mainHandItem);
 
@@ -132,24 +132,24 @@ public class EnamelBasinBlock extends Block implements SimpleWaterloggedBlock {
         if (shovelHasOil) {
             // 如果油已经满了，不能再放油
             if (value >= MAX_OIL_COUNT) {
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
             }
             level.playSound(player, pos, SoundEvents.HONEY_BLOCK_BREAK, SoundSource.BLOCKS, 0.8f, 0.8f);
             KitchenShovelItem.setHasOil(mainHandItem, false);
             level.setBlockAndUpdate(pos, state.setValue(OIL_COUNT, value + 1));
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         // 没有油时，返回
         if (value == 0) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
 
         // 取油
         level.playSound(player, pos, SoundEvents.HONEY_BLOCK_BREAK, SoundSource.BLOCKS, 0.8f, 1.2F);
         KitchenShovelItem.setHasOil(mainHandItem, true);
         level.setBlockAndUpdate(pos, state.setValue(OIL_COUNT, value - 1));
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override

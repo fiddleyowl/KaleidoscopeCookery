@@ -11,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -71,15 +71,15 @@ public class ChoppingBoardBlock extends HorizontalDirectionalBlock implements En
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof IChoppingBoard choppingBoard) {
             ItemStack itemInHand = player.getItemInHand(hand);
             if (choppingBoard.onPutItem(level, player, itemInHand)) {
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             ItemStack mainHandItem = player.getMainHandItem();
             if (hand == InteractionHand.OFF_HAND) {
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
             if (choppingBoard.onCutItem(level, player, itemInHand)) {
                 // 切菜成功时，有 25% 的概率消耗耐久度
@@ -87,14 +87,14 @@ public class ChoppingBoardBlock extends HorizontalDirectionalBlock implements En
                     itemInHand.hurtAndBreak(1, player, hand.asEquipmentSlot());
                 }
                 ModTrigger.EVENT.get().trigger(player, ModEventTriggerType.USE_CHOPPING_BOARD);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             if (player.isSecondaryUseActive() && choppingBoard.onTakeOut(level, player)) {
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
             if (mainHandItem.is(TagMod.KITCHEN_KNIFE) && player.getOffhandItem().isEmpty()) {
                 choppingBoard.playParticlesSound();
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);

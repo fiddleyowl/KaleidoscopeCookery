@@ -15,7 +15,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -119,7 +119,7 @@ public class StoveBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         ItemStack itemInHand = player.getItemInHand(hand);
         // 点燃炉灶
         if (!state.getValue(LIT) && itemInHand.is(TagMod.LIT_STOVE)) {
@@ -138,7 +138,7 @@ public class StoveBlock extends HorizontalDirectionalBlock {
                 itemInHand.hurtAndBreak(1, player, hand.asEquipmentSlot());
             }
             ModTrigger.EVENT.get().trigger(player, ModEventTriggerType.LIT_THE_STOVE);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         // 熄灭
         if (state.getValue(LIT) && itemInHand.is(TagMod.EXTINGUISH_STOVE)) {
@@ -151,7 +151,7 @@ public class StoveBlock extends HorizontalDirectionalBlock {
                     SoundSource.BLOCKS, 0.5F,
                     2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);
             itemInHand.hurtAndBreak(1, player, hand.asEquipmentSlot());
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }

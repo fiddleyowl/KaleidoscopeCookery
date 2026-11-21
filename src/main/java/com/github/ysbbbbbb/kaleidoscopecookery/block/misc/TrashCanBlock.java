@@ -7,7 +7,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+import static net.minecraft.world.InteractionResult.TRY_WITH_EMPTY_HAND;
 
 @SuppressWarnings({"deprecation"})
 public class TrashCanBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock, EntityBlock {
@@ -105,24 +105,24 @@ public class TrashCanBlock extends HorizontalDirectionalBlock implements SimpleW
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                            Player player, InteractionHand hand, BlockHitResult hit) {
         if (hand != InteractionHand.MAIN_HAND) {
-            return PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return TRY_WITH_EMPTY_HAND;
         }
         ItemStack itemInHand = player.getItemInHand(hand);
         if (level.getBlockEntity(pos) instanceof TrashCanBlockEntity trashCan) {
             if (itemInHand.isEmpty() && player.isSecondaryUseActive()) {
                 trashCan.withdrawItem(player);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
 
             if (!itemInHand.isEmpty()) {
                 trashCan.putItem(itemInHand);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return TRY_WITH_EMPTY_HAND;
     }
 
     @Override

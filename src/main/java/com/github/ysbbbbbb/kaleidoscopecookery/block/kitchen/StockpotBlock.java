@@ -14,7 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -116,41 +116,41 @@ public class StockpotBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (hand != InteractionHand.MAIN_HAND) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (!(blockEntity instanceof IStockpot stockpot)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         // 先检查盖子
         ItemStack mainHandItem = player.getMainHandItem();
         if (stockpot.onLitClick(level, player, mainHandItem)) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         // 加入汤底
         if (stockpot.addSoupBase(level, player, mainHandItem)) {
             ModTrigger.EVENT.get().trigger(player, ModEventTriggerType.PUT_SOUP_BASE_IN_STOCKPOT);
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         // 取出汤底
         if (stockpot.removeSoupBase(level, player, mainHandItem)) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         // 加入原料
         if (!mainHandItem.isEmpty() && stockpot.addIngredient(level, player, mainHandItem)) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         // 取出原料
         if ((mainHandItem.isEmpty() || mainHandItem.is(TagMod.INGREDIENT_CONTAINER)) && stockpot.removeIngredient(level, player)) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         // 取出成品
         if (stockpot.takeOutProduct(level, player, mainHandItem)) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override
