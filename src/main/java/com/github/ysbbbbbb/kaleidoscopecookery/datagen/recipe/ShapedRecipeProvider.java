@@ -3,7 +3,6 @@ package com.github.ysbbbbbb.kaleidoscopecookery.datagen.recipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -12,16 +11,14 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 
-import java.util.concurrent.CompletableFuture;
-
 public class ShapedRecipeProvider extends ModRecipeProvider {
-    public ShapedRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public ShapedRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     @Override
     public void buildRecipes(RecipeOutput consumer) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.STOVE.get())
+        shaped(RecipeCategory.REDSTONE, ModItems.STOVE.get())
                 .pattern("###")
                 .pattern("#F#")
                 .pattern("###")
@@ -30,7 +27,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_campfire", has(Items.CAMPFIRE))
                 .save(consumer, "kaleidoscope_cookery:stove_campfire");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.STOVE.get())
+        shaped(RecipeCategory.REDSTONE, ModItems.STOVE.get())
                 .pattern("###")
                 .pattern("#F#")
                 .pattern("###")
@@ -39,7 +36,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_soul_campfire", has(Items.SOUL_CAMPFIRE))
                 .save(consumer, "kaleidoscope_cookery:stove_soul_campfire");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.FRUIT_BASKET.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.FRUIT_BASKET.get())
                 .pattern(" S ")
                 .pattern("#C#")
                 .pattern("###")
@@ -49,7 +46,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_chest", has(Items.CHEST))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.TEA_BANNER.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.TEA_BANNER.get())
                 .pattern("WWW")
                 .pattern("WWW")
                 .pattern("S  ")
@@ -58,7 +55,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_red_wool", has(Items.RED_WOOL))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.SCARECROW.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.SCARECROW.get())
                 .pattern(" H ")
                 .pattern("SPS")
                 .pattern(" # ")
@@ -69,7 +66,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_pumpkin", has(Items.PUMPKIN))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModItems.POT.get())
+        shaped(RecipeCategory.REDSTONE, ModItems.POT.get())
                 .pattern("###")
                 .pattern("###")
                 .pattern(" # ")
@@ -77,7 +74,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_iron", has(Items.IRON_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.IRON_KITCHEN_KNIFE.get())
+        shaped(RecipeCategory.TOOLS, ModItems.IRON_KITCHEN_KNIFE.get())
                 .pattern("##")
                 .pattern("#S")
                 .define('#', Tags.Items.INGOTS_IRON)
@@ -85,7 +82,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_iron", has(Items.IRON_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.GOLD_KITCHEN_KNIFE.get())
+        shaped(RecipeCategory.TOOLS, ModItems.GOLD_KITCHEN_KNIFE.get())
                 .pattern("##")
                 .pattern("#S")
                 .define('#', Tags.Items.INGOTS_GOLD)
@@ -93,7 +90,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_iron", has(Items.IRON_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.DIAMOND_KITCHEN_KNIFE.get())
+        shaped(RecipeCategory.TOOLS, ModItems.DIAMOND_KITCHEN_KNIFE.get())
                 .pattern("##")
                 .pattern("#S")
                 .define('#', Tags.Items.GEMS_DIAMOND)
@@ -101,7 +98,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_iron", has(Items.IRON_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.KITCHEN_SHOVEL.get())
+        shaped(RecipeCategory.TOOLS, ModItems.KITCHEN_SHOVEL.get())
                 .pattern("I  ")
                 .pattern(" N ")
                 .pattern("  S")
@@ -111,7 +108,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_iron", has(Items.IRON_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.STRAW_HAT.get())
+        shaped(RecipeCategory.TOOLS, ModItems.STRAW_HAT.get())
                 .pattern(" W ")
                 .pattern(" S ")
                 .pattern("WWW")
@@ -120,7 +117,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_iron", has(Items.IRON_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.STRAW_HAT_FLOWER.get())
+        shaped(RecipeCategory.TOOLS, ModItems.STRAW_HAT_FLOWER.get())
                 .pattern("FFF")
                 .pattern("FHF")
                 .pattern("FFF")
@@ -129,7 +126,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_iron", has(Items.IRON_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.OIL_BLOCK.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.OIL_BLOCK.get())
                 .pattern("OOO")
                 .pattern("OOO")
                 .pattern("OOO")
@@ -137,14 +134,14 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_iron", has(Items.IRON_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.CHOPPING_BOARD.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.CHOPPING_BOARD.get())
                 .pattern("PPP")
                 .pattern("PPP")
                 .define('P', ItemTags.WOODEN_PRESSURE_PLATES)
                 .unlockedBy("has_wood", has(Items.OAK_PLANKS))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.STOCKPOT.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.STOCKPOT.get())
                 .pattern("B B")
                 .pattern("I I")
                 .pattern("III")
@@ -153,7 +150,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_iron", has(Items.IRON_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.STOCKPOT_LID.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.STOCKPOT_LID.get())
                 .pattern(" B ")
                 .pattern("III")
                 .define('B', Items.BRICK)
@@ -161,7 +158,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_iron", has(Items.IRON_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.ENAMEL_BASIN.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.ENAMEL_BASIN.get())
                 .pattern("O")
                 .pattern("I")
                 .pattern("B")
@@ -171,7 +168,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_bucket", has(Items.BUCKET))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.BAMBOO_TRAY.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.BAMBOO_TRAY.get())
                 .pattern(" S ")
                 .pattern("STS")
                 .pattern(" S ")
@@ -180,7 +177,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_bamboo_trapdoor", has(Items.BAMBOO_TRAPDOOR))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.KITCHENWARE_RACKS.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.KITCHENWARE_RACKS.get())
                 .pattern("SSS")
                 .pattern("INI")
                 .define('S', Items.STICK)
@@ -189,7 +186,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_iron", has(Items.IRON_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.CHILI_RISTRA.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.CHILI_RISTRA.get())
                 .pattern("CC")
                 .pattern("CC")
                 .pattern("CC")
@@ -197,7 +194,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_red_chili", has(ModItems.RED_CHILI.get()))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.STRUNG_MUSHROOMS.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.STRUNG_MUSHROOMS.get())
                 .pattern("MM")
                 .pattern("MM")
                 .pattern("MM")
@@ -205,7 +202,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_brown_mushroom", has(Items.BROWN_MUSHROOM))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.STRAW_BLOCK.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.STRAW_BLOCK.get())
                 .pattern("RRR")
                 .pattern("RRR")
                 .pattern("RRR")
@@ -220,7 +217,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
         addTeaBagRecipe(ModItems.BARLEY_TEA_BAG.get(), Items.WHEAT_SEEDS).save(consumer);
         addTeaBagRecipe(ModItems.BUTTER_TEA_BAG.get(), ModItems.OIL.get()).save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.FARMER_CHEST_PLATE.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.FARMER_CHEST_PLATE.get())
                 .pattern("I I")
                 .pattern("LLL")
                 .pattern("LLL")
@@ -229,7 +226,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_leather", has(Items.LEATHER))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.FARMER_LEGGINGS.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.FARMER_LEGGINGS.get())
                 .pattern("LIL")
                 .pattern("L L")
                 .pattern("L L")
@@ -238,7 +235,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_leather", has(Items.LEATHER))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.FARMER_BOOTS.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.FARMER_BOOTS.get())
                 .pattern("I I")
                 .pattern("L L")
                 .define('I', Tags.Items.INGOTS_IRON)
@@ -246,7 +243,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_leather", has(Items.LEATHER))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.SHAWARMA_SPIT.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.SHAWARMA_SPIT.get())
                 .pattern("ICI")
                 .pattern("ICI")
                 .define('I', Items.IRON_CHAIN)
@@ -254,7 +251,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_campfire", has(Items.CAMPFIRE))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.MILLSTONE.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.MILLSTONE.get())
                 .pattern(" F ")
                 .pattern("SG ")
                 .pattern("TTT")
@@ -265,14 +262,14 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_smooth_stone", has(Items.SMOOTH_STONE))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.RECIPE_ITEM.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.RECIPE_ITEM.get())
                 .pattern("PP")
                 .pattern("PP")
                 .define('P', Items.PAPER)
                 .unlockedBy("has_paper", has(Items.PAPER))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.STEAMER.get())
+        shaped(RecipeCategory.TOOLS, ModItems.STEAMER.get())
                 .pattern("TTT")
                 .pattern("BBB")
                 .define('T', Items.BAMBOO_TRAPDOOR)
@@ -280,7 +277,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_bamboo", has(Items.BAMBOO))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.TRANSMUTATION_LUNCH_BAG.get())
+        shaped(RecipeCategory.TOOLS, ModItems.TRANSMUTATION_LUNCH_BAG.get())
                 .pattern(" L ")
                 .pattern("LSL")
                 .pattern("LLL")
@@ -289,7 +286,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.OIL_POT.get())
+        shaped(RecipeCategory.TOOLS, ModItems.OIL_POT.get())
                 .pattern("P ")
                 .pattern("BS")
                 .define('P', Items.HEAVY_WEIGHTED_PRESSURE_PLATE)
@@ -298,7 +295,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_bucket", has(Items.BUCKET))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.SICKLE.get())
+        shaped(RecipeCategory.TOOLS, ModItems.SICKLE.get())
                 .pattern("AAB")
                 .pattern(" CA")
                 .pattern("C  ")
@@ -308,7 +305,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_flint", has(Items.FLINT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ModItems.TEAPOT.get())
+        shaped(RecipeCategory.FOOD, ModItems.TEAPOT.get())
                 .pattern(" I ")
                 .pattern("IBI")
                 .pattern("III")
@@ -317,7 +314,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_ingot_copper", has(Items.COPPER_INGOT))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.TRASH_CAN.get())
+        shaped(RecipeCategory.MISC, ModItems.TRASH_CAN.get())
                 .pattern("III")
                 .pattern("ICI")
                 .pattern("III")
@@ -328,7 +325,7 @@ public class ShapedRecipeProvider extends ModRecipeProvider {
     }
 
     private ShapedRecipeBuilder addTeaBagRecipe(ItemLike result, ItemLike center) {
-        return ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, result)
+        return shaped(RecipeCategory.FOOD, result)
                 .pattern("LLL")
                 .pattern("LCL")
                 .pattern("LLL")

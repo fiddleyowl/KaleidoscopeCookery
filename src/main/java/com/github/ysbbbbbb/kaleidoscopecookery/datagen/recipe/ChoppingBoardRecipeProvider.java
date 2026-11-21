@@ -4,16 +4,13 @@ import com.github.ysbbbbbb.kaleidoscopecookery.datagen.builder.ChoppingBoardBuil
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagCommon;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.concurrent.CompletableFuture;
-
 public class ChoppingBoardRecipeProvider extends ModRecipeProvider {
-    public ChoppingBoardRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public ChoppingBoardRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     @Override
@@ -124,7 +121,7 @@ public class ChoppingBoardRecipeProvider extends ModRecipeProvider {
                 .save(consumer, "cooked_cut_small_meats_from_rabbit");
 
         ChoppingBoardBuilder.builder()
-                .setIngredient(TagCommon.DOUGH)
+                .setIngredient(TagCommon.DOUGH, this.items)
                 .setResult(ModItems.RAW_NOODLES.get(), 3)
                 .setCutCount(4)
                 .setModelId(modLoc("raw_dough"))

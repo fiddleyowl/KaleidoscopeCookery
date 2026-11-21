@@ -7,21 +7,21 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
 import static com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagCommon.FD_HEAT_SOURCES;
 
 public class TagBlock extends BlockTagsProvider {
-    public TagBlock(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, KaleidoscopeCookery.MOD_ID, existingFileHelper);
+    public TagBlock(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, KaleidoscopeCookery.MOD_ID);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class TagBlock extends BlockTagsProvider {
         this.tag(TagMod.SITTABLE).addTag(TagMod.COOK_STOOL).addTag(TagMod.CHAIR)
                 .add(ModBlocks.LONG_BENCH.get(), ModBlocks.TRASH_CAN.get());
 
-        this.tag(TagMod.RICE_PLANTABLE).addOptional(Identifier.parse("farmersdelight:rich_soil_farmland"));
+        this.tag(TagMod.RICE_PLANTABLE).add(TagEntry.optionalElement(Identifier.parse("farmersdelight:rich_soil_farmland")));
 
         this.tag(TagMod.SICKLE_HARVEST_BLACKLIST)
                 .add(Blocks.MELON_STEM, Blocks.PUMPKIN_STEM)
@@ -145,7 +145,7 @@ public class TagBlock extends BlockTagsProvider {
         );
 
         // carry on 模组黑名单
-        IntrinsicTagAppender<Block> carryOn = this.tag(TagCommon.CARRYON_BLOCK_BLACKLIST);
+        TagAppender<Block, Block> carryOn = this.tag(TagCommon.CARRYON_BLOCK_BLACKLIST);
         BuiltInRegistries.BLOCK.keySet().stream().filter(id -> id.getNamespace().equals(KaleidoscopeCookery.MOD_ID))
                 .forEach(id -> carryOn.add(BuiltInRegistries.BLOCK.getValue(id)));
 

@@ -2,24 +2,28 @@ package com.github.ysbbbbbb.kaleidoscopecookery.datagen.recipe;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 
 public abstract class ModRecipeProvider extends RecipeProvider {
-    public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public ModRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     @Override
+    protected void buildRecipes() {
+        this.buildRecipes(this.output);
+    }
+
     public void buildRecipes(RecipeOutput consumer) {
     }
 
@@ -27,8 +31,12 @@ public abstract class ModRecipeProvider extends RecipeProvider {
         return Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, path);
     }
 
+    protected ResourceKey<Recipe<?>> modRecipeKey(String path) {
+        return ResourceKey.create(Registries.RECIPE, this.modLoc(path));
+    }
+
     public String getRecipeIdWithCount(ItemLike itemLike, int count) {
-        return RecipeBuilder.getDefaultRecipeId(itemLike.asItem()).getPath() + "_" + count;
+        return getItemName(itemLike) + "_" + count;
     }
 
     public ItemLike[] getItemsWithCount(ItemLike itemLike, int count) {

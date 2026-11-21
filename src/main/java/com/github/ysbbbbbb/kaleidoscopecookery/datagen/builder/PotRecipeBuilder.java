@@ -2,34 +2,45 @@ package com.github.ysbbbbbb.kaleidoscopecookery.datagen.builder;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.PotRecipe;
+import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.registries.DeferredItem;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 
 public class PotRecipeBuilder implements RecipeBuilder {
     private static final String NAME = "pot";
+
+    private final HolderGetter<Item> items;
     private int time = 200;
     private int stirFryCount = 3;
-    private Ingredient carrier = Ingredient.EMPTY;
+    private Ingredient carrier = ModRecipes.EMPTY_INGREDIENT;
     private List<Ingredient> ingredients = Lists.newArrayList();
     private ItemStack result = ItemStack.EMPTY;
 
-    public static PotRecipeBuilder builder() {
-        return new PotRecipeBuilder();
+    public PotRecipeBuilder(HolderGetter<Item> items) {
+        this.items = items;
+    }
+
+    public static PotRecipeBuilder builder(HolderGetter<Item> items) {
+        return new PotRecipeBuilder(items);
     }
 
     public PotRecipeBuilder setTime(int time) {
@@ -48,7 +59,7 @@ public class PotRecipeBuilder implements RecipeBuilder {
     }
 
     public PotRecipeBuilder setCarrier(TagKey<Item> tagKey) {
-        this.carrier = Ingredient.of(tagKey);
+        this.carrier = Ingredient.of(this.items.getOrThrow(tagKey));
         return this;
     }
 
@@ -68,9 +79,9 @@ public class PotRecipeBuilder implements RecipeBuilder {
             if (ingredient instanceof ItemLike itemLike) {
                 this.ingredients.add(Ingredient.of(itemLike));
             } else if (ingredient instanceof ItemStack stack) {
-                this.ingredients.add(Ingredient.of(stack));
+                this.ingredients.add(Ingredient.of(stack.getItem()));
             } else if (ingredient instanceof TagKey tagKey) {
-                this.ingredients.add(Ingredient.of(tagKey));
+                this.ingredients.add(Ingredient.of(this.items.getOrThrow(tagKey)));
             } else if (ingredient instanceof Ingredient ingredientObj) {
                 this.ingredients.add(ingredientObj);
             } else if (ingredient instanceof DeferredItem<?> deferredItem) {
@@ -115,26 +126,25 @@ public class PotRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
-    @Override
     public Item getResult() {
         return this.result.getItem();
     }
 
     @Override
-    public void save(RecipeOutput output) {
-        String path = RecipeBuilder.getDefaultRecipeId(this.getResult()).getPath();
+    public ResourceKey<Recipe<?>> defaultId() {
+        String path = BuiltInRegistries.ITEM.getKey(this.getResult()).getPath();
         Identifier filePath = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + path);
-        this.save(output, filePath);
+        return ResourceKey.create(Registries.RECIPE, filePath);
     }
 
     @Override
     public void save(RecipeOutput output, String recipeId) {
         Identifier filePath = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + recipeId);
-        this.save(output, filePath);
+        this.save(output, ResourceKey.create(Registries.RECIPE, filePath));
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, Identifier id) {
+    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
         recipeOutput.accept(id, new PotRecipe(this.time, this.stirFryCount, this.carrier, this.ingredients, this.result), null);
     }
 }

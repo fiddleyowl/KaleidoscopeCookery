@@ -2,7 +2,6 @@ package com.github.ysbbbbbb.kaleidoscopecookery.datagen.recipe;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -12,11 +11,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.registries.DeferredItem;
 
-import java.util.concurrent.CompletableFuture;
-
 public class DecorationRecipeProvider extends ModRecipeProvider {
-    public DecorationRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public DecorationRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     @Override
@@ -57,7 +54,7 @@ public class DecorationRecipeProvider extends ModRecipeProvider {
         addTable(ModItems.TABLE_MANGROVE, Blocks.MANGROVE_FENCE, Blocks.MANGROVE_SLAB).save(consumer);
         addTable(ModItems.TABLE_WARPED, Blocks.WARPED_FENCE, Blocks.WARPED_SLAB).save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.LONG_BENCH.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.LONG_BENCH.get())
                 .pattern("PPP")
                 .pattern("FSF")
                 .define('P', Blocks.OAK_PLANKS)
@@ -66,7 +63,7 @@ public class DecorationRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_oak_planks", has(Blocks.OAK_PLANKS))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.RED_LANTERN.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.RED_LANTERN.get())
                 .pattern("PCP")
                 .pattern("DLD")
                 .pattern("PDP")
@@ -77,7 +74,7 @@ public class DecorationRecipeProvider extends ModRecipeProvider {
                 .unlockedBy("has_red_dye", has(Items.RED_DYE))
                 .save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModItems.EIGHT_IMMORTALS_TABLE.get())
+        shaped(RecipeCategory.DECORATIONS, ModItems.EIGHT_IMMORTALS_TABLE.get())
                 .pattern("FPF")
                 .pattern("PPP")
                 .pattern("FPF")
@@ -88,7 +85,7 @@ public class DecorationRecipeProvider extends ModRecipeProvider {
     }
 
     private ShapedRecipeBuilder addCookStool(DeferredItem<Item> result, Block wood) {
-        return ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result.get())
+        return shaped(RecipeCategory.DECORATIONS, result.get())
                 .pattern("   ")
                 .pattern("###")
                 .pattern("# #")
@@ -97,7 +94,7 @@ public class DecorationRecipeProvider extends ModRecipeProvider {
     }
 
     private ShapedRecipeBuilder addChair(DeferredItem<Item> result, Block fence, Block slab) {
-        return ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result.get())
+        return shaped(RecipeCategory.DECORATIONS, result.get())
                 .pattern("F  ")
                 .pattern("SSS")
                 .pattern("F F")
@@ -107,7 +104,7 @@ public class DecorationRecipeProvider extends ModRecipeProvider {
     }
 
     private ShapedRecipeBuilder addTable(DeferredItem<Item> result, Block fence, Block slab) {
-        return ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, result.get())
+        return shaped(RecipeCategory.DECORATIONS, result.get())
                 .pattern("SSS")
                 .pattern("F F")
                 .define('F', fence)

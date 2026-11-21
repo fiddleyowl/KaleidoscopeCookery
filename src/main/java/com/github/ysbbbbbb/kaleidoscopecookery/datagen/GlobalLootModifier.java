@@ -14,6 +14,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.AddTableLootModifier;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 
 import java.util.concurrent.CompletableFuture;
@@ -37,15 +38,15 @@ public class GlobalLootModifier extends GlobalLootModifierProvider {
     }
 
     private void addEntityLootModifier(String name, EntityType<?> type) {
-        LootItemCondition condition = LootTableIdCondition.builder(type.getDefaultLootTable().location()).build();
+        LootItemCondition condition = LootTableIdCondition.builder(type.getDefaultLootTable().orElseThrow().identifier()).build();
         var conditions = new LootItemCondition[]{condition};
-        this.add(name, new AddTableLootModifier(conditions, modLoc(name)));
+        this.add(name, new AddTableLootModifier(conditions, IGlobalLootModifier.DEFAULT_PRIORITY, modLoc(name)));
     }
 
     private void addBlockLootModifier(String name, Block block) {
-        LootItemCondition condition = LootTableIdCondition.builder(block.getLootTable().location()).build();
+        LootItemCondition condition = LootTableIdCondition.builder(block.getLootTable().orElseThrow().identifier()).build();
         var conditions = new LootItemCondition[]{condition};
-        this.add(name, new AddTableLootModifier(conditions, modLoc(name)));
+        this.add(name, new AddTableLootModifier(conditions, IGlobalLootModifier.DEFAULT_PRIORITY, modLoc(name)));
     }
 
     public ResourceKey<LootTable> modLoc(String name) {

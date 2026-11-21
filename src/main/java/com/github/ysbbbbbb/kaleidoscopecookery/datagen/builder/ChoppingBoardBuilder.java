@@ -3,22 +3,28 @@ package com.github.ysbbbbbb.kaleidoscopecookery.datagen.builder;
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.ChoppingBoardRecipe;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ChoppingBoardBuilder implements RecipeBuilder {
     private static final String NAME = "chopping_board";
 
-    private Ingredient ingredient = Ingredient.EMPTY;
+    private @Nullable Ingredient ingredient;
     private List<ItemStack> results = List.of();
     private int cutCount = 3;
     private Identifier modelId;
@@ -32,8 +38,8 @@ public class ChoppingBoardBuilder implements RecipeBuilder {
         return this;
     }
 
-    public ChoppingBoardBuilder setIngredient(TagKey<Item> itemLike) {
-        this.ingredient = Ingredient.of(itemLike);
+    public ChoppingBoardBuilder setIngredient(TagKey<Item> itemLike, HolderGetter<Item> items) {
+        this.ingredient = Ingredient.of(items.getOrThrow(itemLike));
         return this;
     }
 
@@ -77,27 +83,26 @@ public class ChoppingBoardBuilder implements RecipeBuilder {
         return this;
     }
 
-    @Override
     public Item getResult() {
         return this.results.getFirst().getItem();
     }
 
     @Override
-    public void save(RecipeOutput output) {
-        String path = RecipeBuilder.getDefaultRecipeId(this.getResult()).getPath();
+    public ResourceKey<Recipe<?>> defaultId() {
+        String path = BuiltInRegistries.ITEM.getKey(this.getResult()).getPath();
         Identifier filePath = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + path);
-        this.save(output, filePath);
+        return ResourceKey.create(Registries.RECIPE, filePath);
     }
 
     @Override
     public void save(RecipeOutput output, String recipeId) {
         Identifier filePath = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, NAME + "/" + recipeId);
-        this.save(output, filePath);
+        this.save(output, ResourceKey.create(Registries.RECIPE, filePath));
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, Identifier id) {
-        ChoppingBoardRecipe recipe = new ChoppingBoardRecipe(this.ingredient, this.results, this.cutCount, this.modelId);
+    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
+        ChoppingBoardRecipe recipe = new ChoppingBoardRecipe(Objects.requireNonNull(this.ingredient), this.results, this.cutCount, this.modelId);
         recipeOutput.accept(id, recipe, null);
     }
 }

@@ -247,7 +247,7 @@ public class BlockLootTables extends BlockLootSubProvider {
     }
 
     private LootPoolSingletonContainer.Builder<?> getSeed(ItemLike item, float probability) {
-        ItemPredicate hasHat = ItemPredicate.Builder.item().of(TagMod.STRAW_HAT).build();
+        ItemPredicate hasHat = ItemPredicate.Builder.item().of(this.registries.lookupOrThrow(Registries.ITEM), TagMod.STRAW_HAT).build();
         LootItemCondition.Builder hatMatches = AdvanceBlockMatchTool.toolMatches(EquipmentSlot.HEAD, hasHat);
         return LootItem.lootTableItem(item)
                 .when(LootItemRandomChanceCondition.randomChance(probability)).when(hatMatches)

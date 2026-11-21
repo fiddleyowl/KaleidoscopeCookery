@@ -4,12 +4,11 @@ import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModParticles;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.client.data.ParticleDescriptionProvider;
 
 public class ParticleDescriptionGenerator extends ParticleDescriptionProvider {
-    public ParticleDescriptionGenerator(PackOutput output, ExistingFileHelper fileHelper) {
-        super(output, fileHelper);
+    public ParticleDescriptionGenerator(PackOutput output) {
+        super(output);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.datagen.model;
 
-import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.crop.RiceCropBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.crop.TeaTreeBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.decoration.*;
@@ -15,91 +14,108 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.FoodBiteRegistry;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.PlateRegistry;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.TeacupRegistry;
+import com.mojang.math.Quadrant;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.blockstates.BlockModelDefinitionGenerator;
+import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.blockstates.PropertyDispatch;
+import net.minecraft.client.data.models.blockstates.PropertyValueList;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelDispatcher;
+import net.minecraft.client.renderer.block.dispatch.Variant;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
-public class BlockStateGenerator extends BlockStateProvider {
-    public BlockStateGenerator(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, KaleidoscopeCookery.MOD_ID, exFileHelper);
+import static com.github.ysbbbbbb.kaleidoscopecookery.datagen.model.ItemModelGenerator.modLoc;
+import static net.minecraft.client.data.models.BlockModelGenerators.plainVariant;
+import static net.minecraft.client.data.models.BlockModelGenerators.variant;
+
+public class BlockStateGenerator {
+    private final BlockModelGenerators models;
+
+    public BlockStateGenerator(BlockModelGenerators models) {
+        this.models = models;
     }
 
-    @Override
     protected void registerStatesAndModels() {
         horizontalBlock(ModBlocks.STOVE.get(), blockState -> {
             if (blockState.getValue(StoveBlock.LIT)) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/stove_lit"));
+                return modLoc("block/stove_lit");
             } else {
-                return new ModelFile.UncheckedModelFile(modLoc("block/stove"));
+                return modLoc("block/stove");
             }
         });
 
         horizontalBlock(ModBlocks.POT.get(), blockState -> {
             if (blockState.getValue(PotBlock.HAS_OIL) && blockState.getValue(PotBlock.SHOW_OIL)) {
                 if (blockState.getValue(PotBlock.HAS_BASE)) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/pot_base_has_oil"));
+                    return modLoc("block/pot_base_has_oil");
                 }
-                return new ModelFile.UncheckedModelFile(modLoc("block/pot_has_oil"));
+                return modLoc("block/pot_has_oil");
             } else {
                 if (blockState.getValue(PotBlock.HAS_BASE)) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/pot_base"));
+                    return modLoc("block/pot_base");
                 }
-                return new ModelFile.UncheckedModelFile(modLoc("block/pot"));
+                return modLoc("block/pot");
             }
         });
 
         horizontalBlock(ModBlocks.STOCKPOT.get(), blockState -> {
             if (blockState.getValue(StockpotBlock.HAS_LID)) {
                 if (blockState.getValue(StockpotBlock.HAS_BASE)) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/stockpot_base_has_lid"));
+                    return modLoc("block/stockpot_base_has_lid");
                 }
                 if (blockState.getValue(StockpotBlock.HAS_CHAINS)) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/stockpot_chains_has_lid"));
+                    return modLoc("block/stockpot_chains_has_lid");
                 }
-                return new ModelFile.UncheckedModelFile(modLoc("block/stockpot_has_lid"));
+                return modLoc("block/stockpot_has_lid");
             } else {
                 if (blockState.getValue(StockpotBlock.HAS_BASE)) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/stockpot_base"));
+                    return modLoc("block/stockpot_base");
                 }
                 if (blockState.getValue(StockpotBlock.HAS_CHAINS)) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/stockpot_chains"));
+                    return modLoc("block/stockpot_chains");
                 }
-                return new ModelFile.UncheckedModelFile(modLoc("block/stockpot"));
+                return modLoc("block/stockpot");
             }
         });
 
         horizontalBlock(ModBlocks.SHAWARMA_SPIT.get(), blockState -> {
             if (blockState.getValue(ShawarmaSpitBlock.POWERED)) {
                 if (blockState.getValue(ShawarmaSpitBlock.HALF) == DoubleBlockHalf.LOWER) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/shawarma_spit_powered_lower"));
+                    return modLoc("block/shawarma_spit_powered_lower");
                 }
-                return new ModelFile.UncheckedModelFile(modLoc("block/shawarma_spit_powered_upper"));
+                return modLoc("block/shawarma_spit_powered_upper");
             } else {
                 if (blockState.getValue(ShawarmaSpitBlock.HALF) == DoubleBlockHalf.LOWER) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/shawarma_spit_lower"));
+                    return modLoc("block/shawarma_spit_lower");
                 }
-                return new ModelFile.UncheckedModelFile(modLoc("block/shawarma_spit_upper"));
+                return modLoc("block/shawarma_spit_upper");
             }
         });
 
         horizontalBlock(ModBlocks.OIL_POT.get(), blockState -> {
             if (blockState.getValue(OilPotBlock.HAS_OIL)) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/oil_pot_with_oil"));
+                return modLoc("block/oil_pot_with_oil");
             } else {
-                return new ModelFile.UncheckedModelFile(modLoc("block/oil_pot"));
+                return modLoc("block/oil_pot");
             }
         });
 
@@ -109,21 +125,21 @@ public class BlockStateGenerator extends BlockStateProvider {
             boolean half = blockState.getValue(SteamerBlock.HALF);
 
             if (hasLid && hasBase && half) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/steamer_half_lid_base"));
+                return modLoc("block/steamer_half_lid_base");
             } else if (hasLid && hasBase) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/steamer_full_lid_base"));
+                return modLoc("block/steamer_full_lid_base");
             } else if (hasLid && half) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/steamer_half_lid"));
+                return modLoc("block/steamer_half_lid");
             } else if (hasLid) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/steamer_full_lid"));
+                return modLoc("block/steamer_full_lid");
             } else if (hasBase && half) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/steamer_half_base"));
+                return modLoc("block/steamer_half_base");
             } else if (hasBase) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/steamer_full_base"));
+                return modLoc("block/steamer_full_base");
             } else if (half) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/steamer_half"));
+                return modLoc("block/steamer_half");
             } else {
-                return new ModelFile.UncheckedModelFile(modLoc("block/steamer_full"));
+                return modLoc("block/steamer_full");
             }
         });
 
@@ -144,11 +160,11 @@ public class BlockStateGenerator extends BlockStateProvider {
         horizontalBlock(ModBlocks.EMPTY_CUP.get(), blockState -> {
             int count = blockState.getValue(EmptyCupBlock.CUP_COUNT);
             Identifier model = modLoc("block/teacup/empty_cup/count%d".formatted(count));
-            return new ModelFile.UncheckedModelFile(model);
+            return model;
         });
 
         horizontalBlock(ModBlocks.CLAY_POT_MILK_TEA.get(),
-                new ModelFile.UncheckedModelFile(modLoc("block/clay_pot_milk_tea")));
+                modLoc("block/clay_pot_milk_tea"));
 
         TeacupRegistry.TEACUP_DATA_MAP.forEach((key, value) -> {
             Block block = BuiltInRegistries.BLOCK.getValue(key);
@@ -157,17 +173,15 @@ public class BlockStateGenerator extends BlockStateProvider {
 
         addStackableFoodBlock(ModBlocks.BAMBOO_TUBE_RICE.get(), modLoc("bamboo_tube_rice"));
 
-        horizontalBlock(ModBlocks.FRUIT_BASKET.get(), new ModelFile.UncheckedModelFile(modLoc("block/fruit_basket")));
-        horizontalBlock(ModBlocks.CHOPPING_BOARD.get(), new ModelFile.UncheckedModelFile(modLoc("block/chopping_board")));
-        horizontalBlock(ModBlocks.KITCHENWARE_RACKS.get(), new ModelFile.UncheckedModelFile(modLoc("block/kitchenware_racks")));
+        horizontalBlock(ModBlocks.FRUIT_BASKET.get(), modLoc("block/fruit_basket"));
+        horizontalBlock(ModBlocks.CHOPPING_BOARD.get(), modLoc("block/chopping_board"));
+        horizontalBlock(ModBlocks.KITCHENWARE_RACKS.get(), modLoc("block/kitchenware_racks"));
 
-        getVariantBuilder(ModBlocks.BAMBOO_TRAY.get()).forAllStates(state -> ConfiguredModel.builder()
-                .modelFile(new ModelFile.UncheckedModelFile(
-                        modLoc(state.getValue(BambooTrayBlock.STAND)
-                                ? "block/bamboo_tray/stand"
-                                : "block/bamboo_tray/base"
-                        )
-                )).build());
+        variantBlock(ModBlocks.BAMBOO_TRAY.get(), state -> modLoc(
+                state.getValue(BambooTrayBlock.STAND)
+                        ? "block/bamboo_tray/stand"
+                        : "block/bamboo_tray/base"
+        ));
 
         cookStool(ModBlocks.COOK_STOOL_OAK, "oak");
         cookStool(ModBlocks.COOK_STOOL_SPRUCE, "spruce");
@@ -194,7 +208,7 @@ public class BlockStateGenerator extends BlockStateProvider {
         chair(ModBlocks.CHAIR_WARPED, "warped");
 
         longBench(ModBlocks.LONG_BENCH);
-        simpleBlock(ModBlocks.RED_LANTERN.get(), new ModelFile.UncheckedModelFile(modLoc("block/red_lantern")));
+        simpleBlock(ModBlocks.RED_LANTERN.get(), modLoc("block/red_lantern"));
 
         table(ModBlocks.TABLE_OAK, "oak");
         table(ModBlocks.TABLE_SPRUCE, "spruce");
@@ -210,7 +224,8 @@ public class BlockStateGenerator extends BlockStateProvider {
 
         eightImmortalsTable(ModBlocks.EIGHT_IMMORTALS_TABLE);
 
-        simpleBlock(ModBlocks.OIL_BLOCK.get());
+        simpleBlock(ModBlocks.OIL_BLOCK.get(), ModelTemplates.CUBE_ALL.create(ModBlocks.OIL_BLOCK.get(),
+                TextureMapping.cube(ModBlocks.OIL_BLOCK.get()), models.modelOutput));
 
         crop(ModBlocks.TOMATO_CROP, "tomato");
         crop(ModBlocks.CHILI_CROP, "chili");
@@ -220,86 +235,81 @@ public class BlockStateGenerator extends BlockStateProvider {
 
         axisBlock((RotatedPillarBlock) ModBlocks.STRAW_BLOCK.get());
 
-        horizontalFaceBlock(ModBlocks.RECIPE_BLOCK.get(), new ModelFile.UncheckedModelFile(modLoc("block/recipe_block")));
+        horizontalFaceBlock(ModBlocks.RECIPE_BLOCK.get(), modLoc("block/recipe_block"));
 
-        simpleBlock(ModBlocks.TEA_BANNER.get(), models().getBuilder("tea_banner")
-                .texture("particle", modLoc("item/tea_banner")));
+        simpleBlock(ModBlocks.TEA_BANNER.get(), ModelTemplates.PARTICLE_ONLY.create(ModBlocks.TEA_BANNER.get(),
+                TextureMapping.particle(new Material(modLoc("item/tea_banner"))), models.modelOutput));
 
         riceCrop();
 
         variantBlock(ModBlocks.ENAMEL_BASIN.get(), blockState -> {
             if (blockState.getValue(EnamelBasinBlock.HAS_LID)) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/enamel_basin/base"));
+                return modLoc("block/enamel_basin/base");
             }
             int oilCount = blockState.getValue(EnamelBasinBlock.OIL_COUNT);
             if (oilCount <= 0) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/enamel_basin/empty"));
+                return modLoc("block/enamel_basin/empty");
             }
             if (oilCount <= EnamelBasinBlock.MAX_OIL_COUNT / 3) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/enamel_basin/low"));
+                return modLoc("block/enamel_basin/low");
             }
             if (oilCount <= EnamelBasinBlock.MAX_OIL_COUNT / 3 * 2) {
-                return new ModelFile.UncheckedModelFile(modLoc("block/enamel_basin/middle"));
+                return modLoc("block/enamel_basin/middle");
             }
-            return new ModelFile.UncheckedModelFile(modLoc("block/enamel_basin/high"));
+            return modLoc("block/enamel_basin/high");
         });
 
         variantBlock(ModBlocks.CHILI_RISTRA.get(), blockState -> {
             if (blockState.getValue(ChiliRistraBlock.IS_HEAD)) {
                 if (blockState.getValue(ChiliRistraBlock.SHEARED)) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/chili_ristra/head_sheared"));
+                    return modLoc("block/chili_ristra/head_sheared");
                 }
-                return new ModelFile.UncheckedModelFile(modLoc("block/chili_ristra/head"));
+                return modLoc("block/chili_ristra/head");
             } else {
                 if (blockState.getValue(ChiliRistraBlock.SHEARED)) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/chili_ristra/body_sheared"));
+                    return modLoc("block/chili_ristra/body_sheared");
                 }
-                return new ModelFile.UncheckedModelFile(modLoc("block/chili_ristra/body"));
+                return modLoc("block/chili_ristra/body");
             }
         });
 
         variantBlock(ModBlocks.STRUNG_MUSHROOMS.get(), blockState -> {
             if (blockState.getValue(StrungMushroomsBlock.IS_HEAD)) {
                 if (blockState.getValue(StrungMushroomsBlock.SHEARED)) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/strung_mushrooms/head_sheared"));
+                    return modLoc("block/strung_mushrooms/head_sheared");
                 }
-                return new ModelFile.UncheckedModelFile(modLoc("block/strung_mushrooms/head"));
+                return modLoc("block/strung_mushrooms/head");
             } else {
                 if (blockState.getValue(StrungMushroomsBlock.SHEARED)) {
-                    return new ModelFile.UncheckedModelFile(modLoc("block/strung_mushrooms/body_sheared"));
+                    return modLoc("block/strung_mushrooms/body_sheared");
                 }
-                return new ModelFile.UncheckedModelFile(modLoc("block/strung_mushrooms/body"));
+                return modLoc("block/strung_mushrooms/body");
             }
         });
     }
 
-    public void variantBlock(Block block, Function<BlockState, ModelFile> modelFunc) {
-        getVariantBuilder(block).forAllStates(state -> ConfiguredModel.builder()
-                .modelFile(modelFunc.apply(state)).build());
+    public void variantBlock(Block block, Function<BlockState, Identifier> modelFunc) {
+        forAllStates(block, state -> new Variant(modelFunc.apply(state)));
     }
 
     public void crop(DeferredBlock<Block> block, String name) {
-        getVariantBuilder(block.get()).forAllStates(state -> {
+        forAllStates(block.get(), state -> {
             int age = state.getValue(CropBlock.AGE);
             Identifier file = modLoc("block/crop/%s/stage%d".formatted(name, age));
-            return ConfiguredModel.builder()
-                    .modelFile(new ModelFile.UncheckedModelFile(file))
-                    .build();
+            return new Variant(file);
         });
     }
 
     public void teaTree() {
-        getVariantBuilder(ModBlocks.TEA_TREE.get()).forAllStates(state -> {
+        forAllStates(ModBlocks.TEA_TREE.get(), state -> {
             int age = state.getValue(TeaTreeBlock.AGE);
             Identifier file = modLoc("block/crop/tea_tree/stage%d".formatted(age));
-            return ConfiguredModel.builder()
-                    .modelFile(new ModelFile.UncheckedModelFile(file))
-                    .build();
+            return new Variant(file);
         });
     }
 
     public void riceCrop() {
-        getVariantBuilder(ModBlocks.RICE_CROP.get()).forAllStates(state -> {
+        forAllStates(ModBlocks.RICE_CROP.get(), state -> {
             int age = state.getValue(CropBlock.AGE);
             int location = state.getValue(RiceCropBlock.LOCATION);
             Identifier file;
@@ -310,84 +320,75 @@ public class BlockStateGenerator extends BlockStateProvider {
             } else {
                 file = modLoc("block/crop/rice/stage%d_up".formatted(age));
             }
-            return ConfiguredModel.builder()
-                    .modelFile(new ModelFile.UncheckedModelFile(file))
-                    .build();
+            return new Variant(file);
         });
     }
 
     public void cookStool(DeferredBlock<Block> block, String name) {
-        horizontalBlock(block.get(), new ModelFile.UncheckedModelFile(modLoc("block/cook_stool/" + name)));
+        horizontalBlock(block.get(), modLoc("block/cook_stool/" + name));
     }
 
     public void chair(DeferredBlock<Block> block, String name) {
-        horizontalBlock(block.get(), new ModelFile.UncheckedModelFile(modLoc("block/chair/" + name)));
+        horizontalBlock(block.get(), modLoc("block/chair/" + name));
     }
 
     private void longBench(DeferredBlock<Block> block) {
-        getVariantBuilder(block.get()).forAllStates(state -> {
+        forAllStates(block.get(), state -> {
             String modelName = switch (state.getValue(LongBenchBlock.POSITION)) {
                 case LongBenchBlock.LEFT -> "left";
                 case LongBenchBlock.MIDDLE -> "middle";
                 case LongBenchBlock.RIGHT -> "right";
                 default -> "single";
             };
-            return ConfiguredModel.builder()
-                    .modelFile(new ModelFile.UncheckedModelFile(modLoc("block/long_bench/" + modelName)))
-                    .rotationY(state.getValue(LongBenchBlock.AXIS) == Direction.Axis.Z ? 90 : 0)
-                    .build();
+            return new Variant(modLoc("block/long_bench/" + modelName))
+                    .withYRot(state.getValue(LongBenchBlock.AXIS) == Direction.Axis.Z ? Quadrant.R90 : Quadrant.R0);
         });
     }
 
     private void table(DeferredBlock<Block> block, String name) {
-        ModelFile.UncheckedModelFile leftModel = new ModelFile.UncheckedModelFile(modLoc("block/table/%s_left".formatted(name)));
-        ModelFile.UncheckedModelFile rightModel = new ModelFile.UncheckedModelFile(modLoc("block/table/%s_right".formatted(name)));
-        ModelFile.UncheckedModelFile middleModel = new ModelFile.UncheckedModelFile(modLoc("block/table/%s_middle".formatted(name)));
+        Identifier leftModel = modLoc("block/table/%s_left".formatted(name));
+        Identifier rightModel = modLoc("block/table/%s_right".formatted(name));
+        Identifier middleModel = modLoc("block/table/%s_middle".formatted(name));
 
-        ModelFile.UncheckedModelFile leftModelRot = new ModelFile.UncheckedModelFile(modLoc("block/table/%s_left_rot".formatted(name)));
-        ModelFile.UncheckedModelFile rightModelRot = new ModelFile.UncheckedModelFile(modLoc("block/table/%s_right_rot".formatted(name)));
-        ModelFile.UncheckedModelFile middleModelRot = new ModelFile.UncheckedModelFile(modLoc("block/table/%s_middle_rot".formatted(name)));
+        Identifier leftModelRot = modLoc("block/table/%s_left_rot".formatted(name));
+        Identifier rightModelRot = modLoc("block/table/%s_right_rot".formatted(name));
+        Identifier middleModelRot = modLoc("block/table/%s_middle_rot".formatted(name));
 
 
-        getVariantBuilder(block.get()).forAllStates(blockState -> {
+        forAllStates(block.get(), blockState -> {
             int position = blockState.getValue(TableBlock.POSITION);
             if (position == TableBlock.SINGLE) {
-                return ConfiguredModel.builder()
-                        .modelFile(new ModelFile.UncheckedModelFile(modLoc("block/table/%s_single".formatted(name))))
-                        .build();
+                return new Variant(modLoc("block/table/%s_single".formatted(name)));
             }
             boolean isRotation = blockState.getValue(TableBlock.AXIS) == Direction.Axis.Z;
             if (position == TableBlock.LEFT) {
                 if (isRotation) {
-                    return ConfiguredModel.builder().modelFile(rightModelRot).build();
+                    return new Variant(rightModelRot);
                 } else {
-                    return ConfiguredModel.builder().modelFile(rightModel).build();
+                    return new Variant(rightModel);
                 }
             }
             if (position == TableBlock.RIGHT) {
                 if (isRotation) {
-                    return ConfiguredModel.builder().modelFile(leftModelRot).build();
+                    return new Variant(leftModelRot);
                 } else {
-                    return ConfiguredModel.builder().modelFile(leftModel).build();
+                    return new Variant(leftModel);
                 }
             }
             if (isRotation) {
-                return ConfiguredModel.builder().modelFile(middleModelRot).build();
+                return new Variant(middleModelRot);
             } else {
-                return ConfiguredModel.builder().modelFile(middleModel).build();
+                return new Variant(middleModel);
             }
         });
     }
 
     private void eightImmortalsTable(DeferredBlock<Block> block) {
-        getVariantBuilder(block.get()).forAllStates(state -> {
+        forAllStates(block.get(), state -> {
             Direction facing = state.getValue(EightImmortalsTableBlock.FACING);
             String part = state.getValue(EightImmortalsTableBlock.PART).getSerializedName();
-            int rotation = (int) facing.toYRot();
-            return ConfiguredModel.builder()
-                    .modelFile(new ModelFile.UncheckedModelFile(modLoc("block/eight_immortals_table/%s".formatted(part))))
-                    .rotationY(rotation)
-                    .build();
+            Quadrant rotation = Quadrant.values()[(int) facing.toYRot() / 90];
+            return new Variant(modLoc("block/eight_immortals_table/%s".formatted(part))).withYRot(rotation);
         });
     }
 
@@ -406,7 +407,7 @@ public class BlockStateGenerator extends BlockStateProvider {
             String modelName = "count%d_%d".formatted(cupCount, teaCount);
             String modelPath = "block/teacup/%s/%s".formatted(id.getPath(), modelName);
             Identifier modelLoc = Identifier.fromNamespaceAndPath(id.getNamespace(), modelPath);
-            return new ModelFile.UncheckedModelFile(modelLoc);
+            return modelLoc;
         });
     }
 
@@ -420,7 +421,7 @@ public class BlockStateGenerator extends BlockStateProvider {
                     id.getNamespace(),
                     "block/food/%s/%s_%d".formatted(id.getPath(), id.getPath(), bites)
             );
-            return new ModelFile.UncheckedModelFile(model);
+            return model;
         });
     }
 
@@ -443,7 +444,7 @@ public class BlockStateGenerator extends BlockStateProvider {
                         "block/food/%s/%s_right_%d".formatted(id.getPath(), id.getPath(), bites)
                 );
             }
-            return new ModelFile.UncheckedModelFile(model);
+            return model;
         });
     }
 
@@ -456,7 +457,7 @@ public class BlockStateGenerator extends BlockStateProvider {
             Identifier model = Identifier.fromNamespaceAndPath(
                     id.getNamespace(), "block/food/%s/%s_%d".formatted(id.getPath(), id.getPath(), count)
             );
-            return new ModelFile.UncheckedModelFile(model);
+            return model;
         });
     }
 
@@ -469,7 +470,59 @@ public class BlockStateGenerator extends BlockStateProvider {
             Identifier model = Identifier.fromNamespaceAndPath(
                     id.getNamespace(), "block/plate/%s/%s_%d".formatted(id.getPath(), id.getPath(), count)
             );
-            return new ModelFile.UncheckedModelFile(model);
+            return model;
         });
+    }
+
+    private void simpleBlock(Block block, Identifier model) {
+        models.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, plainVariant(model)));
+    }
+
+    private void axisBlock(RotatedPillarBlock block) {
+        Identifier horizontal = ModelTemplates.CUBE_COLUMN_HORIZONTAL.create(block, TextureMapping.column(
+                new Material(modLoc("block/straw_block_side")), new Material(modLoc("block/straw_block_end"))), models.modelOutput);
+        models.blockStateOutput.accept(MultiVariantGenerator.dispatch(block)
+                .with(PropertyDispatch.initial(BlockStateProperties.AXIS)
+                        .select(Direction.Axis.Y, plainVariant(modLoc("block/straw_block")))
+                        .select(Direction.Axis.Z, variant(new Variant(horizontal).withXRot(Quadrant.R90)))
+                        .select(Direction.Axis.X, variant(new Variant(horizontal).withXRot(Quadrant.R90).withYRot(Quadrant.R90)))));
+    }
+
+    private void horizontalBlock(Block block, Identifier model) {
+        horizontalBlock(block, state -> model);
+    }
+
+    private void horizontalBlock(Block block, Function<BlockState, Identifier> modelFunc) {
+        forAllStates(block, state -> new Variant(modelFunc.apply(state)).withYRot(yRotation(state, 180)));
+    }
+
+    private void horizontalFaceBlock(Block block, Identifier model) {
+        forAllStates(block, state -> {
+            AttachFace face = state.getValue(BlockStateProperties.ATTACH_FACE);
+            return new Variant(model)
+                    .withXRot(Quadrant.values()[face.ordinal()])
+                    .withYRot(yRotation(state, face == AttachFace.CEILING ? 360 : 180));
+        });
+    }
+
+    private static Quadrant yRotation(BlockState state, int angleOffset) {
+        int rotation = (int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + angleOffset;
+        return Quadrant.values()[(rotation % 360) / 90];
+    }
+
+    private void forAllStates(Block block, Function<BlockState, Variant> modelFunc) {
+        Map<String, BlockStateModel.Unbaked> variants = new LinkedHashMap<>();
+        for (BlockState state : block.getStateDefinition().getPossibleStates()) {
+            String key = new PropertyValueList(state.getValues().toList()).getKey();
+            variants.put(key, variant(modelFunc.apply(state)).toUnbaked());
+        }
+        models.blockStateOutput.accept(new BlockVariants(block, variants));
+    }
+
+    private record BlockVariants(Block block, Map<String, BlockStateModel.Unbaked> variants) implements BlockModelDefinitionGenerator {
+        @Override
+        public BlockStateModelDispatcher create() {
+            return new BlockStateModelDispatcher(Optional.of(new BlockStateModelDispatcher.SimpleModelSelectors(variants)), Optional.empty());
+        }
     }
 }

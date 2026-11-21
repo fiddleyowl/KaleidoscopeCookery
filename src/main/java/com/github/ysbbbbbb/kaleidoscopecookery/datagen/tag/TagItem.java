@@ -6,17 +6,17 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagCommon;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.BowlFoodBlockItem;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -27,9 +27,8 @@ import static net.minecraft.tags.ItemTags.VILLAGER_PLANTABLE_SEEDS;
 import static net.minecraft.world.item.Items.*;
 
 public class TagItem extends ItemTagsProvider {
-    public TagItem(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider,
-                   CompletableFuture<TagLookup<Block>> pBlockTags, @Nullable ExistingFileHelper existingFileHelper) {
-        super(pOutput, pLookupProvider, pBlockTags, KaleidoscopeCookery.MOD_ID, existingFileHelper);
+    public TagItem(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider) {
+        super(pOutput, pLookupProvider, KaleidoscopeCookery.MOD_ID);
     }
 
     @Override
@@ -45,7 +44,7 @@ public class TagItem extends ItemTagsProvider {
                         ModItems.GOLD_KITCHEN_KNIFE.get(),
                         ModItems.DIAMOND_KITCHEN_KNIFE.get(),
                         ModItems.NETHERITE_KITCHEN_KNIFE.get())
-                .addOptionalTag(Identifier.parse("farmersdelight:tools/knives"));
+                .add(TagEntry.optionalTag(Identifier.parse("farmersdelight:tools/knives")));
 
         tag(KITCHEN_SHOVEL).add(ModItems.KITCHEN_SHOVEL.get());
 
@@ -90,8 +89,8 @@ public class TagItem extends ItemTagsProvider {
                 AXOLOTL_BUCKET, TADPOLE_BUCKET, POWDER_SNOW_BUCKET);
 
         // 给食物分类，简单分为食物和可放置食物
-        IntrinsicTagAppender<Item> meal = this.tag(MEALS);
-        IntrinsicTagAppender<Item> feasts = this.tag(FEASTS);
+        TagAppender<Item, Item> meal = this.tag(MEALS);
+        TagAppender<Item, Item> feasts = this.tag(FEASTS);
         BuiltInRegistries.ITEM.keySet().stream()
                 .filter(id -> id.getNamespace().equals(KaleidoscopeCookery.MOD_ID))
                 .forEach(id -> {
@@ -100,7 +99,7 @@ public class TagItem extends ItemTagsProvider {
                         return;
                     }
                     ItemStack stack = item.getDefaultInstance();
-                    if (item.getFoodProperties(stack, null) != null) {
+                    if (stack.has(DataComponents.FOOD)) {
                         meal.add(item);
                         if (item instanceof BowlFoodBlockItem) {
                             feasts.add(item);
@@ -210,7 +209,7 @@ public class TagItem extends ItemTagsProvider {
         tag(TagCommon.COOKED_EGGS).add(ModItems.FRIED_EGG.get());
         tag(TagCommon.COOKED_RICE).add(ModItems.COOKED_RICE.get())
                 // 农夫乐事没加此标签，只能我们来主动修正了……
-                .addOptional(Identifier.parse("farmersdelight:cooked_rice"));
+                .add(TagEntry.optionalElement(Identifier.parse("farmersdelight:cooked_rice")));
 
         tag(TagCommon.RAW_BEEF).add(ModItems.RAW_COW_OFFAL.get(), BEEF);
         tag(TagCommon.RAW_CHICKEN).add(CHICKEN);
@@ -255,7 +254,7 @@ public class TagItem extends ItemTagsProvider {
     }
 
     private void addModItems() {
-        IntrinsicTagAppender<Item> modTags = tag(COOKERY_MOD_ITEMS);
+        TagAppender<Item, Item> modTags = tag(COOKERY_MOD_ITEMS);
         for (Item item : BuiltInRegistries.ITEM) {
             Identifier itemId = BuiltInRegistries.ITEM.getKey(item);
             if (itemId.getNamespace().equals(KaleidoscopeCookery.MOD_ID)) {

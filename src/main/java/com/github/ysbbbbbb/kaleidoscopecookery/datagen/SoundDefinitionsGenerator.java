@@ -4,13 +4,12 @@ import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModSounds;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 
 public class SoundDefinitionsGenerator extends SoundDefinitionsProvider {
-    protected SoundDefinitionsGenerator(PackOutput output, ExistingFileHelper helper) {
-        super(output, KaleidoscopeCookery.MOD_ID, helper);
+    protected SoundDefinitionsGenerator(PackOutput output) {
+        super(output, KaleidoscopeCookery.MOD_ID);
     }
 
     @Override

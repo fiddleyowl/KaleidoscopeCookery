@@ -6,22 +6,28 @@ import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.StockpotVisuals;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.StockpotRecipeSerializer;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.registries.DeferredItem;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
 public class FlexStockpotRecipeBuilder implements RecipeBuilder {
     private static final String NAME = "flex_stockpot";
+
+    private final HolderGetter<Item> items;
     private List<Ingredient> ingredients = Lists.newArrayList();
     private ItemStack result = ItemStack.EMPTY;
     private int time = StockpotRecipeSerializer.DEFAULT_TIME;
@@ -29,8 +35,12 @@ public class FlexStockpotRecipeBuilder implements RecipeBuilder {
     private Identifier soupBase = StockpotRecipeSerializer.DEFAULT_SOUP_BASE;
     private StockpotVisuals visuals = StockpotVisuals.DEFAULT;
 
-    public static FlexStockpotRecipeBuilder builder() {
-        return new FlexStockpotRecipeBuilder();
+    public FlexStockpotRecipeBuilder(HolderGetter<Item> items) {
+        this.items = items;
+    }
+
+    public static FlexStockpotRecipeBuilder builder(HolderGetter<Item> items) {
+        return new FlexStockpotRecipeBuilder(items);
     }
 
     @SuppressWarnings("all")
@@ -39,9 +49,9 @@ public class FlexStockpotRecipeBuilder implements RecipeBuilder {
             if (ingredient instanceof ItemLike itemLike) {
                 this.ingredients.add(Ingredient.of(itemLike));
             } else if (ingredient instanceof ItemStack stack) {
-                this.ingredients.add(Ingredient.of(stack));
+                this.ingredients.add(Ingredient.of(stack.getItem()));
             } else if (ingredient instanceof TagKey tagKey) {
-                this.ingredients.add(Ingredient.of(tagKey));
+                this.ingredients.add(Ingredient.of(this.items.getOrThrow(tagKey)));
             } else if (ingredient instanceof Ingredient ingredientObj) {
                 this.ingredients.add(ingredientObj);
             } else if (ingredient instanceof DeferredItem) {
@@ -125,18 +135,17 @@ public class FlexStockpotRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
-    @Override
     public Item getResult() {
         return this.result.getItem();
     }
 
     @Override
-    public void save(RecipeOutput output) {
-        String path = RecipeBuilder.getDefaultRecipeId(this.getResult()).getPath();
+    public ResourceKey<Recipe<?>> defaultId() {
+        String path = BuiltInRegistries.ITEM.getKey(this.getResult()).getPath();
         Identifier filePath = Identifier.fromNamespaceAndPath(
                 KaleidoscopeCookery.MOD_ID, NAME + "/" + path
         );
-        this.save(output, filePath);
+        return ResourceKey.create(Registries.RECIPE, filePath);
     }
 
     @Override
@@ -144,11 +153,11 @@ public class FlexStockpotRecipeBuilder implements RecipeBuilder {
         Identifier filePath = Identifier.fromNamespaceAndPath(
                 KaleidoscopeCookery.MOD_ID, NAME + "/" + recipeId
         );
-        this.save(output, filePath);
+        this.save(output, ResourceKey.create(Registries.RECIPE, filePath));
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, Identifier id) {
+    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
         FlexStockpotRecipe recipe = new FlexStockpotRecipe(
                 this.ingredients, this.soupBase, this.result,
                 this.time, this.carrier, this.visuals

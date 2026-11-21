@@ -1,39 +1,46 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.datagen.model;
 
-import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
-import net.minecraft.data.PackOutput;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.DyeColor;
-import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+import java.util.Optional;
 import java.util.stream.IntStream;
 
-public class BlockModelGenerator extends BlockModelProvider {
-    public BlockModelGenerator(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, KaleidoscopeCookery.MOD_ID, existingFileHelper);
+import static com.github.ysbbbbbb.kaleidoscopecookery.datagen.model.ItemModelGenerator.modLoc;
+
+public class BlockModelGenerator {
+    private final BlockModelGenerators models;
+
+    public BlockModelGenerator(BlockModelGenerators models) {
+        this.models = models;
     }
 
-    @Override
     protected void registerModels() {
         Identifier stoveSide = modLoc("block/stove_side");
         Identifier stoveTop = modLoc("block/stove_top");
         Identifier stoveTopLit = modLoc("block/stove_top_lit");
 
-        cube("stove", stoveTop, stoveTop, modLoc("block/stove_front"), stoveSide, stoveSide, stoveSide).texture("particle", stoveSide);
-        cube("stove_lit", stoveTopLit, stoveTopLit, modLoc("block/stove_front_lit"), stoveSide, stoveSide, stoveSide).texture("particle", stoveSide);
+        stove("stove", stoveTop, modLoc("block/stove_front"), stoveSide);
+        stove("stove_lit", stoveTopLit, modLoc("block/stove_front_lit"), stoveSide);
 
-        cross("block/chili_ristra/head", modLoc("block/chili_ristra/head")).renderType("cutout");
-        cross("block/chili_ristra/body", modLoc("block/chili_ristra/body")).renderType("cutout");
-        cross("block/chili_ristra/head_sheared", modLoc("block/chili_ristra/head_sheared")).renderType("cutout");
-        cross("block/chili_ristra/body_sheared", modLoc("block/chili_ristra/body_sheared")).renderType("cutout");
+        cross("block/chili_ristra/head", modLoc("block/chili_ristra/head"));
+        cross("block/chili_ristra/body", modLoc("block/chili_ristra/body"));
+        cross("block/chili_ristra/head_sheared", modLoc("block/chili_ristra/head_sheared"));
+        cross("block/chili_ristra/body_sheared", modLoc("block/chili_ristra/body_sheared"));
 
-        cross("block/strung_mushrooms/head", modLoc("block/strung_mushrooms/head")).renderType("cutout");
-        cross("block/strung_mushrooms/body", modLoc("block/strung_mushrooms/body")).renderType("cutout");
-        cross("block/strung_mushrooms/head_sheared", modLoc("block/strung_mushrooms/head_sheared")).renderType("cutout");
-        cross("block/strung_mushrooms/body_sheared", modLoc("block/strung_mushrooms/body_sheared")).renderType("cutout");
+        cross("block/strung_mushrooms/head", modLoc("block/strung_mushrooms/head"));
+        cross("block/strung_mushrooms/body", modLoc("block/strung_mushrooms/body"));
+        cross("block/strung_mushrooms/head_sheared", modLoc("block/strung_mushrooms/head_sheared"));
+        cross("block/strung_mushrooms/body_sheared", modLoc("block/strung_mushrooms/body_sheared"));
 
-        cubeColumn("straw_block", modLoc("block/straw_block_side"), modLoc("block/straw_block_end"));
+        ModelTemplates.CUBE_COLUMN.create(modLoc("block/straw_block"), TextureMapping.column(
+                new Material(modLoc("block/straw_block_side")), new Material(modLoc("block/straw_block_end"))), models.modelOutput);
 
         wood("oak");
         wood("spruce");
@@ -57,28 +64,28 @@ public class BlockModelGenerator extends BlockModelProvider {
 
     public void wood(String name) {
         String cookStool = "block/cook_stool/" + name;
-        withExistingParent(cookStool, modLoc("block/cook_stool/cook_stool")).texture("particle", modLoc(cookStool));
+        withExistingParent(cookStool, modLoc("block/cook_stool/cook_stool"), modLoc(cookStool));
 
         String chair = "block/chair/" + name;
-        withExistingParent(chair, modLoc("block/chair/chair")).texture("particle", modLoc(chair));
+        withExistingParent(chair, modLoc("block/chair/chair"), modLoc(chair));
 
         String tableSingle = "block/table/" + name + "_single";
         Identifier tableTexture = modLoc("block/table/" + name);
-        withExistingParent(tableSingle, modLoc("block/table/single")).texture("particle", tableTexture);
+        withExistingParent(tableSingle, modLoc("block/table/single"), tableTexture);
 
         String tableLeft = "block/table/" + name + "_left";
-        withExistingParent(tableLeft, modLoc("block/table/left")).texture("particle", tableTexture);
+        withExistingParent(tableLeft, modLoc("block/table/left"), tableTexture);
         String tableRight = "block/table/" + name + "_right";
-        withExistingParent(tableRight, modLoc("block/table/right")).texture("particle", tableTexture);
+        withExistingParent(tableRight, modLoc("block/table/right"), tableTexture);
         String tableMiddle = "block/table/" + name + "_middle";
-        withExistingParent(tableMiddle, modLoc("block/table/middle")).texture("particle", tableTexture);
+        withExistingParent(tableMiddle, modLoc("block/table/middle"), tableTexture);
 
         String tableLeftRot = "block/table/" + name + "_left_rot";
-        withExistingParent(tableLeftRot, modLoc("block/table/left_rot")).texture("particle", tableTexture);
+        withExistingParent(tableLeftRot, modLoc("block/table/left_rot"), tableTexture);
         String tableRightRot = "block/table/" + name + "_right_rot";
-        withExistingParent(tableRightRot, modLoc("block/table/right_rot")).texture("particle", tableTexture);
+        withExistingParent(tableRightRot, modLoc("block/table/right_rot"), tableTexture);
         String tableMiddleRot = "block/table/" + name + "_middle_rot";
-        withExistingParent(tableMiddleRot, modLoc("block/table/middle_rot")).texture("particle", tableTexture);
+        withExistingParent(tableMiddleRot, modLoc("block/table/middle_rot"), tableTexture);
     }
 
     public void carpet() {
@@ -86,25 +93,25 @@ public class BlockModelGenerator extends BlockModelProvider {
             String name = color.getName();
 
             String chairCarpet = "block/carpet/chair/" + name;
-            withExistingParent(chairCarpet, modLoc("block/carpet/chair/chair_carpet")).texture("particle", modLoc(chairCarpet));
+            withExistingParent(chairCarpet, modLoc("block/carpet/chair/chair_carpet"), modLoc(chairCarpet));
 
             Identifier tableCarpetTexture = modLoc("block/carpet/table/" + name);
             String tableCarpetSingle = "block/carpet/table/" + name + "_single";
-            withExistingParent(tableCarpetSingle, modLoc("block/carpet/table/single")).texture("particle", tableCarpetTexture);
+            withExistingParent(tableCarpetSingle, modLoc("block/carpet/table/single"), tableCarpetTexture);
             String tableCarpetLeft = "block/carpet/table/" + name + "_left";
-            withExistingParent(tableCarpetLeft, modLoc("block/carpet/table/left")).texture("particle", tableCarpetTexture);
+            withExistingParent(tableCarpetLeft, modLoc("block/carpet/table/left"), tableCarpetTexture);
             String tableCarpetRight = "block/carpet/table/" + name + "_right";
-            withExistingParent(tableCarpetRight, modLoc("block/carpet/table/right")).texture("particle", tableCarpetTexture);
+            withExistingParent(tableCarpetRight, modLoc("block/carpet/table/right"), tableCarpetTexture);
             String tableCarpetMiddle = "block/carpet/table/" + name + "_middle";
-            withExistingParent(tableCarpetMiddle, modLoc("block/carpet/table/middle")).texture("particle", tableCarpetTexture);
+            withExistingParent(tableCarpetMiddle, modLoc("block/carpet/table/middle"), tableCarpetTexture);
         }
     }
 
     public void crop(String name, int stage) {
         IntStream.range(0, stage).forEach(i -> {
             String id = "block/crop/%s/stage%d".formatted(name, i);
-            singleTexture(id, modLoc("block/cross"), "cross", modLoc(id))
-                    .renderType("cutout");
+            new ModelTemplate(Optional.of(modLoc("block/cross")), Optional.empty(), TextureSlot.CROSS)
+                    .create(modLoc(id), TextureMapping.cross(new Material(modLoc(id))), models.modelOutput);
         });
     }
 
@@ -113,9 +120,31 @@ public class BlockModelGenerator extends BlockModelProvider {
             String down = "block/crop/rice/stage%d_down".formatted(i);
             String middle = "block/crop/rice/stage%d_middle".formatted(i);
             String up = "block/crop/rice/stage%d_up".formatted(i);
-            cross(down, modLoc(down)).renderType("cutout");
-            cross(middle, modLoc(middle)).renderType("cutout");
-            cross(up, modLoc(up)).renderType("cutout");
+            cross(down, modLoc(down));
+            cross(middle, modLoc(middle));
+            cross(up, modLoc(up));
         });
+    }
+
+    private void stove(String name, Identifier top, Identifier front, Identifier side) {
+        Material topMaterial = new Material(top);
+        Material sideMaterial = new Material(side);
+        ModelTemplates.CUBE.create(modLoc("block/" + name), new TextureMapping()
+                .put(TextureSlot.DOWN, topMaterial)
+                .put(TextureSlot.UP, topMaterial)
+                .put(TextureSlot.NORTH, new Material(front))
+                .put(TextureSlot.SOUTH, sideMaterial)
+                .put(TextureSlot.EAST, sideMaterial)
+                .put(TextureSlot.WEST, sideMaterial)
+                .put(TextureSlot.PARTICLE, sideMaterial), models.modelOutput);
+    }
+
+    private void withExistingParent(String name, Identifier parent, Identifier particle) {
+        new ModelTemplate(Optional.of(parent), Optional.empty(), TextureSlot.PARTICLE)
+                .create(modLoc(name), TextureMapping.particle(new Material(particle)), models.modelOutput);
+    }
+
+    private void cross(String name, Identifier texture) {
+        ModelTemplates.CROSS.create(modLoc(name), TextureMapping.cross(new Material(texture)), models.modelOutput);
     }
 }

@@ -3,16 +3,13 @@ package com.github.ysbbbbbb.kaleidoscopecookery.datagen.recipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.datagen.builder.MillstoneRecipeBuilder;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 
-import java.util.concurrent.CompletableFuture;
-
 public class MillstoneRecipeProvider extends ModRecipeProvider {
-    public MillstoneRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public MillstoneRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     @Override
@@ -198,7 +195,7 @@ public class MillstoneRecipeProvider extends ModRecipeProvider {
                 .save(consumer, "polished_granite_from_granite");
 
         MillstoneRecipeBuilder.builder()
-                .setIngredient(Tags.Items.GRAVELS)
+                .setIngredient(Tags.Items.GRAVELS, this.items)
                 .setResult(Items.SAND, 1)
                 .save(consumer, "sand_from_gravel");
 
@@ -333,7 +330,7 @@ public class MillstoneRecipeProvider extends ModRecipeProvider {
                 .save(consumer, "quartz_from_quartz_pillar");
 
         MillstoneRecipeBuilder.builder()
-                .setIngredient(Tags.Items.SANDS_RED)
+                .setIngredient(Tags.Items.SANDS_RED, this.items)
                 .setResult(Items.SMOOTH_RED_SANDSTONE, 1)
                 .save(consumer, "smooth_red_sandstone_from_red_sand");
 
@@ -363,7 +360,7 @@ public class MillstoneRecipeProvider extends ModRecipeProvider {
                 .save(consumer, "red_dye_from_rose_bush");
 
         MillstoneRecipeBuilder.builder()
-                .setIngredient(Tags.Items.SANDS_COLORLESS)
+                .setIngredient(Tags.Items.SANDS_COLORLESS, this.items)
                 .setResult(Items.SMOOTH_SANDSTONE, 1)
                 .save(consumer, "smooth_sandstone_from_sand");
 
@@ -433,7 +430,7 @@ public class MillstoneRecipeProvider extends ModRecipeProvider {
                 .save(consumer, "flour_from_wheat");
 
         MillstoneRecipeBuilder.builder()
-                .setIngredient(Tags.Items.SEEDS)
+                .setIngredient(Tags.Items.SEEDS, this.items)
                 .setResult(ModItems.OIL.get())
                 .save(consumer, "oil_from_seeds");
 

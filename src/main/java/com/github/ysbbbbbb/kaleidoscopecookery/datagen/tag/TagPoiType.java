@@ -6,14 +6,12 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.PoiTypeTagsProvider;
 import net.minecraft.tags.PoiTypeTags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
 public class TagPoiType extends PoiTypeTagsProvider {
-    public TagPoiType(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, provider, KaleidoscopeCookery.MOD_ID, existingFileHelper);
+    public TagPoiType(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, provider, KaleidoscopeCookery.MOD_ID);
     }
 
     @Override

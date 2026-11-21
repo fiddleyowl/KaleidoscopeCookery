@@ -4,22 +4,29 @@ import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.BambooTrayRecipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.BambooTrayRecipeSerializer;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
 
 public class BambooTrayRecipeBuilder implements RecipeBuilder {
     private static final String NAME = "bamboo_tray";
 
     private final BambooTrayRecipe.Subtype subtype;
 
-    private Ingredient ingredient = Ingredient.EMPTY;
+    private @Nullable Ingredient ingredient;
     private ItemStack result = ItemStack.EMPTY;
     private int duration = BambooTrayRecipeSerializer.DEFAULT_DURATION;
 
@@ -40,8 +47,8 @@ public class BambooTrayRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
-    public BambooTrayRecipeBuilder setIngredient(TagKey<Item> tag) {
-        this.ingredient = Ingredient.of(tag);
+    public BambooTrayRecipeBuilder setIngredient(TagKey<Item> tag, HolderGetter<Item> items) {
+        this.ingredient = Ingredient.of(items.getOrThrow(tag));
         return this;
     }
 
@@ -80,28 +87,27 @@ public class BambooTrayRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
-    @Override
     public Item getResult() {
         return this.result.getItem();
     }
 
     @Override
-    public void save(RecipeOutput output) {
-        String path = RecipeBuilder.getDefaultRecipeId(this.getResult()).getPath();
+    public ResourceKey<Recipe<?>> defaultId() {
+        String path = BuiltInRegistries.ITEM.getKey(this.getResult()).getPath();
         Identifier id = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID,
                 NAME + "/" + this.subtype.getSerializedName() + "/" + path);
-        this.save(output, id);
+        return ResourceKey.create(Registries.RECIPE, id);
     }
 
     @Override
     public void save(RecipeOutput output, String recipeId) {
         Identifier id = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID,
                 NAME + "/" + this.subtype.getSerializedName() + "/" + recipeId);
-        this.save(output, id);
+        this.save(output, ResourceKey.create(Registries.RECIPE, id));
     }
 
     @Override
-    public void save(RecipeOutput output, Identifier id) {
-        output.accept(id, new BambooTrayRecipe(this.ingredient, this.result, this.subtype, this.duration), null);
+    public void save(RecipeOutput output, ResourceKey<Recipe<?>> id) {
+        output.accept(id, new BambooTrayRecipe(Objects.requireNonNull(this.ingredient), this.result, this.subtype, this.duration), null);
     }
 }

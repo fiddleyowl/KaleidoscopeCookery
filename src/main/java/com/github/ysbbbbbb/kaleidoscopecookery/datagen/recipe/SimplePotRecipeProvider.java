@@ -1,8 +1,8 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.datagen.recipe;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.datagen.builder.PotRecipeBuilder;
+import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -13,13 +13,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 
-import java.util.concurrent.CompletableFuture;
-
 import static com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems.*;
 
 public class SimplePotRecipeProvider extends ModRecipeProvider {
-    public SimplePotRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public SimplePotRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
     @Override
@@ -51,11 +49,11 @@ public class SimplePotRecipeProvider extends ModRecipeProvider {
     }
 
     public void addSingleItemRecipe(TagKey<Item> inputItem, Item outputItem, String idInput, RecipeOutput consumer) {
-        this.addSingleItemRecipe(inputItem, outputItem, idInput, Ingredient.EMPTY, consumer);
+        this.addSingleItemRecipe(inputItem, outputItem, idInput, ModRecipes.EMPTY_INGREDIENT, consumer);
     }
 
     public void addSingleItemRecipe(ItemLike inputItem, Item outputItem, String idInput, RecipeOutput consumer) {
-        this.addSingleItemRecipe(inputItem, outputItem, idInput, Ingredient.EMPTY, consumer);
+        this.addSingleItemRecipe(inputItem, outputItem, idInput, ModRecipes.EMPTY_INGREDIENT, consumer);
     }
 
     public void addSingleItemRecipe(TagKey<Item> inputItem, Item outputItem, String idInput, Ingredient carrier, RecipeOutput consumer) {
@@ -64,7 +62,7 @@ public class SimplePotRecipeProvider extends ModRecipeProvider {
             ItemStack output = new ItemStack(outputItem, i);
             String idOutput = this.getRecipeIdWithCount(outputItem, i);
             String id = String.format("%s_to_%s", idInput, idOutput);
-            PotRecipeBuilder.builder().addInput((Object[]) inputs).setResult(output).setCarrier(carrier).save(consumer, id);
+            PotRecipeBuilder.builder(this.items).addInput((Object[]) inputs).setResult(output).setCarrier(carrier).save(consumer, id);
         }
     }
 
@@ -74,7 +72,7 @@ public class SimplePotRecipeProvider extends ModRecipeProvider {
             ItemStack output = new ItemStack(outputItem, i);
             String idOutput = this.getRecipeIdWithCount(outputItem, i);
             String id = String.format("%s_to_%s", idInput, idOutput);
-            PotRecipeBuilder.builder().addInput((Object[]) inputs).setResult(output).setCarrier(carrier).save(consumer, id);
+            PotRecipeBuilder.builder(this.items).addInput((Object[]) inputs).setResult(output).setCarrier(carrier).save(consumer, id);
         }
     }
 }

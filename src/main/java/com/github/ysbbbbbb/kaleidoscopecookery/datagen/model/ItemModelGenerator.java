@@ -1,31 +1,57 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.datagen.model;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.init.ClientSetupEvent.ItemModelProperty;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.FoodBiteRegistry;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.PlateRegistry;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.TeacupRegistry;
-import com.github.ysbbbbbb.kaleidoscopecookery.item.*;
-import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.renderer.item.ClientItem;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.RangeSelectItemModel;
+import net.minecraft.client.renderer.item.properties.select.DisplayContext;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.client.model.generators.loaders.SeparateTransformsModelBuilder;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.world.level.block.Block;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
-public class ItemModelGenerator extends ItemModelProvider {
-    public ItemModelGenerator(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, KaleidoscopeCookery.MOD_ID, existingFileHelper);
+import static net.minecraft.client.data.models.model.ItemModelUtils.override;
+import static net.minecraft.client.data.models.model.ItemModelUtils.plainModel;
+import static net.minecraft.client.data.models.model.ItemModelUtils.rangeSelect;
+import static net.minecraft.client.data.models.model.ItemModelUtils.select;
+import static net.minecraft.client.data.models.model.ItemModelUtils.when;
+
+public class ItemModelGenerator extends ModelProvider {
+    private ItemModelGenerators models;
+
+    public ItemModelGenerator(PackOutput output) {
+        super(output, KaleidoscopeCookery.MOD_ID);
     }
 
     @Override
+    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        new BlockModelGenerator(blockModels).registerModels();
+        new BlockStateGenerator(blockModels).registerStatesAndModels();
+        this.models = itemModels;
+        registerModels();
+    }
+
     protected void registerModels() {
         withExistingParent("stove", modLoc("block/stove"));
         withExistingParent("pot", modLoc("block/pot"));
@@ -136,77 +162,71 @@ public class ItemModelGenerator extends ItemModelProvider {
         withExistingParent("bamboo_tray", modLoc("block/bamboo_tray/base"));
 
         Identifier chileRistra = BuiltInRegistries.ITEM.getKey(ModItems.CHILI_RISTRA.get());
-        getBuilder(chileRistra.toString()).parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/chili_ristra/head"));
+        registerClientItem(chileRistra, plainModel(basicItem(chileRistra,
+                Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/chili_ristra/head"))));
 
         Identifier strungMushrooms = BuiltInRegistries.ITEM.getKey(ModItems.STRUNG_MUSHROOMS.get());
-        getBuilder(strungMushrooms.toString()).parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/strung_mushrooms/head"));
+        registerClientItem(strungMushrooms, plainModel(basicItem(strungMushrooms,
+                Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "block/strung_mushrooms/head"))));
 
         Identifier shovel = BuiltInRegistries.ITEM.getKey(ModItems.KITCHEN_SHOVEL.get());
-        ItemModelBuilder shovelNoOil = handheldItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "kitchen_shovel_no_oil"));
-        ItemModelBuilder shovelHasOil = handheldItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "kitchen_shovel_has_oil"));
-        getBuilder(shovel.toString())
-                .override().model(shovelNoOil).predicate(KitchenShovelItem.HAS_OIL_PROPERTY, 0).end()
-                .override().model(shovelHasOil).predicate(KitchenShovelItem.HAS_OIL_PROPERTY, 1).end();
+        Identifier shovelNoOil = handheldItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "kitchen_shovel_no_oil"));
+        Identifier shovelHasOil = handheldItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "kitchen_shovel_has_oil"));
+        rangeModel(shovel, ItemModelProperty.HAS_OIL,
+                new RangeEntry(0, shovelNoOil), new RangeEntry(1, shovelHasOil));
 
         Identifier stockpotLid = BuiltInRegistries.ITEM.getKey(ModItems.STOCKPOT_LID.get());
-        ModelFile normal = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/stockpot_lid_normal"));
-        ModelFile using = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/stockpot_lid_using"));
-        getBuilder(stockpotLid.toString())
-                .override().model(normal).predicate(StockpotLidItem.USING_PROPERTY, 0).end()
-                .override().model(using).predicate(StockpotLidItem.USING_PROPERTY, 1).end();
+        Identifier normal = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/stockpot_lid_normal");
+        Identifier using = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/stockpot_lid_using");
+        rangeModel(stockpotLid, ItemModelProperty.USING,
+                new RangeEntry(0, normal), new RangeEntry(1, using));
 
         Identifier oilPot = BuiltInRegistries.ITEM.getKey(ModItems.OIL_POT.get());
         if (oilPot != null) {
-            ItemModelBuilder potNoOil = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot_no_oil"));
-            ItemModelBuilder potHasOil = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot_has_oil"));
-            getBuilder(oilPot.toString())
-                    .override().model(potNoOil).predicate(OilPotItem.HAS_OIL_PROPERTY, 0).end()
-                    .override().model(potHasOil).predicate(OilPotItem.HAS_OIL_PROPERTY, 1).end();
+            Identifier potNoOil = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot_no_oil"));
+            Identifier potHasOil = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot_has_oil"));
+            rangeModel(oilPot, ItemModelProperty.HAS_OIL,
+                    new RangeEntry(0, potNoOil), new RangeEntry(1, potHasOil));
         }
 
         Identifier recipeItem = BuiltInRegistries.ITEM.getKey(ModItems.RECIPE_ITEM.get());
         if (recipeItem != null) {
-            ItemModelBuilder noRecipe = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "recipe_item_no_recipe"));
-            ItemModelBuilder hasRecipe = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "recipe_item_has_recipe"));
-            getBuilder(recipeItem.toString())
-                    .override().model(noRecipe).predicate(RecipeItem.HAS_RECIPE_PROPERTY, 0).end()
-                    .override().model(hasRecipe).predicate(RecipeItem.HAS_RECIPE_PROPERTY, 1).end();
+            Identifier noRecipe = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "recipe_item_no_recipe"));
+            Identifier hasRecipe = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "recipe_item_has_recipe"));
+            rangeModel(recipeItem, ItemModelProperty.HAS_RECIPE,
+                    new RangeEntry(0, noRecipe), new RangeEntry(1, hasRecipe));
         }
 
         Identifier bagItem = BuiltInRegistries.ITEM.getKey(ModItems.TRANSMUTATION_LUNCH_BAG.get());
         if (bagItem != null) {
-            ItemModelBuilder noItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "transmutation_lunch_bag_no_items"));
-            ItemModelBuilder hasItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "transmutation_lunch_bag_has_items"));
-            getBuilder(bagItem.toString())
-                    .override().model(noItems).predicate(TransmutationLunchBagItem.HAS_ITEMS_PROPERTY, 0).end()
-                    .override().model(hasItems).predicate(TransmutationLunchBagItem.HAS_ITEMS_PROPERTY, 1).end();
+            Identifier noItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "transmutation_lunch_bag_no_items"));
+            Identifier hasItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "transmutation_lunch_bag_has_items"));
+            rangeModel(bagItem, ItemModelProperty.HAS_ITEMS,
+                    new RangeEntry(0, noItems), new RangeEntry(1, hasItems));
         }
 
         Identifier rawDough = BuiltInRegistries.ITEM.getKey(ModItems.RAW_DOUGH.get());
         if (rawDough != null) {
-            ItemModelBuilder builder = getBuilder(rawDough.toString());
-            ModelFile.UncheckedModelFile file0 = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_0"));
-            ModelFile.UncheckedModelFile file1 = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_1"));
-            ModelFile.UncheckedModelFile file2 = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_2"));
-            ModelFile.UncheckedModelFile file3 = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_3"));
-            ModelFile.UncheckedModelFile file4 = new ModelFile.UncheckedModelFile(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_4"));
+            Identifier file0 = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_0");
+            Identifier file1 = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_1");
+            Identifier file2 = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_2");
+            Identifier file3 = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_3");
+            Identifier file4 = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item/raw_dough_4");
 
-            builder.override().model(file0).predicate(RawDoughItem.PULL_PROPERTY, 0).end();
-            builder.override().model(file1).predicate(RawDoughItem.PULL_PROPERTY, 0.1f).end();
-            builder.override().model(file2).predicate(RawDoughItem.PULL_PROPERTY, 1).end();
-            builder.override().model(file3).predicate(RawDoughItem.PULL_PROPERTY, 2).end();
-            builder.override().model(file4).predicate(RawDoughItem.PULL_PROPERTY, 3).end();
+            rangeModel(rawDough, ItemModelProperty.PULL,
+                    new RangeEntry(0, file0),
+                    new RangeEntry(0.1f, file1),
+                    new RangeEntry(1, file2),
+                    new RangeEntry(2, file3),
+                    new RangeEntry(3, file4));
         }
 
         Identifier steamerItem = BuiltInRegistries.ITEM.getKey(ModItems.STEAMER.get());
         if (steamerItem != null) {
-            ItemModelBuilder noItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "steamer_no_items"));
-            ItemModelBuilder hasItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "steamer_has_items"));
-            getBuilder(steamerItem.toString())
-                    .override().model(noItems).predicate(SteamerItem.HAS_ITEMS, 0).end()
-                    .override().model(hasItems).predicate(SteamerItem.HAS_ITEMS, 1).end();
+            Identifier noItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "steamer_no_items"));
+            Identifier hasItems = basicItem(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "steamer_has_items"));
+            rangeModel(steamerItem, ItemModelProperty.HAS_ITEMS,
+                    new RangeEntry(0, noItems), new RangeEntry(1, hasItems));
         }
 
         FoodBiteRegistry.FOOD_DATA_MAP.forEach((key, value) -> {
@@ -268,54 +288,91 @@ public class ItemModelGenerator extends ItemModelProvider {
         withExistingParent("oil_block", modLoc("block/oil_block"));
         withExistingParent("straw_block", modLoc("block/straw_block"));
 
-        ItemModelBuilder fruitBasketFull = new ItemModelBuilder(modLoc("fruit_basket"), this.existingFileHelper)
-                .parent(new ModelFile.UncheckedModelFile(modLoc("item/fruit_basket_full")));
-        ItemModelBuilder fruitBasketItem = new ItemModelBuilder(modLoc("fruit_basket"), this.existingFileHelper)
-                .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", modLoc("item/fruit_basket"));
-        ItemModelBuilder fruitBasketBlock = new ItemModelBuilder(modLoc("fruit_basket"), this.existingFileHelper)
-                .parent(new ModelFile.UncheckedModelFile(modLoc("block/fruit_basket")));
-        getBuilder("fruit_basket")
-                .guiLight(BlockModel.GuiLight.FRONT)
-                .customLoader(SeparateTransformsModelBuilder::begin).base(fruitBasketFull)
-                .perspective(ItemDisplayContext.GROUND, fruitBasketBlock)
-                .perspective(ItemDisplayContext.GUI, fruitBasketItem)
-                .perspective(ItemDisplayContext.FIXED, fruitBasketItem)
-                .perspective(ItemDisplayContext.GROUND, fruitBasketItem);
+        Identifier fruitBasketFull = modLoc("item/fruit_basket_full");
+        ItemModel.Unbaked fruitBasketItem = plainModel(basicItem(modLoc("fruit_basket_gui"), modLoc("item/fruit_basket")));
+        registerClientItem(modLoc("fruit_basket"), select(new DisplayContext(),
+                plainModel(parentModel(modLoc("fruit_basket"), fruitBasketFull)),
+                when(ItemDisplayContext.GUI, fruitBasketItem),
+                when(ItemDisplayContext.FIXED, fruitBasketItem),
+                when(ItemDisplayContext.GROUND, fruitBasketItem)));
 
-        ItemModelBuilder flatColdCutHamSlices = new ItemModelBuilder(modLoc("cold_cut_ham_slices"), this.existingFileHelper)
-                .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", modLoc("item/cold_cut_ham_slices_gui"));
-        ItemModelBuilder blockColdCutHamSlices = new ItemModelBuilder(modLoc("cold_cut_ham_slices"), this.existingFileHelper)
-                .parent(new ModelFile.UncheckedModelFile(modLoc("item/cold_cut_ham_slices_block")));
-        getBuilder("cold_cut_ham_slices")
-                .guiLight(BlockModel.GuiLight.FRONT)
-                .customLoader(SeparateTransformsModelBuilder::begin).base(blockColdCutHamSlices)
-                .perspective(ItemDisplayContext.GUI, flatColdCutHamSlices)
-                .perspective(ItemDisplayContext.FIXED, flatColdCutHamSlices);
+        ItemModel.Unbaked flatColdCutHamSlices = plainModel(basicItem(modLoc("cold_cut_ham_slices_gui")));
+        Identifier blockColdCutHamSlices = modLoc("item/cold_cut_ham_slices_block");
+        registerClientItem(modLoc("cold_cut_ham_slices"), select(new DisplayContext(),
+                plainModel(parentModel(modLoc("cold_cut_ham_slices"), blockColdCutHamSlices)),
+                when(ItemDisplayContext.GUI, flatColdCutHamSlices),
+                when(ItemDisplayContext.FIXED, flatColdCutHamSlices)));
 
-        ItemModelBuilder teapotItem = new ItemModelBuilder(modLoc("teapot"), this.existingFileHelper)
-                .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                .texture("layer0", modLoc("item/teapot"));
-        ItemModelBuilder teapotBlock = new ItemModelBuilder(modLoc("teapot"), this.existingFileHelper)
-                .parent(new ModelFile.UncheckedModelFile(modLoc("item/teapot_3d")));
-        getBuilder("teapot")
-                .guiLight(BlockModel.GuiLight.FRONT)
-                .customLoader(SeparateTransformsModelBuilder::begin).base(teapotBlock)
-                .perspective(ItemDisplayContext.GUI, teapotItem)
-                .perspective(ItemDisplayContext.FIXED, teapotItem)
-                .perspective(ItemDisplayContext.GROUND, teapotItem);
+        ItemModel.Unbaked teapotItem = plainModel(basicItem(modLoc("teapot_gui"), modLoc("item/teapot")));
+        Identifier teapotBlock = modLoc("item/teapot_3d");
+        registerClientItem(modLoc("teapot"), select(new DisplayContext(),
+                plainModel(parentModel(modLoc("teapot"), teapotBlock)),
+                when(ItemDisplayContext.GUI, teapotItem),
+                when(ItemDisplayContext.FIXED, teapotItem),
+                when(ItemDisplayContext.GROUND, teapotItem)));
+    }
+
+    public Identifier handheldItem(Item item) {
+        Identifier id = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item));
+        Identifier model = handheldItem(id);
+        registerClientItem(id, plainModel(model));
+        return model;
+    }
+
+    public Identifier handheldItem(Identifier item) {
+        Identifier texture = item.withPrefix("item/");
+        return ModelTemplates.FLAT_HANDHELD_ITEM.create(texture, TextureMapping.layer0(new Material(texture)), models.modelOutput);
     }
 
     @Override
-    public ItemModelBuilder handheldItem(Item item) {
-        return handheldItem(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item)));
+    protected Stream<? extends Holder<Block>> getKnownBlocks() {
+        return Stream.empty();
     }
 
     @Override
-    public ItemModelBuilder handheldItem(Identifier item) {
-        return getBuilder(item.toString())
-                .parent(new ModelFile.UncheckedModelFile("item/handheld"))
-                .texture("layer0", Identifier.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));
+    protected Stream<? extends Holder<Item>> getKnownItems() {
+        return Stream.empty();
+    }
+
+    private void basicItem(Item item) {
+        Identifier id = BuiltInRegistries.ITEM.getKey(item);
+        registerClientItem(id, plainModel(basicItem(id)));
+    }
+
+    private Identifier basicItem(Identifier item) {
+        return basicItem(item, item.withPrefix("item/"));
+    }
+
+    private Identifier basicItem(Identifier item, Identifier texture) {
+        return ModelTemplates.FLAT_ITEM.create(item.withPrefix("item/"), TextureMapping.layer0(new Material(texture)), models.modelOutput);
+    }
+
+    private void withExistingParent(String name, Identifier parent) {
+        Identifier item = modLoc(name);
+        registerClientItem(item, plainModel(parentModel(item, parent)));
+    }
+
+    private Identifier parentModel(Identifier item, Identifier parent) {
+        return new ModelTemplate(Optional.of(parent), Optional.empty())
+                .create(item.withPrefix("item/"), new TextureMapping(), models.modelOutput);
+    }
+
+    private void rangeModel(Identifier item, ItemModelProperty property, RangeEntry... overrides) {
+        Identifier base = parentModel(item, overrides[0].model());
+        List<RangeSelectItemModel.Entry> entries = Arrays.stream(overrides)
+                .map(entry -> override(plainModel(entry.model()), entry.threshold()))
+                .toList();
+        registerClientItem(item, rangeSelect(property, plainModel(base), entries));
+    }
+
+    private void registerClientItem(Identifier item, ItemModel.Unbaked model) {
+        models.itemModelOutput.register(item, new ClientItem(model, ClientItem.Properties.DEFAULT));
+    }
+
+    static Identifier modLoc(String path) {
+        return Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, path);
+    }
+
+    private record RangeEntry(float threshold, Identifier model) {
     }
 }
