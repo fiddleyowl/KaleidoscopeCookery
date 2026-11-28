@@ -8,7 +8,6 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModEnchantments;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import com.google.common.collect.Lists;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
@@ -46,8 +45,8 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
     /**
      * 仅用于客户端渲染
      */
-    public ModelResourceLocation @Nullable [] cacheModels = null;
-    public @Nullable ModelResourceLocation previousModel = null;
+    public Identifier @Nullable [] cacheModels = null;
+    public @Nullable Identifier previousModel = null;
     /**
      * 服务端客户端共通数据
      */

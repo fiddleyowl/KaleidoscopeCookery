@@ -7,27 +7,41 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
-public class RecipeBlockEntityRender implements BlockEntityRenderer<RecipeBlockEntity> {
-    private final BlockEntityRendererProvider.Context context;
+public class RecipeBlockEntityRender implements BlockEntityRenderer<RecipeBlockEntity, RecipeBlockEntityRender.State> {
+    private final ItemModelResolver itemModelResolver;
 
     public RecipeBlockEntityRender(BlockEntityRendererProvider.Context context) {
-        this.context = context;
+        this.itemModelResolver = context.itemModelResolver();
     }
 
     @Override
-    public void render(RecipeBlockEntity recipeBlock, float pPartialTick, PoseStack poseStack,
-                       MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    public State createRenderState() {
+        return new State();
+    }
+
+    @Override
+    public void extractRenderState(RecipeBlockEntity recipeBlock, State state, float partialTick,
+                                   Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(recipeBlock, state, partialTick, cameraPosition, breakProgress);
+        state.item.clear();
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) {
             return;
@@ -45,24 +59,39 @@ public class RecipeBlockEntityRender implements BlockEntityRenderer<RecipeBlockE
         Direction facing = recipeBlock.getBlockState().getValue(HorizontalDirectionalBlock.FACING);
         AttachFace attachFace = recipeBlock.getBlockState().getValue(BlockStateProperties.ATTACH_FACE);
 
-        int rotationX = attachFace.ordinal();
-        int rotationY = facing.get2DDataValue() + (attachFace == AttachFace.CEILING ? 2 : 0);
-        ItemRenderer itemRenderer = this.context.getItemRenderer();
+        state.rotationX = attachFace.ordinal();
+        state.rotationY = facing.get2DDataValue() + (attachFace == AttachFace.CEILING ? 2 : 0);
+        state.attachFace = attachFace;
+        this.itemModelResolver.updateForTopItem(state.item, output, ItemDisplayContext.FIXED, recipeBlock.getLevel(), null, 0);
+    }
+
+    @Override
+    public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        if (state.item.isEmpty()) {
+            return;
+        }
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(Axis.YP.rotationDegrees(-rotationY * 90));
-        poseStack.mulPose(Axis.XP.rotationDegrees(90 - rotationX * 90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-state.rotationY * 90));
+        poseStack.mulPose(Axis.XP.rotationDegrees(90 - state.rotationX * 90));
         poseStack.translate(-0.5, -0.5, -0.5);
         poseStack.scale(0.5f, 0.5f, 0.5f);
 
-        if (attachFace == AttachFace.WALL) {
+        if (state.attachFace == AttachFace.WALL) {
             poseStack.translate(1, 1.25, 0);
         } else {
             poseStack.translate(1, 0.75, 2);
         }
 
-        itemRenderer.renderStatic(output, ItemDisplayContext.FIXED, packedLight, packedOverlay, poseStack, buffer, recipeBlock.getLevel(), 0);
+        state.item.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
         poseStack.popPose();
+    }
+
+    public static final class State extends BlockEntityRenderState {
+        private final ItemStackRenderState item = new ItemStackRenderState();
+        private AttachFace attachFace = AttachFace.FLOOR;
+        private int rotationX;
+        private int rotationY;
     }
 }
