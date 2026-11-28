@@ -23,7 +23,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -117,12 +118,13 @@ public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWat
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
-                                  LevelAccessor levelAccessor, BlockPos pos, BlockPos neighborPos) {
+    public BlockState updateShape(BlockState state, LevelReader levelAccessor, ScheduledTickAccess ticks,
+                                  BlockPos pos, Direction direction, BlockPos neighborPos,
+                                  BlockState neighborState, RandomSource random) {
         if (state.getValue(WATERLOGGED)) {
-            levelAccessor.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+            ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
         }
-        levelAccessor.scheduleTick(pos, this, this.getDelayAfterPlace());
+        ticks.scheduleTick(pos, this, this.getDelayAfterPlace());
         // 如果下方是不完整方块，则添加基座
         if (direction == Direction.DOWN) {
             // 如果下方完全是空气，那么反而不需要添加基座了，让它自然掉落
@@ -224,7 +226,7 @@ public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWat
         return resultState.setValue(HAS_BASE, shouldHasBase(context.getLevel(), clickedPos));
     }
 
-    private boolean shouldHasBase(LevelAccessor level, BlockPos pos) {
+    private boolean shouldHasBase(LevelReader level, BlockPos pos) {
         BlockState belowState = level.getBlockState(pos.below());
         // 如果还是蒸笼，那么不添加基座
         if (belowState.is(this)) {
