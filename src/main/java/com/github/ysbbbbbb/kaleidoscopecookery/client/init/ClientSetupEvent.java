@@ -7,8 +7,10 @@ import com.github.ysbbbbbb.kaleidoscopecookery.client.model.StrawHatModel;
 import com.github.ysbbbbbb.kaleidoscopecookery.client.render.block.*;
 import com.github.ysbbbbbb.kaleidoscopecookery.client.resources.ItemRenderReplacerReloadListener;
 import com.github.ysbbbbbb.kaleidoscopecookery.compat.ponder.init.PonderCompat;
+import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.StockpotRecipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
+import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.*;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.Minecraft;
@@ -24,12 +26,15 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -37,6 +42,7 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import org.jspecify.annotations.Nullable;
 
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static net.neoforged.neoforge.client.gui.VanillaGuiLayers.CROSSHAIR;
@@ -49,11 +55,27 @@ public class ClientSetupEvent {
     private static final Identifier FARMER_ARMOR_TEXTURE = Identifier.withDefaultNamespace("textures/models/armor/cookery_farmer_layer_1.png");
     private static final Identifier FARMER_LEGGINGS_TEXTURE = Identifier.withDefaultNamespace("textures/models/armor/cookery_farmer_layer_2.png");
 
+    private static List<RecipeHolder<StockpotRecipe>> stockpotRecipes = List.of();
+
     @SubscribeEvent
     @SuppressWarnings("all")
     public static void onClientSetup(FMLClientSetupEvent event) {
         // 其他模组兼容
         PonderCompat.init();
+    }
+
+    @SubscribeEvent
+    public static void onRecipesReceived(RecipesReceivedEvent event) {
+        stockpotRecipes = List.copyOf(event.getRecipeMap().byType(ModRecipes.STOCKPOT_RECIPE));
+    }
+
+    @SubscribeEvent
+    public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
+        stockpotRecipes = List.of();
+    }
+
+    public static List<RecipeHolder<StockpotRecipe>> getStockpotRecipes() {
+        return stockpotRecipes;
     }
 
     @SubscribeEvent

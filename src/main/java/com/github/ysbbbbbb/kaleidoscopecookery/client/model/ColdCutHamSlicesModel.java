@@ -104,6 +104,10 @@ public class ColdCutHamSlicesModel extends Model<Integer> {
     @Override
     public void setupAnim(Integer bites) {
         super.setupAnim(bites);
+        this.updateBites(bites);
+    }
+
+    public void updateBites(int bites) {
         this.bite1.visible = bites < 8;
         this.bite2.visible = bites < 7;
         this.bite3.visible = bites < 6;
@@ -112,5 +116,16 @@ public class ColdCutHamSlicesModel extends Model<Integer> {
         this.bite6.visible = bites < 3;
         this.bite7.visible = bites < 2;
         this.bite8.visible = bites < 1;
+    }
+
+    public void resetBites() {
+        this.bite1.visible = true;
+        this.bite2.visible = true;
+        this.bite3.visible = true;
+        this.bite4.visible = true;
+        this.bite5.visible = true;
+        this.bite6.visible = true;
+        this.bite7.visible = true;
+        this.bite8.visible = true;
     }
 }

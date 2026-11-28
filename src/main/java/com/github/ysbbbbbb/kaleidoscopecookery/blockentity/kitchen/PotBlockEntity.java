@@ -392,11 +392,12 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
 
     private boolean takeOutWithCarrier(Level level, LivingEntity user, ItemStack mainHandItem, ItemStack finallyResult) {
         Ingredient carrier = this.carrier.orElseThrow();
-        Item carrierItem = carrier.items().findFirst().orElseThrow().value();
-        Component carrierName = carrierItem.getDefaultInstance().getHoverName();
+        Optional<Component> carrierName = carrier.items().findFirst()
+                .map(item -> item.value().getDefaultInstance().getHoverName());
         if (carrier.test(mainHandItem)) {
             if (mainHandItem.getCount() < finallyResult.getCount()) {
-                this.sendActionBarMessage(user, "carrier_count_not_enough", finallyResult.getCount(), carrierName);
+                carrierName.ifPresent(name -> this.sendActionBarMessage(user, "carrier_count_not_enough",
+                        finallyResult.getCount(), name));
                 return false;
             } else {
                 mainHandItem.shrink(finallyResult.getCount());
@@ -411,7 +412,7 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
                 user.hurt(level.damageSources().inFire(), 1);
                 ModTrigger.EVENT.get().trigger(user, ModEventTriggerType.HURT_WHEN_TAKEOUT_FROM_POT);
             }
-            this.sendActionBarMessage(user, "need_carrier", carrierName);
+            carrierName.ifPresent(name -> this.sendActionBarMessage(user, "need_carrier", name));
         }
         return false;
     }
@@ -579,10 +580,7 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
     }
 
     public boolean hasCarrier() {
-        if (this.carrier.isEmpty()) {
-            return false;
-        }
-        return !this.carrier.get().isEmpty();
+        return this.carrier.isPresent();
     }
 
     public ItemStack getResult() {

@@ -11,6 +11,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -73,6 +74,11 @@ public class ModRecipes {
             TEAPOT_RECIPE = registerType(helper, "teapot");
             BAMBOO_TRAY_RECIPE = registerType(helper, "bamboo_tray");
         });
+    }
+
+    @SubscribeEvent
+    public static void onDatapackSync(OnDatapackSyncEvent event) {
+        event.sendRecipes(STOCKPOT_RECIPE);
     }
 
     private static <T extends Recipe<?>> RecipeType<T> registerType(RegisterEvent.RegisterHelper<RecipeType<?>> helper, String name) {

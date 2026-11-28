@@ -45,4 +45,8 @@ public class StrawHatModel<S extends HumanoidRenderState> extends EntityModel<S>
                 originalHead.xRot, originalHead.yRot, originalHead.zRot,
                 originalHead.xScale, originalHead.yScale, originalHead.zScale));
     }
+
+    public ModelPart getHead() {
+        return head;
+    }
 }

@@ -57,7 +57,8 @@ public class StockpotRecipeSerializer {
             Identifier.STREAM_CODEC, StockpotRecipe::soupBase,
             ItemStack.STREAM_CODEC, StockpotRecipe::result,
             ByteBufCodecs.INT, StockpotRecipe::time,
-            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC, StockpotRecipe::carrier,
+            // 空标签仍表示需要容器，单独同步是否指定了容器。
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs::optional), StockpotRecipe::carrier,
             StockpotVisuals.STREAM_CODEC, StockpotRecipe::visuals,
             ByteBufCodecs.BOOL, StockpotRecipe::syrup,
             StockpotRecipe::new

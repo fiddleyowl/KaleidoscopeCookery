@@ -6,6 +6,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.api.event.StockpotMatchRecipeEven
 import com.github.ysbbbbbb.kaleidoscopecookery.api.recipe.soupbase.ISoupBase;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.kitchen.StockpotBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.BaseBlockEntity;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.init.ClientSetupEvent;
 import com.github.ysbbbbbb.kaleidoscopecookery.client.particle.StockpotParticleOptions;
 import com.github.ysbbbbbb.kaleidoscopecookery.compat.tetra.TetraCompat;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.container.StockpotInput;
@@ -53,6 +54,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.NeoForge;
 
 import org.jspecify.annotations.Nullable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -525,6 +527,10 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
                 this.sendActionBarMessage(user, "tip.kaleidoscope_cookery.stockpot.need_fruit_skewer");
                 return false;
             }
+            // 客户端只判定裹糖是否接管本次交互，避免同一次右键开始进食。
+            if (level.isClientSide()) {
+                return true;
+            }
 
             stack.shrink(1);
             ItemUtils.getItemToLivingEntity(user, candiedSkewer);
@@ -556,13 +562,13 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
         }
 
         // 兼容容器是否正确
-        Optional<Ingredient> requiredCarrier = carrier.filter(ingredient -> !ingredient.isEmpty());
-        if (requiredCarrier.isPresent()) {
-            Ingredient ingredient = requiredCarrier.get();
+        if (carrier.isPresent()) {
+            Ingredient ingredient = carrier.get();
             if (!ingredient.test(stack)) {
-                Item carrierItem = ingredient.items().findFirst().orElseThrow().value();
-                Component carrierName = carrierItem.getDefaultInstance().getHoverName();
-                this.sendActionBarMessage(user, "tip.kaleidoscope_cookery.pot.need_carrier", carrierName);
+                ingredient.items().findFirst().ifPresent(item -> {
+                    Component carrierName = item.value().getDefaultInstance().getHoverName();
+                    this.sendActionBarMessage(user, "tip.kaleidoscope_cookery.pot.need_carrier", carrierName);
+                });
                 return false;
             }
             stack.shrink(1);
@@ -579,10 +585,15 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
     }
 
     private ItemStack getSyrupResult(Level level, ItemStack carrier) {
-        if (!(level instanceof ServerLevel serverLevel)) {
+        Collection<? extends RecipeHolder<?>> recipes;
+        if (level instanceof ServerLevel serverLevel) {
+            recipes = serverLevel.recipeAccess().getRecipes();
+        } else if (level.isClientSide()) {
+            recipes = ClientSetupEvent.getStockpotRecipes();
+        } else {
             return ItemStack.EMPTY;
         }
-        for (RecipeHolder<?> holder : serverLevel.recipeAccess().getRecipes()) {
+        for (RecipeHolder<?> holder : recipes) {
             if (holder.value() instanceof StockpotRecipe recipe
                 && recipe.syrup()
                 && recipe.soupBase().equals(this.soupBaseId)
