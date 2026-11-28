@@ -155,6 +155,17 @@ public class ItemModelGenerator extends ModelProvider {
         basicItem(ModItems.HOT_DRY_NOODLES.get());
         basicItem(ModItems.LABA_CONGEE.get());
 
+        handheldItem(ModItems.GLOW_BERRY_SKEWER.get());
+        handheldItem(ModItems.SWEET_BERRY_SKEWER.get());
+        handheldItem(ModItems.CHORUS_FRUIT_SKEWER.get());
+        handheldItem(ModItems.APPLE_SKEWER.get());
+        handheldItem(ModItems.CATERPILLAR_SKEWER.get());
+        handheldItem(ModItems.CANDIED_GLOW_BERRY_SKEWER.get());
+        handheldItem(ModItems.CANDIED_SWEET_BERRY_SKEWER.get());
+        handheldItem(ModItems.CANDIED_CHORUS_FRUIT_SKEWER.get());
+        handheldItem(ModItems.CANDIED_APPLE_SKEWER.get());
+        handheldItem(ModItems.CANDIED_CATERPILLAR_SKEWER.get());
+
         basicItem(modLoc("honey"));
         basicItem(modLoc("egg"));
         basicItem(modLoc("oil_in_millstone"));

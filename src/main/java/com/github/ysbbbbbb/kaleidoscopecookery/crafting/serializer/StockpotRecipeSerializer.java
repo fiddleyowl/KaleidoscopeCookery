@@ -34,7 +34,8 @@ public class StockpotRecipeSerializer {
                 ItemStack.EMPTY,
                 DEFAULT_TIME,
                 Optional.of(DEFAULT_CARRIER),
-                StockpotVisuals.DEFAULT
+                StockpotVisuals.DEFAULT,
+                false
         );
         return new RecipeHolder<>(EMPTY_ID, stockpotRecipe);
     }
@@ -48,7 +49,8 @@ public class StockpotRecipeSerializer {
             ItemStack.CODEC.fieldOf("result").forGetter(StockpotRecipe::result),
             Codec.INT.optionalFieldOf("time", DEFAULT_TIME).forGetter(StockpotRecipe::time),
             CARRIER_CODEC.optionalFieldOf("carrier", Optional.of(DEFAULT_CARRIER)).forGetter(StockpotRecipe::carrier),
-            StockpotVisuals.CODEC.forGetter(StockpotRecipe::visuals)
+            StockpotVisuals.CODEC.forGetter(StockpotRecipe::visuals),
+            Codec.BOOL.optionalFieldOf("syrup", false).forGetter(StockpotRecipe::syrup)
     ).apply(instance, StockpotRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, StockpotRecipe> STREAM_CODEC = StreamCodec.composite(
@@ -58,6 +60,7 @@ public class StockpotRecipeSerializer {
             ByteBufCodecs.INT, StockpotRecipe::time,
             Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC, StockpotRecipe::carrier,
             StockpotVisuals.STREAM_CODEC, StockpotRecipe::visuals,
+            ByteBufCodecs.BOOL, StockpotRecipe::syrup,
             StockpotRecipe::new
     );
 }

@@ -36,6 +36,7 @@ public class StockpotRecipeBuilder implements RecipeBuilder {
     private Optional<Ingredient> carrier = Optional.of(StockpotRecipeSerializer.DEFAULT_CARRIER);
     private Identifier soupBase = StockpotRecipeSerializer.DEFAULT_SOUP_BASE;
     private StockpotVisuals visuals = StockpotVisuals.DEFAULT;
+    private boolean syrup = false;
 
     public StockpotRecipeBuilder(HolderGetter<Item> items) {
         this.items = items;
@@ -99,6 +100,11 @@ public class StockpotRecipeBuilder implements RecipeBuilder {
 
     public StockpotRecipeBuilder setEmptyCarrier() {
         this.carrier = Optional.empty();
+        return this;
+    }
+
+    public StockpotRecipeBuilder setSyrup() {
+        this.syrup = true;
         return this;
     }
 
@@ -187,7 +193,7 @@ public class StockpotRecipeBuilder implements RecipeBuilder {
     public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
         StockpotRecipe recipe = new StockpotRecipe(
                 this.ingredients, this.soupBase, this.result,
-                this.time, this.carrier, this.visuals
+                this.time, this.carrier, this.visuals, this.syrup
         );
         recipeOutput.accept(id, recipe, null);
     }

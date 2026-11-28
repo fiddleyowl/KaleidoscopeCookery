@@ -177,6 +177,21 @@ public class BlockStateGenerator {
         horizontalBlock(ModBlocks.CHOPPING_BOARD.get(), modLoc("block/chopping_board"));
         horizontalBlock(ModBlocks.KITCHENWARE_RACKS.get(), modLoc("block/kitchenware_racks"));
 
+        // 果串
+        candiedSkewer(ModBlocks.CANDIED_GLOW_BERRY_SKEWER_UPRIGHT.get(), "candied_glow_berry_skewer", true);
+        candiedSkewer(ModBlocks.CANDIED_GLOW_BERRY_SKEWER_SIDE.get(), "candied_glow_berry_skewer", false);
+        candiedSkewer(ModBlocks.CANDIED_SWEET_BERRY_SKEWER_UPRIGHT.get(), "candied_sweet_berry_skewer", true);
+        candiedSkewer(ModBlocks.CANDIED_SWEET_BERRY_SKEWER_SIDE.get(), "candied_sweet_berry_skewer", false);
+        candiedSkewer(ModBlocks.CANDIED_CHORUS_FRUIT_SKEWER_UPRIGHT.get(), "candied_chorus_fruit_skewer", true);
+        candiedSkewer(ModBlocks.CANDIED_CHORUS_FRUIT_SKEWER_SIDE.get(), "candied_chorus_fruit_skewer", false);
+        candiedSkewer(ModBlocks.CANDIED_APPLE_SKEWER_UPRIGHT.get(), "candied_apple_skewer", true);
+        candiedSkewer(ModBlocks.CANDIED_APPLE_SKEWER_SIDE.get(), "candied_apple_skewer", false);
+        candiedSkewer(ModBlocks.CANDIED_CATERPILLAR_SKEWER_UPRIGHT.get(), "candied_caterpillar_skewer", true);
+        candiedSkewer(ModBlocks.CANDIED_CATERPILLAR_SKEWER_SIDE.get(), "candied_caterpillar_skewer", false);
+
+        horizontalBlock(ModBlocks.KITCHEN_SHELF.get(), state ->
+                modLoc("block/kitchen_shelf/" + state.getValue(KitchenShelfBlock.PART).getSerializedName()));
+
         variantBlock(ModBlocks.BAMBOO_TRAY.get(), state -> modLoc(
                 state.getValue(BambooTrayBlock.STAND)
                         ? "block/bamboo_tray/stand"
@@ -471,6 +486,17 @@ public class BlockStateGenerator {
                     id.getNamespace(), "block/plate/%s/%s_%d".formatted(id.getPath(), id.getPath(), count)
             );
             return model;
+        });
+    }
+
+    private void candiedSkewer(Block block, String name, boolean upright) {
+        if (!(block instanceof CandiedSkewerBlock skewerBlock)) {
+            return;
+        }
+        horizontalBlock(block, state -> {
+            int count = state.getValue(skewerBlock.getCountProperty());
+            String shape = upright ? "upright" : "side";
+            return modLoc("block/candied_skewers/%s/%s_%d".formatted(name, shape, count));
         });
     }
 

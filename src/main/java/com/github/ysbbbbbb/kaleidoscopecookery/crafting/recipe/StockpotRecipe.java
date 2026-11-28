@@ -19,14 +19,16 @@ import static com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.Stockp
 
 public record StockpotRecipe(NonNullList<Ingredient> ingredients,
                              Identifier soupBase, ItemStack result, int time,
-                             Optional<Ingredient> carrier, StockpotVisuals visuals) implements BaseRecipe<StockpotInput> {
+                             Optional<Ingredient> carrier, StockpotVisuals visuals,
+                             boolean syrup) implements BaseRecipe<StockpotInput> {
 
     public StockpotRecipe(List<Ingredient> ingredients,
                           Identifier soupBase, ItemStack result,
-                          int time, Optional<Ingredient> carrier, StockpotVisuals visuals
+                          int time, Optional<Ingredient> carrier, StockpotVisuals visuals,
+                          boolean syrup
     ) {
         this(NonNullList.of(Ingredient.EMPTY, BaseRecipe.fillInputs(ingredients)),
-                soupBase, result, time, carrier, visuals);
+                soupBase, result, time, carrier, visuals, syrup);
     }
 
     public StockpotRecipe(NonNullList<Ingredient> ingredients,
@@ -35,7 +37,7 @@ public record StockpotRecipe(NonNullList<Ingredient> ingredients,
                 container.isEmpty()
                         ? Optional.empty()
                         : Optional.of(Ingredient.of(container.getItem())),
-                StockpotVisuals.DEFAULT
+                StockpotVisuals.DEFAULT, false
         );
     }
 

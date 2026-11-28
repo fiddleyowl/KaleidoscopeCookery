@@ -11,7 +11,7 @@ public class BowlFoodOnlyItem extends FoodWithEffectsItem implements IHasContain
     }
 
     public BowlFoodOnlyItem(Food properties, Item craftingItem) {
-        super(properties, craftingItem);
+        super(new Item.Properties().craftRemainder(craftingItem).usingConvertsTo(Items.BOWL), properties);
     }
 
     @Override

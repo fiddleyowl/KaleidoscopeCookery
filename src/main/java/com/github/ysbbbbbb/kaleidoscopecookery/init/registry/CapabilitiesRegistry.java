@@ -15,6 +15,7 @@ public class CapabilitiesRegistry {
     public static void registerGenericItemHandlers(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlocks.OIL_POT_BE.get(), (b, v) -> b.createHandler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlocks.TEAPOT_BE.get(), (b, side) -> b.getInputHandler());
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlocks.KITCHEN_SHELF_BE.get(), (b, side) -> b.getItemHandler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlocks.MILLSTONE_BE.get(),
                 (b, side) -> side == Direction.UP ? b.getInputHandler() : null);
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlocks.BAMBOO_TRAY_BE.get(),
