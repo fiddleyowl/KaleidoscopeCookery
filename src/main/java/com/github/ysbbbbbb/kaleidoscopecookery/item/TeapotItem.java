@@ -29,6 +29,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -46,7 +47,7 @@ import net.neoforged.neoforge.common.SoundActions;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.TeapotRecipeSerializer.EMPTY_TEA_FLUID;
@@ -326,7 +327,7 @@ public class TeapotItem extends BlockItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag pFlag) {
         // 如果是成品阶段，那么显示成品信息
         CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) {
@@ -342,7 +343,7 @@ public class TeapotItem extends BlockItem {
             }
             Identifier key = Identifier.parse(fluidId);
             Fluid fluid = BuiltInRegistries.FLUID.getValue(key);
-            list.add(Component.translatable(fluid.getFluidType().getDescriptionId()).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable(fluid.getFluidType().getDescriptionId()).withStyle(ChatFormatting.GRAY));
         }
 
         ClientLevel level = Minecraft.getInstance().level;
@@ -355,7 +356,7 @@ public class TeapotItem extends BlockItem {
                     result.getHoverName(),
                     Component.literal("x%d".formatted(result.getCount()))
             ), CommonComponents.space(), Function.identity()).withStyle(ChatFormatting.GRAY);
-            list.add(resultComponent);
+            tooltip.accept(resultComponent);
         }
     }
 }

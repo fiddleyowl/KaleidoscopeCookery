@@ -19,12 +19,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jspecify.annotations.Nullable;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class RawDoughItem extends Item {
     public static final Identifier PULL_PROPERTY = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pull");
@@ -80,7 +81,7 @@ public class RawDoughItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.kaleidoscope_cookery.raw_dough").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(Component.translatable("tooltip.kaleidoscope_cookery.raw_dough").withStyle(ChatFormatting.GRAY));
     }
 }

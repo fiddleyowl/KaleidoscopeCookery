@@ -13,11 +13,12 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jspecify.annotations.Nullable;
-import java.util.List;
+import java.util.function.Consumer;
 
 import static com.github.ysbbbbbb.kaleidoscopecookery.init.ModDataComponents.OIL_POT_OIL_COUNT;
 
@@ -67,13 +68,13 @@ public class OilPotItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack pStack, TooltipContext context, TooltipDisplay display, Consumer<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         int oilCount = getOilCount(pStack);
         if (oilCount > 0) {
-            pTooltipComponents.add(Component.translatable("tooltip.kaleidoscope_cookery.oil_pot.count", oilCount)
+            pTooltipComponents.accept(Component.translatable("tooltip.kaleidoscope_cookery.oil_pot.count", oilCount)
                     .withStyle(ChatFormatting.GRAY));
         } else {
-            pTooltipComponents.add(Component.translatable("tooltip.kaleidoscope_cookery.oil_pot.empty")
+            pTooltipComponents.accept(Component.translatable("tooltip.kaleidoscope_cookery.oil_pot.empty")
                     .withStyle(ChatFormatting.GRAY));
         }
     }

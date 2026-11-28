@@ -30,6 +30,7 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -41,6 +42,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class TransmutationLunchBagItem extends Item {
     public static final Identifier HAS_ITEMS_PROPERTY = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "has_items");
@@ -384,10 +386,10 @@ public class TransmutationLunchBagItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.kaleidoscope_cookery.transmutation_lunch_bag.line1").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("tooltip.kaleidoscope_cookery.transmutation_lunch_bag.line2").withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("tooltip.kaleidoscope_cookery.transmutation_lunch_bag.line3").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(Component.translatable("tooltip.kaleidoscope_cookery.transmutation_lunch_bag.line1").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("tooltip.kaleidoscope_cookery.transmutation_lunch_bag.line2").withStyle(ChatFormatting.GRAY));
+        tooltip.accept(Component.translatable("tooltip.kaleidoscope_cookery.transmutation_lunch_bag.line3").withStyle(ChatFormatting.GRAY));
     }
 
     public record ItemContainer(ItemStackHandler items) {

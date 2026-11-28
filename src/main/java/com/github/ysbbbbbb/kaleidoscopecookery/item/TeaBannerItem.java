@@ -10,8 +10,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class TeaBannerItem extends BlockItem {
     public TeaBannerItem() {
@@ -19,7 +20,7 @@ public class TeaBannerItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
         CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         CompoundTag tag = data == null ? null : data.copyTag();
         DyeColor color = tag == null ? DyeColor.RED : TeaBannerBlockEntity.getColor(tag);
@@ -37,9 +38,9 @@ public class TeaBannerItem extends BlockItem {
         }
         MutableComponent colorName = Component.translatable("color.minecraft." + color.getName());
 
-        tooltip.add(Component.translatable("tooltip.kaleidoscope_cookery.tea_banner.color", colorName)
+        tooltip.accept(Component.translatable("tooltip.kaleidoscope_cookery.tea_banner.color", colorName)
                 .withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("tooltip.kaleidoscope_cookery.tea_banner.pattern", pattern)
+        tooltip.accept(Component.translatable("tooltip.kaleidoscope_cookery.tea_banner.pattern", pattern)
                 .withStyle(ChatFormatting.GRAY));
     }
 }

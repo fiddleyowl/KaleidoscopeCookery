@@ -15,11 +15,12 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ClayPotMilkTeaItem extends BlockItem implements IHasContainer {
     public ClayPotMilkTeaItem(Block block) {
@@ -72,8 +73,8 @@ public class ClayPotMilkTeaItem extends BlockItem implements IHasContainer {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.kaleidoscope_cookery.clay_pot_milk_tea.effect")
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(Component.translatable("tooltip.kaleidoscope_cookery.clay_pot_milk_tea.effect")
                 .withStyle(ChatFormatting.GRAY));
     }
 }
