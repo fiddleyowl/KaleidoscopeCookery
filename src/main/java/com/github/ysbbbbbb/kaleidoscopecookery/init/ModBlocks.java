@@ -171,64 +171,64 @@ public class ModBlocks {
             ).build());
 
     public static Supplier<BlockEntityType<PotBlockEntity>> POT_BE = BLOCK_ENTITIES.register("pot",
-            () -> BlockEntityType.Builder.of(PotBlockEntity::new, POT.get()).build(null));
+            () -> new BlockEntityType<>(PotBlockEntity::new, POT.get()));
 
     public static Supplier<BlockEntityType<StockpotBlockEntity>> STOCKPOT_BE = BLOCK_ENTITIES.register("stockpot",
-            () -> BlockEntityType.Builder.of(StockpotBlockEntity::new, STOCKPOT.get()).build(null));
+            () -> new BlockEntityType<>(StockpotBlockEntity::new, STOCKPOT.get()));
 
     public static Supplier<BlockEntityType<FruitBasketBlockEntity>> FRUIT_BASKET_BE = BLOCK_ENTITIES.register("fruit_basket",
-            () -> BlockEntityType.Builder.of(FruitBasketBlockEntity::new, FRUIT_BASKET.get()).build(null));
+            () -> new BlockEntityType<>(FruitBasketBlockEntity::new, FRUIT_BASKET.get()));
 
     public static Supplier<BlockEntityType<ChoppingBoardBlockEntity>> CHOPPING_BOARD_BE = BLOCK_ENTITIES.register("chopping_board",
-            () -> BlockEntityType.Builder.of(ChoppingBoardBlockEntity::new, CHOPPING_BOARD.get()).build(null));
+            () -> new BlockEntityType<>(ChoppingBoardBlockEntity::new, CHOPPING_BOARD.get()));
 
     public static Supplier<BlockEntityType<KitchenwareRacksBlockEntity>> KITCHENWARE_RACKS_BE = BLOCK_ENTITIES.register("kitchenware_racks",
-            () -> BlockEntityType.Builder.of(KitchenwareRacksBlockEntity::new, KITCHENWARE_RACKS.get()).build(null));
+            () -> new BlockEntityType<>(KitchenwareRacksBlockEntity::new, KITCHENWARE_RACKS.get()));
 
     public static Supplier<BlockEntityType<KitchenShelfBlockEntity>> KITCHEN_SHELF_BE = BLOCK_ENTITIES.register("kitchen_shelf",
             () -> new BlockEntityType<>(KitchenShelfBlockEntity::new, KITCHEN_SHELF.get()));
 
     public static Supplier<BlockEntityType<BambooTrayBlockEntity>> BAMBOO_TRAY_BE = BLOCK_ENTITIES.register("bamboo_tray",
-            () -> BlockEntityType.Builder.of(BambooTrayBlockEntity::new, BAMBOO_TRAY.get()).build(null));
+            () -> new BlockEntityType<>(BambooTrayBlockEntity::new, BAMBOO_TRAY.get()));
 
     public static Supplier<BlockEntityType<ShawarmaSpitBlockEntity>> SHAWARMA_SPIT_BE = BLOCK_ENTITIES.register("shawarma_spit",
-            () -> BlockEntityType.Builder.of(ShawarmaSpitBlockEntity::new, SHAWARMA_SPIT.get()).build(null));
+            () -> new BlockEntityType<>(ShawarmaSpitBlockEntity::new, SHAWARMA_SPIT.get()));
 
     public static Supplier<BlockEntityType<MillstoneBlockEntity>> MILLSTONE_BE = BLOCK_ENTITIES.register("millstone",
-            () -> BlockEntityType.Builder.of(MillstoneBlockEntity::new, MILLSTONE.get()).build(null));
+            () -> new BlockEntityType<>(MillstoneBlockEntity::new, MILLSTONE.get()));
 
     public static Supplier<BlockEntityType<RecipeBlockEntity>> RECIPE_BLOCK_BE = BLOCK_ENTITIES.register("recipe_block",
-            () -> BlockEntityType.Builder.of(RecipeBlockEntity::new, RECIPE_BLOCK.get()).build(null));
+            () -> new BlockEntityType<>(RecipeBlockEntity::new, RECIPE_BLOCK.get()));
 
     public static Supplier<BlockEntityType<TeaBannerBlockEntity>> TEA_BANNER_BE = BLOCK_ENTITIES.register("tea_banner",
-            () -> BlockEntityType.Builder.of(TeaBannerBlockEntity::new, TEA_BANNER.get()).build(null));
+            () -> new BlockEntityType<>(TeaBannerBlockEntity::new, TEA_BANNER.get()));
 
     public static Supplier<BlockEntityType<SteamerBlockEntity>> STEAMER_BE = BLOCK_ENTITIES.register("steamer",
-            () -> BlockEntityType.Builder.of(SteamerBlockEntity::new, STEAMER.get()).build(null));
+            () -> new BlockEntityType<>(SteamerBlockEntity::new, STEAMER.get()));
 
     public static Supplier<BlockEntityType<TeapotBlockEntity>> TEAPOT_BE = BLOCK_ENTITIES.register("teapot",
-            () -> BlockEntityType.Builder.of(TeapotBlockEntity::new, TEAPOT.get()).build(null));
+            () -> new BlockEntityType<>(TeapotBlockEntity::new, TEAPOT.get()));
 
     public static Supplier<BlockEntityType<OilPotBlockEntity>> OIL_POT_BE = BLOCK_ENTITIES.register("oil_pot",
-            () -> BlockEntityType.Builder.of(OilPotBlockEntity::new, OIL_POT.get()).build(null));
+            () -> new BlockEntityType<>(OilPotBlockEntity::new, OIL_POT.get()));
 
     public static Supplier<BlockEntityType<TrashCanBlockEntity>> TRASH_CAN_BE = BLOCK_ENTITIES.register("trash_can",
-            () -> BlockEntityType.Builder.of(TrashCanBlockEntity::new, TRASH_CAN.get()).build(null));
+            () -> new BlockEntityType<>(TrashCanBlockEntity::new, TRASH_CAN.get()));
 
     public static Supplier<BlockEntityType<FoodBiteThreeByThreeBlockEntity>> FOOD_BITE_THREE_BY_THREE_BE = BLOCK_ENTITIES.register("food_bite_three_by_three",
-            () -> BlockEntityType.Builder.of(FoodBiteThreeByThreeBlockEntity::new, COLD_CUT_HAM_SLICES.get()).build(null));
+            () -> new BlockEntityType<>(FoodBiteThreeByThreeBlockEntity::new, COLD_CUT_HAM_SLICES.get()));
 
-    public static Supplier<BlockEntityType<ChairBlockEntity>> CHAIR_BE = BLOCK_ENTITIES.register("chair", () -> BlockEntityType.Builder.of(ChairBlockEntity::new,
+    public static Supplier<BlockEntityType<ChairBlockEntity>> CHAIR_BE = BLOCK_ENTITIES.register("chair", () -> new BlockEntityType<>(ChairBlockEntity::new,
             CHAIR_OAK.get(), CHAIR_SPRUCE.get(), CHAIR_ACACIA.get(), CHAIR_BAMBOO.get(),
             CHAIR_BIRCH.get(), CHAIR_CHERRY.get(), CHAIR_CRIMSON.get(), CHAIR_DARK_OAK.get(),
             CHAIR_JUNGLE.get(), CHAIR_MANGROVE.get(), CHAIR_WARPED.get()
-    ).build(null));
+    ));
 
-    public static Supplier<BlockEntityType<TableBlockEntity>> TABLE_BE = BLOCK_ENTITIES.register("table", () -> BlockEntityType.Builder.of(TableBlockEntity::new,
+    public static Supplier<BlockEntityType<TableBlockEntity>> TABLE_BE = BLOCK_ENTITIES.register("table", () -> new BlockEntityType<>(TableBlockEntity::new,
             TABLE_OAK.get(), TABLE_SPRUCE.get(), TABLE_ACACIA.get(), TABLE_BAMBOO.get(),
             TABLE_BIRCH.get(), TABLE_CHERRY.get(), TABLE_CRIMSON.get(), TABLE_DARK_OAK.get(),
             TABLE_JUNGLE.get(), TABLE_MANGROVE.get(), TABLE_WARPED.get()
-    ).build(null));
+    ));
 
     private static DeferredBlock<Block> candiedSkewer(String name, int maxCount, boolean upright, Supplier<Item> item, int lightLevel) {
         return BLOCKS.register(name, () -> new CandiedSkewerBlock(maxCount, item, lightLevel, upright));
