@@ -63,12 +63,16 @@ public final class ModItems {
     public static DeferredItem<Item> TEA_BANNER = ITEMS.register("tea_banner", TeaBannerItem::new);
 
     // 工具
-    public static DeferredItem<Item> IRON_KITCHEN_KNIFE = ITEMS.register("iron_kitchen_knife", () -> new KitchenKnifeItem(Tiers.IRON));
-    public static DeferredItem<Item> GOLD_KITCHEN_KNIFE = ITEMS.register("gold_kitchen_knife", () -> new KitchenKnifeItem(Tiers.GOLD));
-    public static DeferredItem<Item> DIAMOND_KITCHEN_KNIFE = ITEMS.register("diamond_kitchen_knife", () -> new KitchenKnifeItem(Tiers.DIAMOND));
-    public static DeferredItem<Item> NETHERITE_KITCHEN_KNIFE = ITEMS.register("netherite_kitchen_knife", () -> new KitchenKnifeItem(Tiers.NETHERITE, (new Item.Properties()).fireResistant()));
-    public static DeferredItem<Item> KITCHEN_SHOVEL = ITEMS.register("kitchen_shovel", KitchenShovelItem::new);
-    public static DeferredItem<Item> SICKLE = ITEMS.register("sickle", SickleItem::new);
+    public static DeferredItem<Item> IRON_KITCHEN_KNIFE = ITEMS.registerItem("iron_kitchen_knife",
+            properties -> new KitchenKnifeItem(ToolMaterial.IRON, properties));
+    public static DeferredItem<Item> GOLD_KITCHEN_KNIFE = ITEMS.registerItem("gold_kitchen_knife",
+            properties -> new KitchenKnifeItem(ToolMaterial.GOLD, properties));
+    public static DeferredItem<Item> DIAMOND_KITCHEN_KNIFE = ITEMS.registerItem("diamond_kitchen_knife",
+            properties -> new KitchenKnifeItem(ToolMaterial.DIAMOND, properties));
+    public static DeferredItem<Item> NETHERITE_KITCHEN_KNIFE = ITEMS.registerItem("netherite_kitchen_knife",
+            properties -> new KitchenKnifeItem(ToolMaterial.NETHERITE, properties.fireResistant()));
+    public static DeferredItem<Item> KITCHEN_SHOVEL = ITEMS.registerItem("kitchen_shovel", KitchenShovelItem::new);
+    public static DeferredItem<Item> SICKLE = ITEMS.registerItem("sickle", SickleItem::new);
 
     // 服装
     public static DeferredItem<Item> STRAW_HAT = ITEMS.registerItem("straw_hat", properties -> new StrawHatItem(false, properties));

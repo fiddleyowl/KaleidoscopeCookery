@@ -7,57 +7,82 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModEnchantments;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.Weapon;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.SimpleTier;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public class SickleItem extends SwordItem {
-    private static final SimpleTier SICKLE_TIER = new SimpleTier(
-            BlockTags.INCORRECT_FOR_STONE_TOOL,
-            2000, // 耐久度
-            4.0F, // 挖掘速度
-            1.0F, // 伤害加成
-            5, // 附魔值
-            () -> Ingredient.of(Items.FLINT)
-    );
-
-    public SickleItem(Tier tier, Properties properties) {
-        super(tier, properties);
+public class SickleItem extends Item {
+    public SickleItem(ToolMaterial material, Properties properties) {
+        this(material, properties, createToolProperties());
     }
 
-    public SickleItem(Tier tier, Properties properties, Tool toolComponentData) {
-        super(tier, properties, toolComponentData);
+    public SickleItem(ToolMaterial material, Properties properties, Tool toolComponentData) {
+        this(properties.durability(material.durability())
+                .enchantable(material.enchantmentValue())
+                .repairable(material.repairItems()), toolComponentData);
     }
 
-    public SickleItem() {
-        this(SICKLE_TIER, new Properties());
+    public SickleItem(Properties properties) {
+        this(properties.durability(2000) // 耐久度
+                .enchantable(5) // 附魔值
+                .repairable(Items.FLINT), createToolProperties());
+    }
+
+    private SickleItem(Properties properties, Tool toolComponentData) {
+        super(properties.component(DataComponents.TOOL, toolComponentData)
+                .component(DataComponents.WEAPON, new Weapon(1)));
+    }
+
+    // 镰刀使用剑的挖掘规则，攻击属性由物品属性决定。
+    private static Tool createToolProperties() {
+        var blocks = BuiltInRegistries.acquireBootstrapRegistrationLookup(BuiltInRegistries.BLOCK);
+        return new Tool(List.of(
+                Tool.Rule.minesAndDrops(HolderSet.direct(Blocks.COBWEB.builtInRegistryHolder()), 15.0F),
+                Tool.Rule.overrideSpeed(blocks.getOrThrow(BlockTags.SWORD_INSTANTLY_MINES), Float.MAX_VALUE),
+                Tool.Rule.overrideSpeed(blocks.getOrThrow(BlockTags.SWORD_EFFICIENT), 1.5F)
+        ), 1.0F, 2, true);
     }
 
     @Override
-    public boolean canAttackBlock(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
+    public boolean canDestroyBlock(ItemStack stack, BlockState state, Level level, BlockPos pos, LivingEntity user) {
         return true;
+    }
+
+    @Override
+    public boolean canPerformAction(ItemInstance stack, ItemAbility itemAbility) {
+        return itemAbility == ItemAbilities.SWORD_SWEEP;
     }
 
     @Override
@@ -93,7 +118,10 @@ public class SickleItem extends SwordItem {
                 player.getX(), player.getY(), player.getZ(),
                 SoundEvents.PLAYER_ATTACK_SWEEP, player.getSoundSource(),
                 1.0F, 1.0F);
-        player.sweepAttack();
+        double dx = -Mth.sin(player.getYRot() * (float) (Math.PI / 180.0));
+        double dz = Mth.cos(player.getYRot() * (float) (Math.PI / 180.0));
+        serverLevel.sendParticles(ParticleTypes.SWEEP_ATTACK, player.getX() + dx, player.getY(0.5), player.getZ() + dz,
+                0, dx, 0.0, dz, 0.0);
         int durabilityCost = switch (sweepLevel) {
             case 1 -> 2;
             case 2 -> 4;
@@ -101,7 +129,7 @@ public class SickleItem extends SwordItem {
             default -> 1;
         };
         stack.hurtAndBreak(durabilityCost, player, EquipmentSlot.MAINHAND);
-        player.getCooldowns().addCooldown(this, 10);
+        player.getCooldowns().addCooldown(BuiltInRegistries.ITEM.getKey(this), 10);
         return InteractionResult.SUCCESS;
     }
 
@@ -173,7 +201,8 @@ public class SickleItem extends SwordItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("tooltip.kaleidoscope_cookery.sickle").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
+                                Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(Component.translatable("tooltip.kaleidoscope_cookery.sickle").withStyle(ChatFormatting.GRAY));
     }
 }

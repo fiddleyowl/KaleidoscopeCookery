@@ -12,7 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
@@ -30,8 +30,8 @@ public class KitchenShovelItem extends ShovelItem {
     private static final int NO_OIL = 0;
     private static final int HAS_OIL = 1;
 
-    public KitchenShovelItem() {
-        super(Tiers.IRON, new Properties().attributes(ShovelItem.createAttributes(Tiers.IRON, -1, -2.0F)));
+    public KitchenShovelItem(Properties properties) {
+        super(ToolMaterial.IRON, -1, -2.0F, properties);
     }
 
     public static void setHasOil(ItemStack stack, boolean hasOil) {
@@ -56,7 +56,8 @@ public class KitchenShovelItem extends ShovelItem {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         InteractionResult result = super.useOn(context);
-        if (result.indicateItemUse() && hasOil(context.getItemInHand())) {
+        if (result instanceof InteractionResult.Success success && success.wasItemInteraction()
+            && hasOil(context.getItemInHand())) {
             setHasOil(context.getItemInHand(), false);
         }
         return result;
