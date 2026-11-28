@@ -41,7 +41,7 @@ public class PotRecipeSerializer {
     public static final StreamCodec<RegistryFriendlyByteBuf, PotRecipe> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, PotRecipe::time,
             ByteBufCodecs.INT, PotRecipe::stirFryCount,
-            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC, PotRecipe::carrier,
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs::optional), PotRecipe::carrier,
             Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), PotRecipe::ingredients,
             ItemStack.STREAM_CODEC, PotRecipe::result,
             PotRecipe::new);

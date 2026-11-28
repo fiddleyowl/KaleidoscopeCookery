@@ -40,7 +40,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -142,11 +142,10 @@ public class RecipeItem extends BlockItem {
             return super.useOn(context);
         }
 
-        RecipeManager recipeManager = level.getRecipeManager();
         if (hasRecipe(itemInHand)) {
             return this.onPutRecipe(blockEntity, player, itemInHand);
         } else {
-            return this.onRecordRecipe(level, player, blockEntity, recipeManager, itemInHand);
+            return this.onRecordRecipe(level, player, blockEntity, ModRecipes.getRecipeMap(level), itemInHand);
         }
     }
 
@@ -268,14 +267,14 @@ public class RecipeItem extends BlockItem {
     }
 
     private InteractionResult onRecordRecipe(Level level, Player player, BlockEntity blockEntity,
-                                             RecipeManager recipeManager, ItemStack itemInHand) {
+                                             RecipeMap recipes, ItemStack itemInHand) {
         if (blockEntity instanceof PotBlockEntity pot && pot.getStatus() == IPot.PUT_INGREDIENT) {
             List<ItemStack> inputs = pot.getInputs().stream().filter(s -> !s.isEmpty()).toList();
             if (inputs.isEmpty()) {
                 return InteractionResult.PASS;
             }
             ItemStack recordStack = itemInHand.split(1);
-            RecipeResult recipeResult = getPotRecipeResult(level, recipeManager, pot, inputs, recordStack);
+            RecipeResult recipeResult = getPotRecipeResult(level, recipes, pot, inputs, recordStack);
             setRecipe(recordStack, new RecipeRecord(inputs, recipeResult.output(), POT, recipeResult.flexRecipe()));
             ItemUtils.getItemToLivingEntity(player, recordStack);
             return InteractionResult.SUCCESS;
@@ -287,7 +286,7 @@ public class RecipeItem extends BlockItem {
                 return InteractionResult.PASS;
             }
             ItemStack recordStack = itemInHand.split(1);
-            RecipeResult recipeResult = getStockpotRecipeResult(level, recipeManager, stockpot, inputs, recordStack);
+            RecipeResult recipeResult = getStockpotRecipeResult(level, recipes, stockpot, inputs, recordStack);
             setRecipe(recordStack, new RecipeRecord(inputs, recipeResult.output(), STOCKPOT, recipeResult.flexRecipe()));
             ItemUtils.getItemToLivingEntity(player, recordStack);
             return InteractionResult.SUCCESS;
@@ -296,21 +295,21 @@ public class RecipeItem extends BlockItem {
         return InteractionResult.PASS;
     }
 
-    private RecipeResult getPotRecipeResult(Level level, RecipeManager recipeManager, PotBlockEntity pot,
+    private RecipeResult getPotRecipeResult(Level level, RecipeMap recipes, PotBlockEntity pot,
                                             List<ItemStack> inputs, ItemStack recordStack) {
         var container = pot.getContainer();
-        var potRecipe = recipeManager.getRecipeFor(ModRecipes.POT_RECIPE, container, level);
+        var potRecipe = recipes.getRecipesFor(ModRecipes.POT_RECIPE, container, level).findFirst();
         if (potRecipe.isPresent()) {
             ItemStack assemble = potRecipe.get().value()
                     .assemble(container);
             return new RecipeResult(assemble, false);
         }
 
-        var flexPotRecipe = recipeManager.getRecipeFor(ModRecipes.FLEX_POT_RECIPE, container, level);
+        var flexPotRecipe = recipes.getRecipesFor(ModRecipes.FLEX_POT_RECIPE, container, level).findFirst();
         if (flexPotRecipe.isPresent()) {
             var recipe = flexPotRecipe.get();
             ItemStack result = recipe.value().assemble(container);
-            setQuality(level, inputs, recipe.value().ingredients(), recipe.id(), result, recordStack);
+            setQuality(level, inputs, recipe.value().ingredients(), recipe.id().identifier(), result, recordStack);
             return new RecipeResult(result, true);
         }
 
@@ -318,21 +317,21 @@ public class RecipeItem extends BlockItem {
         return new RecipeResult(instance, false);
     }
 
-    private RecipeResult getStockpotRecipeResult(Level level, RecipeManager recipeManager, StockpotBlockEntity stockpot,
+    private RecipeResult getStockpotRecipeResult(Level level, RecipeMap recipes, StockpotBlockEntity stockpot,
                                                  List<ItemStack> inputs, ItemStack recordStack) {
         var container = stockpot.getInput();
-        var stockpotRecipe = recipeManager.getRecipeFor(ModRecipes.STOCKPOT_RECIPE, container, level);
+        var stockpotRecipe = recipes.getRecipesFor(ModRecipes.STOCKPOT_RECIPE, container, level).findFirst();
         if (stockpotRecipe.isPresent()) {
             ItemStack assemble = stockpotRecipe.get().value()
                     .assemble(container);
             return new RecipeResult(assemble, false);
         }
 
-        var flexStockpotRecipe = recipeManager.getRecipeFor(ModRecipes.FLEX_STOCKPOT_RECIPE, container, level);
+        var flexStockpotRecipe = recipes.getRecipesFor(ModRecipes.FLEX_STOCKPOT_RECIPE, container, level).findFirst();
         if (flexStockpotRecipe.isPresent()) {
             var recipe = flexStockpotRecipe.get();
             ItemStack result = recipe.value().assemble(container);
-            setQuality(level, inputs, recipe.value().ingredients(), recipe.id(), result, recordStack);
+            setQuality(level, inputs, recipe.value().ingredients(), recipe.id().identifier(), result, recordStack);
             return new RecipeResult(result, true);
         }
 

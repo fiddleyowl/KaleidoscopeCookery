@@ -26,10 +26,12 @@ import com.github.ysbbbbbb.kaleidoscopecookery.util.ItemUtils;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -44,8 +46,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -201,12 +205,8 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
 
     private int getBubbleColor() {
         // 需要检查下 recipe 是否更新
-        if (this.level != null && this.recipeId != StockpotRecipeSerializer.EMPTY_ID && this.visuals == null) {
-            var recipe = this.getRecipeById(this.level, this.recipeId);
-            if (recipe != null) {
-                recipe.ifLeft(r -> this.visuals = r.value().visuals())
-                        .ifRight(r -> this.visuals = r.value().visuals());
-            }
+        if (this.level != null && this.visuals == null) {
+            this.visuals = this.getRecipeVisuals(ModRecipes.getRecipeMap(this.level));
         }
         if (this.visuals == null) {
             this.visuals = StockpotVisuals.DEFAULT;
@@ -271,14 +271,26 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
             this.applyRecipe(levelIn, input, preEvent.getOutput());
         }
 
-        var stockpotRecipe = this.quickCheck.getRecipeFor(input, levelIn);
+        Optional<RecipeHolder<StockpotRecipe>> stockpotRecipe;
+        if (levelIn instanceof ServerLevel serverLevel) {
+            stockpotRecipe = this.quickCheck.getRecipeFor(input, serverLevel);
+        } else {
+            stockpotRecipe = ModRecipes.getRecipeMap(levelIn)
+                    .getRecipesFor(ModRecipes.STOCKPOT_RECIPE, input, levelIn).findFirst();
+        }
         if (stockpotRecipe.isPresent()) {
             this.applyRecipe(levelIn, input, stockpotRecipe.get());
             this.postEvent(levelIn, input);
             return;
         }
 
-        var flexStockpotRecipe = this.flexQuickCheck.getRecipeFor(input, levelIn);
+        Optional<RecipeHolder<FlexStockpotRecipe>> flexStockpotRecipe;
+        if (levelIn instanceof ServerLevel serverLevel) {
+            flexStockpotRecipe = this.flexQuickCheck.getRecipeFor(input, serverLevel);
+        } else {
+            flexStockpotRecipe = ModRecipes.getRecipeMap(levelIn)
+                    .getRecipesFor(ModRecipes.FLEX_STOCKPOT_RECIPE, input, levelIn).findFirst();
+        }
         if (flexStockpotRecipe.isPresent()) {
             this.applyFlexRecipe(levelIn, input, flexStockpotRecipe.get());
             this.postEvent(levelIn, input);
@@ -310,7 +322,7 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
     private void applyRecipe(Level level, StockpotInput input, RecipeHolder<StockpotRecipe> recipe) {
         StockpotRecipe value = recipe.value();
 
-        this.recipeId = recipe.id();
+        this.recipeId = recipe.id().identifier();
         this.visuals = value.visuals();
         this.result = value.assemble(input);
         this.currentTick = value.time();
@@ -323,7 +335,7 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
     private void applyFlexRecipe(Level level, StockpotInput input, RecipeHolder<FlexStockpotRecipe> recipe) {
         FlexStockpotRecipe value = recipe.value();
 
-        this.recipeId = recipe.id();
+        this.recipeId = recipe.id().identifier();
         this.visuals = value.visuals();
         this.result = value.assemble(input);
         this.currentTick = value.time();
@@ -333,22 +345,35 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
         // 计算品质
         if (level instanceof ServerLevel serverLevel) {
             // 计算品质
-            Quality quality = QualityEvaluator.evaluate(this.inputs, value.ingredients(), recipe.id(), serverLevel.getSeed());
+            Quality quality = QualityEvaluator.evaluate(this.inputs, value.ingredients(), this.recipeId, serverLevel.getSeed());
             // 将品质保存在 NBT 里，供客户端渲染使用
             QualityUtils.setQuality(this.result, quality);
         }
     }
 
     @Nullable
-    private Either<RecipeHolder<StockpotRecipe>, RecipeHolder<FlexStockpotRecipe>> getRecipeById(Level level, Identifier recipeId) {
-        RecipeManager manager = level.getRecipeManager();
-        RecipeHolder<StockpotRecipe> stockpotRecipe = manager.byKeyTyped(ModRecipes.STOCKPOT_RECIPE, recipeId);
-        if (stockpotRecipe != null) {
+    private Either<StockpotRecipe, FlexStockpotRecipe> getRecipeById(RecipeMap recipes, Identifier recipeId) {
+        ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE, recipeId);
+        RecipeHolder<?> holder = recipes.byKey(key);
+        if (holder == null) {
+            return null;
+        }
+        if (holder.value() instanceof StockpotRecipe stockpotRecipe) {
             return Either.left(stockpotRecipe);
         }
-        RecipeHolder<FlexStockpotRecipe> flexStockpotRecipe = manager.byKeyTyped(ModRecipes.FLEX_STOCKPOT_RECIPE, recipeId);
-        if (flexStockpotRecipe != null) {
+        if (holder.value() instanceof FlexStockpotRecipe flexStockpotRecipe) {
             return Either.right(flexStockpotRecipe);
+        }
+        return null;
+    }
+
+    @Nullable
+    private StockpotVisuals getRecipeVisuals(RecipeMap recipes) {
+        if (this.recipeId != null && !this.recipeId.equals(StockpotRecipeSerializer.EMPTY_ID)) {
+            var recipe = this.getRecipeById(recipes, this.recipeId);
+            if (recipe != null) {
+                return recipe.map(StockpotRecipe::visuals, FlexStockpotRecipe::visuals);
+            }
         }
         return null;
     }
@@ -550,13 +575,13 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
         if (this.recipeId.equals(StockpotRecipeSerializer.EMPTY_ID)) {
             carrier = Optional.of(StockpotRecipeSerializer.DEFAULT_CARRIER);
         } else {
-            var recipe = this.getRecipeById(level, this.recipeId);
+            var recipe = this.getRecipeById(ModRecipes.getRecipeMap(level), this.recipeId);
             if (recipe == null) {
                 carrier = Optional.of(StockpotRecipeSerializer.DEFAULT_CARRIER);
             } else {
                 carrier = recipe.map(
-                        left -> left.value().carrier(),
-                        right -> right.value().carrier()
+                        StockpotRecipe::carrier,
+                        FlexStockpotRecipe::carrier
                 );
             }
         }
@@ -589,7 +614,7 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
         if (level instanceof ServerLevel serverLevel) {
             recipes = serverLevel.recipeAccess().getRecipes();
         } else if (level.isClientSide()) {
-            recipes = ClientSetupEvent.getStockpotRecipes();
+            recipes = ClientSetupEvent.getRecipeMap().byType(ModRecipes.STOCKPOT_RECIPE);
         } else {
             return ItemStack.EMPTY;
         }
@@ -656,11 +681,10 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
         });
         input.getString(RECIPE_ID).ifPresent(id -> {
             this.recipeId = Identifier.tryParse(id);
-            if (this.level != null && this.recipeId != null) {
-                var recipe = this.getRecipeById(this.level, this.recipeId);
-                if (recipe != null) {
-                    recipe.ifLeft(r -> this.visuals = r.value().visuals())
-                            .ifRight(r -> this.visuals = r.value().visuals());
+            if (this.level != null) {
+                StockpotVisuals recipeVisuals = this.getRecipeVisuals(ModRecipes.getRecipeMap(this.level));
+                if (recipeVisuals != null) {
+                    this.visuals = recipeVisuals;
                 }
             }
         });

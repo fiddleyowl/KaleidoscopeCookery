@@ -78,8 +78,9 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
             return false;
         }
         SingleRecipeInput container = new SingleRecipeInput(putOnItem);
-        Optional<RecipeHolder<ChoppingBoardRecipe>> recipeOptional = level.getRecipeManager()
-                .getRecipeFor(ModRecipes.CHOPPING_BOARD_RECIPE, container, level);
+        Optional<RecipeHolder<ChoppingBoardRecipe>> recipeOptional = ModRecipes.getRecipeMap(level)
+                .getRecipesFor(ModRecipes.CHOPPING_BOARD_RECIPE, container, level)
+                .findFirst();
         if (recipeOptional.isPresent()) {
             ChoppingBoardRecipe recipe = recipeOptional.get().value();
             this.modelId = recipe.getModelId();

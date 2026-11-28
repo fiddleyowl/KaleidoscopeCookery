@@ -31,7 +31,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import static net.neoforged.neoforge.common.Tags.Blocks.GLASS_BLOCKS_COLORLESS;
 import static net.neoforged.neoforge.common.Tags.Blocks.GLASS_PANES_COLORLESS;
@@ -55,7 +55,7 @@ public class BambooTrayBlockEntity extends BaseBlockEntity implements WorldlyCon
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, BambooTrayBlockEntity tray) {
-        if (level.isClientSide()) {
+        if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
@@ -74,7 +74,7 @@ public class BambooTrayBlockEntity extends BaseBlockEntity implements WorldlyCon
                 : BambooTrayRecipe.Subtype.DRYING;
 
         boolean changed = false;
-        List<RecipeHolder<BambooTrayRecipe>> recipes = level.getRecipeManager().getAllRecipesFor(ModRecipes.BAMBOO_TRAY_RECIPE);
+        Collection<RecipeHolder<BambooTrayRecipe>> recipes = serverLevel.recipeAccess().recipeMap().byType(ModRecipes.BAMBOO_TRAY_RECIPE);
         for (int slot = 0; slot < tray.items.size(); slot++) {
             ItemStack input = tray.items.get(slot);
             CompletionState completionState = tray.completionStates[slot];

@@ -107,8 +107,12 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
                     return;
                 }
                 // 时间到，开始进入 PROCESSING 状态
+                // 开始煮茶时由服务端查询配方，客户端通过方块实体同步读取结果。
+                if (!(level instanceof ServerLevel serverLevel)) {
+                    return;
+                }
                 TeapotInput container = new TeapotInput(this.input, this.teaFluidId);
-                Optional<RecipeHolder<TeapotRecipe>> recipeOpt = this.quickCheck.getRecipeFor(container, level);
+                Optional<RecipeHolder<TeapotRecipe>> recipeOpt = this.quickCheck.getRecipeFor(container, serverLevel);
                 if (recipeOpt.isPresent()) {
                     TeapotRecipe teapotRecipe = recipeOpt.get().value();
                     this.result = teapotRecipe.assemble(container);

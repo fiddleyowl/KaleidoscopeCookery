@@ -28,7 +28,7 @@ public class FlexPotRecipeSerializer {
     public static final StreamCodec<RegistryFriendlyByteBuf, FlexPotRecipe> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, FlexPotRecipe::time,
             ByteBufCodecs.INT, FlexPotRecipe::stirFryCount,
-            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC, FlexPotRecipe::carrier,
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs::optional), FlexPotRecipe::carrier,
             Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), FlexPotRecipe::ingredients,
             ItemStack.STREAM_CODEC, FlexPotRecipe::result,
             FlexPotRecipe::new);

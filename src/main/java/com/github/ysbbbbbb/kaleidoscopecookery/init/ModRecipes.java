@@ -1,14 +1,18 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.init;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.init.ClientSetupEvent;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.*;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
@@ -78,7 +82,19 @@ public class ModRecipes {
 
     @SubscribeEvent
     public static void onDatapackSync(OnDatapackSyncEvent event) {
-        event.sendRecipes(STOCKPOT_RECIPE);
+        event.sendRecipes(POT_RECIPE, FLEX_POT_RECIPE, STOCKPOT_RECIPE, FLEX_STOCKPOT_RECIPE,
+                CHOPPING_BOARD_RECIPE, MILLSTONE_RECIPE, STEAMER_RECIPE, RecipeType.CAMPFIRE_COOKING);
+    }
+
+    // 客户端查询使用服务器同步的配方，供交互判定和显示使用。
+    public static RecipeMap getRecipeMap(Level level) {
+        if (level instanceof ServerLevel serverLevel) {
+            return serverLevel.recipeAccess().recipeMap();
+        }
+        if (level.isClientSide()) {
+            return ClientSetupEvent.getRecipeMap();
+        }
+        return RecipeMap.EMPTY;
     }
 
     private static <T extends Recipe<?>> RecipeType<T> registerType(RegisterEvent.RegisterHelper<RecipeType<?>> helper, String name) {

@@ -35,7 +35,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -294,15 +294,15 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
 
     private void startCooking(Level level) {
         SimpleInput simpleInput = new SimpleInput(this.inputs);
-        RecipeManager manager = level.getRecipeManager();
+        RecipeMap recipes = ModRecipes.getRecipeMap(level);
 
-        var potRecipe = manager.getRecipeFor(ModRecipes.POT_RECIPE, simpleInput, level);
+        var potRecipe = recipes.getRecipesFor(ModRecipes.POT_RECIPE, simpleInput, level).findFirst();
         if (potRecipe.isPresent()) {
             this.applyRecipe(level, simpleInput, potRecipe.get());
             return;
         }
 
-        var flexPotRecipe = manager.getRecipeFor(ModRecipes.FLEX_POT_RECIPE, simpleInput, level);
+        var flexPotRecipe = recipes.getRecipesFor(ModRecipes.FLEX_POT_RECIPE, simpleInput, level).findFirst();
         if (flexPotRecipe.isPresent()) {
             this.applyFlexRecipe(level, simpleInput, flexPotRecipe.get());
             return;
@@ -336,7 +336,8 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
         // 计算品质
         if (level instanceof ServerLevel serverLevel) {
             // 计算品质
-            Quality quality = QualityEvaluator.evaluate(this.inputs, value.ingredients(), recipe.id(), serverLevel.getSeed());
+            Quality quality = QualityEvaluator.evaluate(this.inputs, value.ingredients(),
+                    recipe.id().identifier(), serverLevel.getSeed());
             // 将品质保存在 NBT 里，供客户端渲染使用
             QualityUtils.setQuality(this.result, quality);
         }

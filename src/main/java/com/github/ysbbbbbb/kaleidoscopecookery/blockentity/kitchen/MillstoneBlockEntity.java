@@ -369,7 +369,14 @@ public class MillstoneBlockEntity extends BaseBlockEntity implements IMillstone 
         if (preEvent.getOutput() != null) {
             recipe = preEvent.getOutput();
         } else {
-            Optional<RecipeHolder<MillstoneRecipe>> opt = this.quickCheck.getRecipeFor(input, level);
+            Optional<RecipeHolder<MillstoneRecipe>> opt;
+            if (level instanceof ServerLevel serverLevel) {
+                opt = this.quickCheck.getRecipeFor(input, serverLevel);
+            } else {
+                opt = ModRecipes.getRecipeMap(level)
+                        .getRecipesFor(ModRecipes.MILLSTONE_RECIPE, input, level)
+                        .findFirst();
+            }
             if (opt.isPresent()) {
                 recipe = opt.orElseThrow();
             }

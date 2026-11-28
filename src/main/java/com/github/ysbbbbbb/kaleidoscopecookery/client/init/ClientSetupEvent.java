@@ -27,6 +27,7 @@ import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -55,7 +56,7 @@ public class ClientSetupEvent {
     private static final Identifier FARMER_ARMOR_TEXTURE = Identifier.withDefaultNamespace("textures/models/armor/cookery_farmer_layer_1.png");
     private static final Identifier FARMER_LEGGINGS_TEXTURE = Identifier.withDefaultNamespace("textures/models/armor/cookery_farmer_layer_2.png");
 
-    private static List<RecipeHolder<StockpotRecipe>> stockpotRecipes = List.of();
+    private static RecipeMap recipeMap = RecipeMap.EMPTY;
 
     @SubscribeEvent
     @SuppressWarnings("all")
@@ -66,16 +67,20 @@ public class ClientSetupEvent {
 
     @SubscribeEvent
     public static void onRecipesReceived(RecipesReceivedEvent event) {
-        stockpotRecipes = List.copyOf(event.getRecipeMap().byType(ModRecipes.STOCKPOT_RECIPE));
+        recipeMap = event.getRecipeMap();
     }
 
     @SubscribeEvent
     public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
-        stockpotRecipes = List.of();
+        recipeMap = RecipeMap.EMPTY;
+    }
+
+    public static RecipeMap getRecipeMap() {
+        return recipeMap;
     }
 
     public static List<RecipeHolder<StockpotRecipe>> getStockpotRecipes() {
-        return stockpotRecipes;
+        return List.copyOf(recipeMap.byType(ModRecipes.STOCKPOT_RECIPE));
     }
 
     @SubscribeEvent

@@ -33,7 +33,7 @@ public class FlexStockpotRecipeSerializer {
             Identifier.STREAM_CODEC, FlexStockpotRecipe::soupBase,
             ItemStack.STREAM_CODEC, FlexStockpotRecipe::result,
             ByteBufCodecs.INT, FlexStockpotRecipe::time,
-            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC, FlexStockpotRecipe::carrier,
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs::optional), FlexStockpotRecipe::carrier,
             StockpotVisuals.STREAM_CODEC, FlexStockpotRecipe::visuals,
             FlexStockpotRecipe::new
     );

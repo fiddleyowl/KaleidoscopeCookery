@@ -5,6 +5,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.block.kitchen.ShawarmaSpitBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.BaseBlockEntity;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModParticles;
+import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.github.ysbbbbbb.kaleidoscopecookery.util.ItemUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -13,6 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -20,6 +22,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+
+import java.util.Optional;
 
 public class ShawarmaSpitBlockEntity extends BaseBlockEntity implements IShawarmaSpit {
     private static final int MAX_ITEMS = 8;
@@ -45,12 +49,19 @@ public class ShawarmaSpitBlockEntity extends BaseBlockEntity implements IShawarm
         }
         // 尝试通过输入的物品寻找营火配方
         SingleRecipeInput singleRecipeInput = new SingleRecipeInput(itemStack);
-        return this.quickCheck.getRecipeFor(singleRecipeInput, level).map(recipe -> {
+        Optional<RecipeHolder<CampfireCookingRecipe>> recipeOptional;
+        if (level instanceof ServerLevel serverLevel) {
+            recipeOptional = this.quickCheck.getRecipeFor(singleRecipeInput, serverLevel);
+        } else {
+            recipeOptional = ModRecipes.getRecipeMap(level)
+                    .getRecipesFor(RecipeType.CAMPFIRE_COOKING, singleRecipeInput, level).findFirst();
+        }
+        return recipeOptional.map(recipe -> {
             // 如果找到了配方，则设置正在烹饪的物品和烹饪时间
             this.cookingItem = itemStack.split(MAX_ITEMS);
             this.cookedItem = recipe.value().assemble(singleRecipeInput);
             this.cookedItem.setCount(this.cookingItem.getCount());
-            this.cookTime = recipe.value().getCookingTime();
+            this.cookTime = recipe.value().cookingTime();
             this.refresh();
             if (level instanceof ServerLevel) {
                 level.playSound(null,

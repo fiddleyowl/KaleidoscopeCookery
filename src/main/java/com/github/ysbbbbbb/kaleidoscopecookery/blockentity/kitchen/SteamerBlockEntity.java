@@ -250,7 +250,7 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
                 continue;
             }
             SingleRecipeInput container = new SingleRecipeInput(stack);
-            ItemStack resultStack = steamer.quickCheck.getRecipeFor(container, level)
+            ItemStack resultStack = steamer.findRecipe(level, container)
                     .map(r -> r.value().assemble(container))
                     .orElse(stack);
             if (!resultStack.isEmpty()) {
@@ -310,7 +310,14 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
         if (this.items.stream().noneMatch(ItemStack::isEmpty)) {
             return Optional.empty();
         }
-        return this.quickCheck.getRecipeFor(new SingleRecipeInput(stack), level);
+        return this.findRecipe(level, new SingleRecipeInput(stack));
+    }
+
+    private Optional<RecipeHolder<SteamerRecipe>> findRecipe(Level level, SingleRecipeInput recipeInput) {
+        if (level instanceof ServerLevel serverLevel) {
+            return this.quickCheck.getRecipeFor(recipeInput, serverLevel);
+        }
+        return ModRecipes.getRecipeMap(level).getRecipesFor(ModRecipes.STEAMER_RECIPE, recipeInput, level).findFirst();
     }
 
     @Override
