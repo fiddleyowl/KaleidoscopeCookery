@@ -8,13 +8,10 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModEnchantments;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import com.google.common.collect.Lists;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -29,12 +26,13 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppingBoard {
     private static final String MODEL_ID = "ModelId";
@@ -42,6 +40,8 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
     private static final String RESULT_ITEM = "ResultItem";
     private static final String MAX_CUT_COUNT = "MaxCutCount";
     private static final String CURRENT_CUT_COUNT = "CurrentCutCount";
+    private static final Codec<List<ItemStack>> RESULTS_CODEC = Codec.withAlternative(
+            ItemStack.OPTIONAL_CODEC.listOf(), ItemStack.OPTIONAL_CODEC, Lists::newArrayList);
     /**
      * 仅用于客户端渲染
      */
@@ -173,47 +173,28 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
         if (this.modelId != null) {
-            tag.putString(MODEL_ID, this.modelId.toString());
+            output.putString(MODEL_ID, this.modelId.toString());
         }
 
-        tag.putInt(MAX_CUT_COUNT, this.maxCutCount);
-        tag.putInt(CURRENT_CUT_COUNT, this.currentCutCount);
-        tag.put(CURRENT_CUT_STACK, this.currentCutStack.saveOptional(registries));
-
-        ListTag resultTag = new ListTag();
-        for (ItemStack result : this.results) {
-            resultTag.add(result.saveOptional(registries));
-        }
-        tag.put(RESULT_ITEM, resultTag);
+        output.putInt(MAX_CUT_COUNT, this.maxCutCount);
+        output.putInt(CURRENT_CUT_COUNT, this.currentCutCount);
+        output.store(CURRENT_CUT_STACK, ItemStack.OPTIONAL_CODEC, this.currentCutStack);
+        output.store(RESULT_ITEM, RESULTS_CODEC, this.results);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        if (tag.contains(MODEL_ID)) {
-            this.modelId = Identifier.parse(tag.getString(MODEL_ID));
-        } else {
-            this.modelId = null;
-        }
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.modelId = input.getString(MODEL_ID).map(Identifier::parse).orElse(null);
 
-        this.maxCutCount = tag.getInt(MAX_CUT_COUNT);
-        this.currentCutCount = tag.getInt(CURRENT_CUT_COUNT);
+        this.maxCutCount = input.getIntOr(MAX_CUT_COUNT, 0);
+        this.currentCutCount = input.getIntOr(CURRENT_CUT_COUNT, 0);
+        input.read(CURRENT_CUT_STACK, ItemStack.OPTIONAL_CODEC).ifPresent(stack -> this.currentCutStack = stack);
 
-        if (tag.contains(CURRENT_CUT_STACK)) {
-            this.currentCutStack = ItemStack.parseOptional(registries, tag.getCompound(CURRENT_CUT_STACK));
-        }
-
-        if (tag.contains(RESULT_ITEM, Tag.TAG_LIST)) {
-            ListTag resultTag = tag.getList(RESULT_ITEM, Tag.TAG_COMPOUND);
-            this.results = IntStream.range(0, resultTag.size())
-                    .mapToObj(index -> ItemStack.parseOptional(registries, resultTag.getCompound(index)))
-                    .toList();
-        } else if (tag.contains(RESULT_ITEM, Tag.TAG_COMPOUND)) {
-            this.results = Lists.newArrayList(ItemStack.parseOptional(registries, tag.getCompound(RESULT_ITEM)));
-        }
+        input.read(RESULT_ITEM, RESULTS_CODEC).ifPresent(results -> this.results = results);
     }
 
     @Nullable

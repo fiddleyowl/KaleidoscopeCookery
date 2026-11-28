@@ -11,11 +11,12 @@ import net.createmod.ponder.api.client.scene.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 public class SteamerScenes {
     public static void introduction(SceneBuilder scene, SceneBuildingUtil util) {
@@ -114,9 +115,9 @@ public class SteamerScenes {
         BlockPos steamerPos1 = util.grid().at(2, 2, 2);
         Selection steamerSel1 = util.select().position(steamerPos1);
         ItemStack steamer = new ItemStack(ModItems.STEAMER.get());
-        CompoundTag tag = new CompoundTag();
+        TagValueOutput tag = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, net.minecraft.client.Minecraft.getInstance().level.registryAccess());
         NonNullList<ItemStack> first = NonNullList.withSize(4, new ItemStack(ModItems.RAW_DOUGH.get()));
-        ContainerHelper.saveAllItems(tag, first, net.minecraft.client.Minecraft.getInstance().level.registryAccess());
+        ContainerHelper.saveAllItems(tag, first);
         BlockItem.setBlockEntityData(steamer, ModBlocks.STEAMER_BE.get(), tag);
 
         scene.world().modifyBlock(litPos, (s) -> ModBlocks.STOVE.get().defaultBlockState()

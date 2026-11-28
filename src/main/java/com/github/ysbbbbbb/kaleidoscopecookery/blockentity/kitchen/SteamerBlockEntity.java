@@ -11,24 +11,22 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import com.github.ysbbbbbb.kaleidoscopecookery.util.ItemUtils;
 import com.google.common.collect.Lists;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -37,6 +35,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,8 +65,7 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
     }
 
     // 将蒸笼数据一分为二，分别保存到两个 tag 里
-    public static void saveSplit(CompoundTag tag1, CompoundTag tag2,
-                                 Level level,
+    public static void saveSplit(ValueOutput tag1, ValueOutput tag2,
                                  NonNullList<ItemStack> items,
                                  int[] cookingProgress,
                                  int[] cookingTime) {
@@ -88,13 +89,13 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
         System.arraycopy(cookingTime, 0, firstCookingTime, 0, 4);
         System.arraycopy(cookingTime, 4, secondCookingTime, 0, 4);
 
-        ContainerHelper.saveAllItems(tag1, first, false, level.registryAccess());
+        ContainerHelper.saveAllItems(tag1, first, false);
         if (!tag1.isEmpty()) {
             tag1.putIntArray(COOKING_PROGRESS_TAG, firstCookingProgress);
             tag1.putIntArray(COOKING_TIME_TAG, firstCookingTime);
         }
 
-        ContainerHelper.saveAllItems(tag2, second, false, level.registryAccess());
+        ContainerHelper.saveAllItems(tag2, second, false);
         if (!tag2.isEmpty()) {
             tag2.putIntArray(COOKING_PROGRESS_TAG, secondCookingProgress);
             tag2.putIntArray(COOKING_TIME_TAG, secondCookingTime);
@@ -124,30 +125,30 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
 
     // 合并物品，仅在放置时调用
     public void mergeItem(ItemStack stack, Level level) {
-        CompoundTag data = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
+        var blockEntityData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        CompoundTag data = blockEntityData == null ? new CompoundTag() : blockEntityData.copyTagWithoutId();
+        ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), data);
 
         NonNullList<ItemStack> merge = NonNullList.withSize(8, ItemStack.EMPTY);
         int[] mergeCookingProgress = new int[8];
         int[] mergeCookingTime = new int[8];
 
         // 先尝试把物品里的数据 0-3 取出，放到 4-7
-        if (data.contains(ITEMS_TAG, Tag.TAG_LIST)) {
+        if (data.getList(ITEMS_TAG).isPresent()) {
             NonNullList<ItemStack> itemsInStack = NonNullList.withSize(4, ItemStack.EMPTY);
-            ContainerHelper.loadAllItems(data, itemsInStack, level.registryAccess());
+            ContainerHelper.loadAllItems(input, itemsInStack);
             for (int i = 0; i < 4; i++) {
                 merge.set(i + 4, itemsInStack.get(i));
             }
         }
-        if (data.contains(COOKING_PROGRESS_TAG, Tag.TAG_INT_ARRAY)) {
-            int[] times = data.getIntArray(COOKING_PROGRESS_TAG);
+        input.getIntArray(COOKING_PROGRESS_TAG).ifPresent(times -> {
             int length = Math.min(mergeCookingProgress.length - 4, times.length);
             System.arraycopy(times, 0, mergeCookingProgress, 4, length);
-        }
-        if (data.contains(COOKING_TIME_TAG, Tag.TAG_INT_ARRAY)) {
-            int[] times = data.getIntArray(COOKING_TIME_TAG);
+        });
+        input.getIntArray(COOKING_TIME_TAG).ifPresent(times -> {
             int length = Math.min(mergeCookingTime.length - 4, times.length);
             System.arraycopy(times, 0, mergeCookingTime, 4, length);
-        }
+        });
 
         // 接着把自己的数据放到 0-3
         for (int i = 0; i < 4; i++) {
@@ -157,12 +158,16 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
         }
 
         // 写进 data
-        ContainerHelper.saveAllItems(data, merge, false, level.registryAccess());
-        data.putIntArray(COOKING_PROGRESS_TAG, mergeCookingProgress);
-        data.putIntArray(COOKING_TIME_TAG, mergeCookingTime);
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+        output.store(data);
+        if (merge.stream().anyMatch(item -> !item.isEmpty())) {
+            ContainerHelper.saveAllItems(output, merge, false);
+        }
+        output.putIntArray(COOKING_PROGRESS_TAG, mergeCookingProgress);
+        output.putIntArray(COOKING_TIME_TAG, mergeCookingTime);
 
         // 写回物品
-        BlockItem.setBlockEntityData(stack, this.getType(), data);
+        BlockItem.setBlockEntityData(stack, this.getType(), output);
     }
 
     public List<ItemStack> dropAsItem(Level level) {
@@ -180,9 +185,9 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
         }
 
         // 只需要保存物品和进度即可
-        CompoundTag tag1 = new CompoundTag();
-        CompoundTag tag2 = new CompoundTag();
-        saveSplit(tag1, tag2, level, this.items, this.cookingProgress, this.cookingTime);
+        TagValueOutput tag1 = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+        TagValueOutput tag2 = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+        saveSplit(tag1, tag2, this.items, this.cookingProgress, this.cookingTime);
 
         BlockItem.setBlockEntityData(first, this.getType(), tag1);
         drops.add(first);
@@ -411,36 +416,28 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         this.items.clear();
-        ContainerHelper.loadAllItems(tag, this.items, registries);
-        if (tag.contains(COOKING_PROGRESS_TAG, Tag.TAG_INT_ARRAY)) {
-            int[] times = tag.getIntArray(COOKING_PROGRESS_TAG);
+        ContainerHelper.loadAllItems(input, this.items);
+        input.getIntArray(COOKING_PROGRESS_TAG).ifPresent(times -> {
             int length = Math.min(this.cookingTime.length, times.length);
             System.arraycopy(times, 0, this.cookingProgress, 0, length);
-        }
+        });
 
-        if (tag.contains(COOKING_TIME_TAG, Tag.TAG_INT_ARRAY)) {
-            int[] times = tag.getIntArray(COOKING_TIME_TAG);
-            int length = Math.min(this.cookingTime.length, times.length);
-            System.arraycopy(times, 0, this.cookingTime, 0, length);
-        } else if (tag.contains(COOKING_TIME_TAG, Tag.TAG_LIST)) {
-            // 这里是为了兼容合成表里 json 书写的 cooking time
-            ListTag list = tag.getList(COOKING_TIME_TAG, Tag.TAG_SHORT);
-            int length = Math.min(this.cookingTime.length, list.size());
-            for (int i = 0; i < length; i++) {
-                this.cookingTime[i] = list.getShort(i);
-            }
-        }
+        // 这里是为了兼容合成表里 json 书写的 cooking time
+        input.read(COOKING_TIME_TAG, Codec.INT_STREAM).ifPresent(times -> {
+            int[] values = times.limit(this.cookingTime.length).toArray();
+            System.arraycopy(values, 0, this.cookingTime, 0, values.length);
+        });
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, this.items, true, registries);
-        tag.putIntArray(COOKING_PROGRESS_TAG, this.cookingProgress);
-        tag.putIntArray(COOKING_TIME_TAG, this.cookingTime);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        ContainerHelper.saveAllItems(output, this.items, true);
+        output.putIntArray(COOKING_PROGRESS_TAG, this.cookingProgress);
+        output.putIntArray(COOKING_TIME_TAG, this.cookingTime);
     }
 
     public int[] getCookingProgress() {

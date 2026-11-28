@@ -4,13 +4,15 @@ import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.decoration.TeaBannerB
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 
 import java.util.function.Consumer;
 
@@ -21,15 +23,17 @@ public class TeaBannerItem extends BlockItem {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
-        CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
-        CompoundTag tag = data == null ? null : data.copyTag();
-        DyeColor color = tag == null ? DyeColor.RED : TeaBannerBlockEntity.getColor(tag);
-        HolderLookup.Provider registries = context.registries();
-        ItemStack patternItem = tag == null || registries == null || !tag.contains(TeaBannerBlockEntity.PATTERN_ITEM_TAG)
-                ? ItemStack.EMPTY
-                : ItemStack.parseOptional(registries, tag.getCompound(TeaBannerBlockEntity.PATTERN_ITEM_TAG));
-        if (!TeaBannerBlockEntity.isSupportedPattern(patternItem)) {
-            patternItem = ItemStack.EMPTY;
+        var data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        DyeColor color = DyeColor.RED;
+        ItemStack patternItem = ItemStack.EMPTY;
+        if (data != null) {
+            HolderLookup.Provider registries = context.registries();
+            ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING,
+                    registries == null ? RegistryAccess.EMPTY : registries, data.copyTagWithoutId());
+            color = TeaBannerBlockEntity.getColor(input);
+            if (registries != null) {
+                patternItem = TeaBannerBlockEntity.getPatternItem(input);
+            }
         }
 
         MutableComponent pattern = Component.translatable("tooltip.kaleidoscope_cookery.tea_banner.pattern.tea");

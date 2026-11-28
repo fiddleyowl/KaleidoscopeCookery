@@ -5,10 +5,10 @@ import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.BaseBlockEntity;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import com.github.ysbbbbbb.kaleidoscopecookery.inventory.itemhandler.OilPotHandler;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import org.jspecify.annotations.Nullable;
@@ -26,18 +26,18 @@ public class OilPotBlockEntity extends BaseBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
-        tag.putInt(OIL_COUNT, oilCount);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt(OIL_COUNT, oilCount);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        if (tag.contains(OIL_COUNT)) {
-            this.oilCount = tag.getInt(OIL_COUNT);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        input.getInt(OIL_COUNT).ifPresent(count -> {
+            this.oilCount = count;
             this.updateCap();
-        }
+        });
     }
 
     public int getOilCount() {

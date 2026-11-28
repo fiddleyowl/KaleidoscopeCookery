@@ -17,12 +17,8 @@ import com.github.ysbbbbbb.kaleidoscopecookery.item.quality.QualityEvaluator;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.quality.QualityUtils;
 import com.github.ysbbbbbb.kaleidoscopecookery.util.ItemUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
@@ -44,6 +40,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.List;
 import java.util.Optional;
@@ -534,41 +532,28 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.put(INPUTS, ContainerHelper.saveAllItems(new CompoundTag(), this.inputs, registries));
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        Tag carrierTag = PotRecipeSerializer.CARRIER_CODEC.encodeStart(ops, this.carrier).getOrThrow();
-        tag.put(CARRIER, carrierTag);
-        tag.put(RESULT, this.result.saveOptional(registries));
-        tag.putInt(STATUS, this.status);
-        tag.putInt(CURRENT_TICK, this.currentTick);
-        tag.putInt(STIR_FRY_COUNT, this.stirFryCount);
-        tag.putLong(SEED, this.seed);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        ContainerHelper.saveAllItems(output.child(INPUTS), this.inputs);
+        output.store(CARRIER, PotRecipeSerializer.CARRIER_CODEC, this.carrier);
+        output.store(RESULT, ItemStack.OPTIONAL_CODEC, this.result);
+        output.putInt(STATUS, this.status);
+        output.putInt(CURRENT_TICK, this.currentTick);
+        output.putInt(STIR_FRY_COUNT, this.stirFryCount);
+        output.putLong(SEED, this.seed);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         this.inputs = NonNullList.withSize(PotRecipe.RECIPES_SIZE, ItemStack.EMPTY);
-        if (tag.contains(INPUTS, Tag.TAG_COMPOUND)) {
-            ContainerHelper.loadAllItems(tag.getCompound(INPUTS), this.inputs, registries);
-        }
-        Tag carrierTag = tag.get(CARRIER);
-        if (carrierTag == null) {
-            this.carrier = Optional.empty();
-        } else {
-            var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-            var decodedCarrier = PotRecipeSerializer.CARRIER_CODEC.parse(ops, carrierTag);
-            this.carrier = decodedCarrier.result().orElseGet(Optional::empty);
-        }
-        if (tag.contains(RESULT, Tag.TAG_COMPOUND)) {
-            this.result = ItemStack.parseOptional(registries, tag.getCompound(RESULT));
-        }
-        this.status = tag.getInt(STATUS);
-        this.currentTick = tag.getInt(CURRENT_TICK);
-        this.stirFryCount = tag.getInt(STIR_FRY_COUNT);
-        this.seed = tag.getLong(SEED);
+        ContainerHelper.loadAllItems(input.childOrEmpty(INPUTS), this.inputs);
+        this.carrier = input.read(CARRIER, PotRecipeSerializer.CARRIER_CODEC).orElseGet(Optional::empty);
+        input.read(RESULT, ItemStack.OPTIONAL_CODEC).ifPresent(stack -> this.result = stack);
+        this.status = input.getIntOr(STATUS, 0);
+        this.currentTick = input.getIntOr(CURRENT_TICK, 0);
+        this.stirFryCount = input.getIntOr(STIR_FRY_COUNT, 0);
+        this.seed = input.getLongOr(SEED, 0);
     }
 
     public List<ItemStack> getInputs() {

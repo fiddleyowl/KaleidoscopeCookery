@@ -19,6 +19,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -34,6 +35,8 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -425,15 +428,16 @@ public class TransmutationLunchBagItem extends Item {
                 CompoundTag compoundTag = buffer.readNbt();
                 ItemStackHandler handler = new ItemStackHandler(MAX_SIZE);
                 if (compoundTag != null) {
-                    handler.deserializeNBT(buffer.registryAccess(), compoundTag);
+                    handler.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, buffer.registryAccess(), compoundTag));
                 }
                 return new TransmutationLunchBagItem.ItemContainer(handler);
             }
 
             @Override
             public void encode(RegistryFriendlyByteBuf buffer, TransmutationLunchBagItem.ItemContainer value) {
-                CompoundTag compoundTag = value.items().serializeNBT(buffer.registryAccess());
-                buffer.writeNbt(compoundTag);
+                TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, buffer.registryAccess());
+                value.items().serialize(output);
+                buffer.writeNbt(output.buildResult());
             }
         };
     }

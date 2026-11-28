@@ -7,13 +7,17 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +32,7 @@ public class FallingBlockEntityMixin {
             method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/item/FallingBlockEntity;spawnAtLocation(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/entity/item/ItemEntity;"
+                    target = "Lnet/minecraft/world/entity/item/FallingBlockEntity;spawnAtLocation(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/entity/item/ItemEntity;"
             ),
             cancellable = true
     )
@@ -36,12 +40,12 @@ public class FallingBlockEntityMixin {
         FallingBlockEntity self = (FallingBlockEntity) (Object) this;
         BlockState blockState = self.getBlockState();
         // 如果是蒸笼
-        if (blockState.is(ModBlocks.STEAMER.get())) {
+        if (blockState.is(ModBlocks.STEAMER.get()) && self.level() instanceof ServerLevel level) {
             ci.cancel();
             // 换成自己的掉落物
-            List<ItemStack> drops = dropAsItem(blockState, self.blockData, self.level());
+            List<ItemStack> drops = dropAsItem(blockState, self.blockData, level);
             for (ItemStack drop : drops) {
-                self.spawnAtLocation(drop);
+                self.spawnAtLocation(level, drop);
             }
         }
     }
@@ -51,15 +55,10 @@ public class FallingBlockEntityMixin {
         int[] cookingProgress = new int[8];
         int[] cookingTime = new int[8];
         if (steamerTag != null) {
-            if (steamerTag.contains(SteamerBlockEntity.ITEMS_TAG, Tag.TAG_LIST)) {
-                ContainerHelper.loadAllItems(steamerTag, items, level.registryAccess());
-            }
-            if (steamerTag.contains(SteamerBlockEntity.COOKING_PROGRESS_TAG, Tag.TAG_INT_ARRAY)) {
-                cookingProgress = steamerTag.getIntArray(SteamerBlockEntity.COOKING_PROGRESS_TAG);
-            }
-            if (steamerTag.contains(SteamerBlockEntity.COOKING_TIME_TAG, Tag.TAG_INT_ARRAY)) {
-                cookingTime = steamerTag.getIntArray(SteamerBlockEntity.COOKING_TIME_TAG);
-            }
+            ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), steamerTag);
+            ContainerHelper.loadAllItems(input, items);
+            cookingProgress = input.getIntArray(SteamerBlockEntity.COOKING_PROGRESS_TAG).orElse(cookingProgress);
+            cookingTime = input.getIntArray(SteamerBlockEntity.COOKING_TIME_TAG).orElse(cookingTime);
         }
 
         List<ItemStack> drops = Lists.newArrayList();
@@ -76,9 +75,9 @@ public class FallingBlockEntityMixin {
         }
 
         // 只需要保存物品和进度即可
-        CompoundTag tag1 = new CompoundTag();
-        CompoundTag tag2 = new CompoundTag();
-        SteamerBlockEntity.saveSplit(tag1, tag2, level, items, cookingProgress, cookingTime);
+        TagValueOutput tag1 = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+        TagValueOutput tag2 = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+        SteamerBlockEntity.saveSplit(tag1, tag2, items, cookingProgress, cookingTime);
 
         BlockItem.setBlockEntityData(first, ModBlocks.STEAMER_BE.get(), tag1);
         drops.add(first);

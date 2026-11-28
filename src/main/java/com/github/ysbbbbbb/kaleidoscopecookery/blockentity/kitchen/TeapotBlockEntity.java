@@ -13,9 +13,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.util.FluidUtils;
 import com.github.ysbbbbbb.kaleidoscopecookery.util.ItemUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
@@ -24,6 +22,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,6 +37,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -332,9 +334,9 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
                 drops.add(this.input.copy());
             }
 
-            CompoundTag tag = new CompoundTag();
-            tag.putString(TEA_FLUID_ID, this.teaFluidId.toString());
-            BlockItem.setBlockEntityData(teapot, ModBlocks.TEAPOT_BE.get(), tag);
+            TagValueOutput output = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+            output.putString(TEA_FLUID_ID, this.teaFluidId.toString());
+            BlockItem.setBlockEntityData(teapot, ModBlocks.TEAPOT_BE.get(), output);
             drops.add(teapot);
 
             return drops;
@@ -348,10 +350,10 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
 
         // 完成，那么返回部分数值
         if (this.level != null) {
-            CompoundTag tag = new CompoundTag();
-            tag.put(RESULT, result.copy().saveOptional(this.level.registryAccess()));
-            tag.putInt(STATUS, this.status);
-            BlockItem.setBlockEntityData(teapot, ModBlocks.TEAPOT_BE.get(), tag);
+            TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, this.level.registryAccess());
+            output.store(RESULT, ItemStack.OPTIONAL_CODEC, this.result.copy());
+            output.putInt(STATUS, this.status);
+            BlockItem.setBlockEntityData(teapot, ModBlocks.TEAPOT_BE.get(), output);
         }
         drops.add(teapot);
 
@@ -407,23 +409,23 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.put(INPUT, this.input.saveOptional(registries));
-        tag.putString(TEA_FLUID_ID, this.teaFluidId.toString());
-        tag.put(RESULT, this.result.saveOptional(registries));
-        tag.putInt(STATUS, this.status);
-        tag.putInt(CURRENT_TICK, this.currentTick);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.store(INPUT, ItemStack.OPTIONAL_CODEC, this.input);
+        output.putString(TEA_FLUID_ID, this.teaFluidId.toString());
+        output.store(RESULT, ItemStack.OPTIONAL_CODEC, this.result);
+        output.putInt(STATUS, this.status);
+        output.putInt(CURRENT_TICK, this.currentTick);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.input = ItemStack.parseOptional(registries, tag.getCompound(INPUT));
-        this.teaFluidId = Identifier.parse(tag.getString(TEA_FLUID_ID));
-        this.result = ItemStack.parseOptional(registries, tag.getCompound(RESULT));
-        this.status = tag.getInt(STATUS);
-        this.currentTick = tag.getInt(CURRENT_TICK);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.input = input.read(INPUT, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        this.teaFluidId = Identifier.parse(input.getStringOr(TEA_FLUID_ID, ""));
+        this.result = input.read(RESULT, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        this.status = input.getIntOr(STATUS, 0);
+        this.currentTick = input.getIntOr(CURRENT_TICK, 0);
     }
 
     @Override

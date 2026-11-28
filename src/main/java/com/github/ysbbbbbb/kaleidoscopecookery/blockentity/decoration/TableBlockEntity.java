@@ -3,10 +3,10 @@ package com.github.ysbbbbbb.kaleidoscopecookery.blockentity.decoration;
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.BaseBlockEntity;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class TableBlockEntity extends BaseBlockEntity {
@@ -21,21 +21,17 @@ public class TableBlockEntity extends BaseBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.putInt(COLOR_TAG, this.color.getId());
-        tag.put(SHOW_ITEMS, this.items.serializeNBT(registries));
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt(COLOR_TAG, this.color.getId());
+        output.putChild(SHOW_ITEMS, this.items);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        if (tag.contains(COLOR_TAG)) {
-            this.color = DyeColor.byId(tag.getInt(COLOR_TAG));
-        }
-        if (tag.contains(SHOW_ITEMS)) {
-            this.items.deserializeNBT(registries, tag.getCompound(SHOW_ITEMS));
-        }
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        input.getInt(COLOR_TAG).ifPresent(color -> this.color = DyeColor.byId(color));
+        input.readChild(SHOW_ITEMS, this.items);
     }
 
     public DyeColor getColor() {

@@ -7,8 +7,6 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModParticles;
 import com.github.ysbbbbbb.kaleidoscopecookery.util.ItemUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -20,6 +18,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class ShawarmaSpitBlockEntity extends BaseBlockEntity implements IShawarmaSpit {
     private static final int MAX_ITEMS = 8;
@@ -158,22 +158,18 @@ public class ShawarmaSpitBlockEntity extends BaseBlockEntity implements IShawarm
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.put(COOKING_ITEM, this.cookingItem.saveOptional(registries));
-        tag.put(COOKED_ITEM, this.cookedItem.saveOptional(registries));
-        tag.putInt(COOK_TIME, this.cookTime);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.store(COOKING_ITEM, ItemStack.OPTIONAL_CODEC, this.cookingItem);
+        output.store(COOKED_ITEM, ItemStack.OPTIONAL_CODEC, this.cookedItem);
+        output.putInt(COOK_TIME, this.cookTime);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        if (tag.contains(COOKING_ITEM)) {
-            this.cookingItem = ItemStack.parseOptional(registries, tag.getCompound(COOKING_ITEM));
-        }
-        if (tag.contains(COOKED_ITEM)) {
-            this.cookedItem = ItemStack.parseOptional(registries, tag.getCompound(COOKED_ITEM));
-        }
-        this.cookTime = tag.getInt(COOK_TIME);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        input.read(COOKING_ITEM, ItemStack.OPTIONAL_CODEC).ifPresent(stack -> this.cookingItem = stack);
+        input.read(COOKED_ITEM, ItemStack.OPTIONAL_CODEC).ifPresent(stack -> this.cookedItem = stack);
+        this.cookTime = input.getIntOr(COOK_TIME, 0);
     }
 }

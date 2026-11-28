@@ -4,7 +4,6 @@ import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.misc.TrashCanBlockEnt
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModSounds;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -13,6 +12,8 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 
@@ -66,13 +67,13 @@ public class SitEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
-        this.sitType = tag.getInt("SitType");
+    protected void readAdditionalSaveData(ValueInput input) {
+        this.sitType = input.getIntOr("SitType", DEFAULT);
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
-        tag.putInt("SitType", this.sitType);
+    protected void addAdditionalSaveData(ValueOutput output) {
+        output.putInt("SitType", this.sitType);
     }
 
     @Override

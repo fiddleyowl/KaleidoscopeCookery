@@ -10,11 +10,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.List;
@@ -84,15 +87,16 @@ public class FruitBasketItem extends BlockItem {
                 CompoundTag compoundTag = buffer.readNbt();
                 ItemStackHandler handler = new ItemStackHandler(8);
                 if (compoundTag != null) {
-                    handler.deserializeNBT(buffer.registryAccess(), compoundTag);
+                    handler.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, buffer.registryAccess(), compoundTag));
                 }
                 return new ItemContainer(handler);
             }
 
             @Override
             public void encode(RegistryFriendlyByteBuf buffer, ItemContainer value) {
-                CompoundTag compoundTag = value.items().serializeNBT(buffer.registryAccess());
-                buffer.writeNbt(compoundTag);
+                TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, buffer.registryAccess());
+                value.items().serialize(output);
+                buffer.writeNbt(output.buildResult());
             }
         };
     }

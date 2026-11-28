@@ -3,14 +3,17 @@ package com.github.ysbbbbbb.kaleidoscopecookery.blockentity.decoration;
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.BaseBlockEntity;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
@@ -52,15 +55,15 @@ public class FruitBasketBlockEntity extends BaseBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.put(ITEMS, this.items.serializeNBT(registries));
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putChild(ITEMS, this.items);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.items.deserializeNBT(registries, tag.getCompound(ITEMS));
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.items.deserialize(input.childOrEmpty(ITEMS));
     }
 
     public ItemStackHandler getItems() {
@@ -68,7 +71,9 @@ public class FruitBasketBlockEntity extends BaseBlockEntity {
     }
 
     public void setItems(ItemStackHandler items, RegistryAccess access) {
-        this.items.deserializeNBT(access, items.serializeNBT(access));
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, access);
+        items.serialize(output);
+        this.items.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, access, output.buildResult()));
         this.refresh();
     }
 }

@@ -24,9 +24,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.util.BlockDrop;
 import com.github.ysbbbbbb.kaleidoscopecookery.util.ItemUtils;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
@@ -50,6 +48,8 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.NeoForge;
 
 import org.jspecify.annotations.Nullable;
@@ -623,28 +623,28 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.put(INPUTS, ContainerHelper.saveAllItems(new CompoundTag(), this.inputs, registries));
-        tag.putString(RECIPE_ID, this.recipeId.toString());
-        tag.putString(SOUP_BASE_ID, this.soupBaseId.toString());
-        tag.put(RESULT, this.result.saveOptional(registries));
-        tag.putInt(STATUS, this.status);
-        tag.putInt(CURRENT_TICK, this.currentTick);
-        tag.putInt(TAKEOUT_COUNT, this.takeoutCount);
-        tag.putInt(SYRUP_USES, this.syrupUses);
-        tag.put(LID_ITEM, this.lidItem.saveOptional(registries));
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        ContainerHelper.saveAllItems(output.child(INPUTS), this.inputs);
+        output.putString(RECIPE_ID, this.recipeId.toString());
+        output.putString(SOUP_BASE_ID, this.soupBaseId.toString());
+        output.store(RESULT, ItemStack.OPTIONAL_CODEC, this.result);
+        output.putInt(STATUS, this.status);
+        output.putInt(CURRENT_TICK, this.currentTick);
+        output.putInt(TAKEOUT_COUNT, this.takeoutCount);
+        output.putInt(SYRUP_USES, this.syrupUses);
+        output.store(LID_ITEM, ItemStack.OPTIONAL_CODEC, this.lidItem);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        if (tag.contains(INPUTS)) {
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        input.child(INPUTS).ifPresent(items -> {
             this.inputs = NonNullList.withSize(StockpotRecipe.RECIPES_SIZE, ItemStack.EMPTY);
-            ContainerHelper.loadAllItems(tag.getCompound(INPUTS), this.inputs, registries);
-        }
-        if (tag.contains(RECIPE_ID)) {
-            this.recipeId = Identifier.tryParse(tag.getString(RECIPE_ID));
+            ContainerHelper.loadAllItems(items, this.inputs);
+        });
+        input.getString(RECIPE_ID).ifPresent(id -> {
+            this.recipeId = Identifier.tryParse(id);
             if (this.level != null && this.recipeId != null) {
                 var recipe = this.getRecipeById(this.level, this.recipeId);
                 if (recipe != null) {
@@ -652,20 +652,14 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
                             .ifRight(r -> this.visuals = r.value().visuals());
                 }
             }
-        }
-        if (tag.contains(SOUP_BASE_ID)) {
-            this.soupBaseId = Identifier.tryParse(tag.getString(SOUP_BASE_ID));
-        }
-        if (tag.contains(RESULT)) {
-            this.result = ItemStack.parseOptional(registries, tag.getCompound(RESULT));
-        }
-        this.status = tag.getInt(STATUS);
-        this.currentTick = tag.getInt(CURRENT_TICK);
-        this.takeoutCount = tag.getInt(TAKEOUT_COUNT);
-        this.syrupUses = tag.getIntOr(SYRUP_USES, 0);
-        if (tag.contains(LID_ITEM)) {
-            this.lidItem = ItemStack.parseOptional(registries, tag.getCompound(LID_ITEM));
-        }
+        });
+        input.getString(SOUP_BASE_ID).ifPresent(id -> this.soupBaseId = Identifier.tryParse(id));
+        input.read(RESULT, ItemStack.OPTIONAL_CODEC).ifPresent(stack -> this.result = stack);
+        this.status = input.getIntOr(STATUS, 0);
+        this.currentTick = input.getIntOr(CURRENT_TICK, 0);
+        this.takeoutCount = input.getIntOr(TAKEOUT_COUNT, 0);
+        this.syrupUses = input.getIntOr(SYRUP_USES, 0);
+        input.read(LID_ITEM, ItemStack.OPTIONAL_CODEC).ifPresent(stack -> this.lidItem = stack);
     }
 
     public boolean isEmpty() {

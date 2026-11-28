@@ -4,15 +4,16 @@ import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.BaseBlockEntity;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 public class TeaBannerBlockEntity extends BaseBlockEntity {
@@ -27,24 +28,19 @@ public class TeaBannerBlockEntity extends BaseBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.putInt(COLOR_TAG, this.color.getId());
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt(COLOR_TAG, this.color.getId());
         if (!this.patternItem.isEmpty()) {
-            tag.put(PATTERN_ITEM_TAG, this.patternItem.save(registries));
+            output.store(PATTERN_ITEM_TAG, ItemStack.CODEC, this.patternItem);
         }
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.color = tag.contains(COLOR_TAG, Tag.TAG_INT) ? DyeColor.byId(tag.getInt(COLOR_TAG)) : DyeColor.RED;
-        this.patternItem = tag.contains(PATTERN_ITEM_TAG, Tag.TAG_COMPOUND)
-                ? ItemStack.parseOptional(registries, tag.getCompound(PATTERN_ITEM_TAG))
-                : ItemStack.EMPTY;
-        if (!isSupportedPattern(this.patternItem)) {
-            this.patternItem = ItemStack.EMPTY;
-        }
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.color = getColor(input);
+        this.patternItem = getPatternItem(input);
     }
 
     public DyeColor getColor() {
@@ -83,21 +79,18 @@ public class TeaBannerBlockEntity extends BaseBlockEntity {
             return ModItems.TEA_BANNER.get().getDefaultInstance();
         }
         ItemStack stack = new ItemStack(ModItems.TEA_BANNER.get());
-        CompoundTag tag = new CompoundTag();
-        this.saveAdditional(tag, level.registryAccess());
-        BlockItem.setBlockEntityData(stack, ModBlocks.TEA_BANNER_BE.get(), tag);
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+        this.saveAdditional(output);
+        BlockItem.setBlockEntityData(stack, ModBlocks.TEA_BANNER_BE.get(), output);
         return stack;
     }
 
-    public static DyeColor getColor(CompoundTag tag) {
-        return tag.contains(COLOR_TAG, Tag.TAG_INT) ? DyeColor.byId(tag.getInt(COLOR_TAG)) : DyeColor.RED;
+    public static DyeColor getColor(ValueInput input) {
+        return DyeColor.byId(input.getIntOr(COLOR_TAG, DyeColor.RED.getId()));
     }
 
-    public static ItemStack getPatternItem(CompoundTag tag, LevelReader level) {
-        if (!tag.contains(PATTERN_ITEM_TAG, Tag.TAG_COMPOUND)) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack pattern = ItemStack.parseOptional(level.registryAccess(), tag.getCompound(PATTERN_ITEM_TAG));
+    public static ItemStack getPatternItem(ValueInput input) {
+        ItemStack pattern = input.read(PATTERN_ITEM_TAG, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
         return isSupportedPattern(pattern) ? pattern : ItemStack.EMPTY;
     }
 

@@ -17,11 +17,10 @@ import com.github.ysbbbbbb.kaleidoscopecookery.inventory.itemhandler.MillstoneIn
 import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
@@ -43,6 +42,8 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -393,29 +394,27 @@ public class MillstoneBlockEntity extends BaseBlockEntity implements IMillstone 
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.putUUID(ENTITY_ID_KEY, entityId);
-        tag.putFloat(CACHE_ROT_KEY, fixRot(cacheRot));
-        tag.putFloat(ROT_SPEED_TICK_KEY, rotSpeedTick);
-        tag.putFloat(LIFT_ANGLE_KEY, liftAngle);
-        tag.put(INPUT_ITEM_KEY, input.saveOptional(registries));
-        tag.put(OUTPUT_ITEM_KEY, this.outputs.serializeNBT(registries));
-        tag.putInt(PROGRESS_KEY, this.progress);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.store(ENTITY_ID_KEY, UUIDUtil.CODEC, entityId);
+        output.putFloat(CACHE_ROT_KEY, fixRot(cacheRot));
+        output.putFloat(ROT_SPEED_TICK_KEY, rotSpeedTick);
+        output.putFloat(LIFT_ANGLE_KEY, liftAngle);
+        output.store(INPUT_ITEM_KEY, ItemStack.OPTIONAL_CODEC, input);
+        this.outputs.serialize(output.child(OUTPUT_ITEM_KEY));
+        output.putInt(PROGRESS_KEY, this.progress);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.entityId = tag.getUUID(ENTITY_ID_KEY);
-        this.cacheRot = fixRot(tag.getFloat(CACHE_ROT_KEY));
-        this.rotSpeedTick = tag.getFloat(ROT_SPEED_TICK_KEY);
-        this.liftAngle = tag.getFloat(LIFT_ANGLE_KEY);
-        this.input = ItemStack.parseOptional(registries, tag.getCompound(INPUT_ITEM_KEY));
-        if (tag.contains(OUTPUT_ITEM_KEY)) {
-            this.outputs.deserializeNBT(registries, tag.getCompound(OUTPUT_ITEM_KEY));
-        }
-        this.progress = tag.getInt(PROGRESS_KEY);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.entityId = input.read(ENTITY_ID_KEY, UUIDUtil.CODEC).orElse(Util.NIL_UUID);
+        this.cacheRot = fixRot(input.getFloatOr(CACHE_ROT_KEY, 0));
+        this.rotSpeedTick = input.getFloatOr(ROT_SPEED_TICK_KEY, 0);
+        this.liftAngle = input.getFloatOr(LIFT_ANGLE_KEY, 0);
+        this.input = input.read(INPUT_ITEM_KEY, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        input.child(OUTPUT_ITEM_KEY).ifPresent(this.outputs::deserialize);
+        this.progress = input.getIntOr(PROGRESS_KEY, 0);
     }
 
     public boolean hasEntity() {

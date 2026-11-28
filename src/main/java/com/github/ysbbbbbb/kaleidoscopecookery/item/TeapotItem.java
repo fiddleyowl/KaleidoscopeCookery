@@ -19,6 +19,7 @@ import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -28,15 +29,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
@@ -61,38 +66,40 @@ public class TeapotItem extends BlockItem {
      * 获取当前茶壶倾倒出的茶叶
      */
     public static ItemStack getPourOut(ItemStack stack, Level level) {
-        CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        TypedEntityData<BlockEntityType<?>> data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) {
             return ItemStack.EMPTY;
         }
-        CompoundTag tag = data.copyTag();
+        CompoundTag tag = data.copyTagWithoutId();
 
         // 先判断状态
-        int status = tag.getInt(TeapotBlockEntity.STATUS);
+        int status = tag.getIntOr(TeapotBlockEntity.STATUS, ITeapot.PUT_INGREDIENT);
         if (status != ITeapot.FINISHED) {
             return ItemStack.EMPTY;
         }
 
         // 还有茶水剩余么
-        return ItemStack.parseOptional(level.registryAccess(), tag.getCompound(TeapotBlockEntity.RESULT));
+        ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), tag);
+        return input.read(TeapotBlockEntity.RESULT, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
     }
 
     /**
      * 执行倾倒，此时会扣除一数量成品
      */
     public static void pourOut(ItemStack stack, Level level) {
-        CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        TypedEntityData<BlockEntityType<?>> data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) {
             return;
         }
-        CompoundTag tag = data.copyTag();
+        CompoundTag tag = data.copyTagWithoutId();
 
-        int status = tag.getInt(TeapotBlockEntity.STATUS);
+        int status = tag.getIntOr(TeapotBlockEntity.STATUS, ITeapot.PUT_INGREDIENT);
         if (status != ITeapot.FINISHED) {
             return;
         }
 
-        ItemStack result = ItemStack.parseOptional(level.registryAccess(), tag.getCompound(TeapotBlockEntity.RESULT));
+        ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), tag);
+        ItemStack result = input.read(TeapotBlockEntity.RESULT, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
         if (result.isEmpty()) {
             return;
         }
@@ -105,27 +112,31 @@ public class TeapotItem extends BlockItem {
         }
 
         // 否则只更新数量
-        tag.put(TeapotBlockEntity.RESULT, result.saveOptional(level.registryAccess()));
-        BlockItem.setBlockEntityData(stack, ModBlocks.TEAPOT_BE.get(), tag);
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+        output.store(tag);
+        output.store(TeapotBlockEntity.RESULT, ItemStack.OPTIONAL_CODEC, result);
+        BlockItem.setBlockEntityData(stack, ModBlocks.TEAPOT_BE.get(), output);
     }
 
     public static boolean fillFluid(ItemStack stack, Fluid fluid, LivingEntity user) {
-        CustomData data = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY);
-        CompoundTag tag = data.copyTag();
+        TypedEntityData<BlockEntityType<?>> data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        CompoundTag tag = data == null ? new CompoundTag() : data.copyTagWithoutId();
         // 先判断状态
-        int status = tag.getInt(TeapotBlockEntity.STATUS);
+        int status = tag.getIntOr(TeapotBlockEntity.STATUS, ITeapot.PUT_INGREDIENT);
         if (status != ITeapot.PUT_INGREDIENT) {
             return false;
         }
         // 再判断是否存在流体
-        String fluidId = StringUtils.defaultIfBlank(tag.getString(TeapotBlockEntity.TEA_FLUID_ID), EMPTY_TEA_FLUID.toString());
+        String fluidId = StringUtils.defaultIfBlank(tag.getStringOr(TeapotBlockEntity.TEA_FLUID_ID, ""), EMPTY_TEA_FLUID.toString());
         if (!fluidId.equals(EMPTY_TEA_FLUID.toString())) {
             return false;
         }
         // 执行流体添加
         Identifier key = BuiltInRegistries.FLUID.getKey((fluid));
-        tag.putString(TeapotBlockEntity.TEA_FLUID_ID, key.toString());
-        BlockItem.setBlockEntityData(stack, ModBlocks.TEAPOT_BE.get(), tag);
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, user.registryAccess());
+        output.store(tag);
+        output.putString(TeapotBlockEntity.TEA_FLUID_ID, key.toString());
+        BlockItem.setBlockEntityData(stack, ModBlocks.TEAPOT_BE.get(), output);
 
         SoundEvent sound = fluid.getFluidType().getSound(user, SoundActions.BUCKET_FILL);
         if (sound != null) {
@@ -151,19 +162,19 @@ public class TeapotItem extends BlockItem {
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
-        CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        TypedEntityData<BlockEntityType<?>> data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) {
             return InteractionResult.PASS;
         }
-        CompoundTag tag = data.copyTag();
+        CompoundTag tag = data.copyTagWithoutId();
         Level level = player.level();
 
         // 先判断状态
-        int status = tag.getInt(TeapotBlockEntity.STATUS);
+        int status = tag.getIntOr(TeapotBlockEntity.STATUS, ITeapot.PUT_INGREDIENT);
         if (status == ITeapot.FINISHED) {
             pourOut(stack, level);
         } else if (status == ITeapot.PUT_INGREDIENT) {
-            String fluidId = StringUtils.defaultIfBlank(tag.getString(TeapotBlockEntity.TEA_FLUID_ID), EMPTY_TEA_FLUID.toString());
+            String fluidId = StringUtils.defaultIfBlank(tag.getStringOr(TeapotBlockEntity.TEA_FLUID_ID, ""), EMPTY_TEA_FLUID.toString());
             if (!"minecraft:lava".equals(fluidId)) {
                 // 仅岩浆能烫伤生物
                 return InteractionResult.PASS;
@@ -200,10 +211,10 @@ public class TeapotItem extends BlockItem {
         ItemStack itemInHand = player.getItemInHand(hand);
 
         // 如果已经有流体了，返回
-        CustomData data = itemInHand.get(DataComponents.BLOCK_ENTITY_DATA);
+        TypedEntityData<BlockEntityType<?>> data = itemInHand.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data != null) {
-            CompoundTag tag = data.copyTag();
-            String fluidId = StringUtils.defaultIfBlank(tag.getString(TeapotBlockEntity.TEA_FLUID_ID), EMPTY_TEA_FLUID.toString());
+            CompoundTag tag = data.copyTagWithoutId();
+            String fluidId = StringUtils.defaultIfBlank(tag.getStringOr(TeapotBlockEntity.TEA_FLUID_ID, ""), EMPTY_TEA_FLUID.toString());
             if (!fluidId.equals(EMPTY_TEA_FLUID.toString())) {
                 return InteractionResultHolder.fail(itemInHand);
             }
@@ -255,16 +266,16 @@ public class TeapotItem extends BlockItem {
         // 两种情况显示进度条
         // 1 准备阶段，装了流体
         // 2 完成阶段，有产物
-        CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        TypedEntityData<BlockEntityType<?>> data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) {
             return false;
         }
-        CompoundTag tag = data.copyTag();
+        CompoundTag tag = data.copyTagWithoutId();
 
-        int status = tag.getInt(TeapotBlockEntity.STATUS);
+        int status = tag.getIntOr(TeapotBlockEntity.STATUS, ITeapot.PUT_INGREDIENT);
 
         if (status == ITeapot.PUT_INGREDIENT) {
-            String fluidId = StringUtils.defaultIfBlank(tag.getString(TeapotBlockEntity.TEA_FLUID_ID), EMPTY_TEA_FLUID.toString());
+            String fluidId = StringUtils.defaultIfBlank(tag.getStringOr(TeapotBlockEntity.TEA_FLUID_ID, ""), EMPTY_TEA_FLUID.toString());
             return !fluidId.equals(EMPTY_TEA_FLUID.toString());
         }
 
@@ -274,14 +285,14 @@ public class TeapotItem extends BlockItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public int getBarColor(ItemStack stack) {
-        CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        TypedEntityData<BlockEntityType<?>> data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) {
             return 0x9df7ff;
         }
-        CompoundTag tag = data.copyTag();
-        int status = tag.getInt(TeapotBlockEntity.STATUS);
+        CompoundTag tag = data.copyTagWithoutId();
+        int status = tag.getIntOr(TeapotBlockEntity.STATUS, ITeapot.PUT_INGREDIENT);
         if (status == ITeapot.PUT_INGREDIENT) {
-            String fluidId = StringUtils.defaultIfBlank(tag.getString(TeapotBlockEntity.TEA_FLUID_ID), EMPTY_TEA_FLUID.toString());
+            String fluidId = StringUtils.defaultIfBlank(tag.getStringOr(TeapotBlockEntity.TEA_FLUID_ID, ""), EMPTY_TEA_FLUID.toString());
             if (fluidId.equals(EMPTY_TEA_FLUID.toString())) {
                 return 0x9df7ff;
             }
@@ -297,16 +308,16 @@ public class TeapotItem extends BlockItem {
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        TypedEntityData<BlockEntityType<?>> data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) {
             return 0;
         }
-        CompoundTag tag = data.copyTag();
+        CompoundTag tag = data.copyTagWithoutId();
 
-        int status = tag.getInt(TeapotBlockEntity.STATUS);
+        int status = tag.getIntOr(TeapotBlockEntity.STATUS, ITeapot.PUT_INGREDIENT);
 
         if (status == ITeapot.PUT_INGREDIENT) {
-            String fluidId = StringUtils.defaultIfBlank(tag.getString(TeapotBlockEntity.TEA_FLUID_ID), EMPTY_TEA_FLUID.toString());
+            String fluidId = StringUtils.defaultIfBlank(tag.getStringOr(TeapotBlockEntity.TEA_FLUID_ID, ""), EMPTY_TEA_FLUID.toString());
             if (fluidId.equals(EMPTY_TEA_FLUID.toString())) {
                 return 0;
             }
@@ -314,7 +325,7 @@ public class TeapotItem extends BlockItem {
         }
 
         if (status == ITeapot.FINISHED) {
-            int count = tag.getCompound(TeapotBlockEntity.RESULT).getInt("count");
+            int count = tag.getCompoundOrEmpty(TeapotBlockEntity.RESULT).getIntOr("count", 0);
             if (count <= 0) {
                 return 0;
             }
@@ -329,15 +340,15 @@ public class TeapotItem extends BlockItem {
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag pFlag) {
         // 如果是成品阶段，那么显示成品信息
-        CustomData data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        TypedEntityData<BlockEntityType<?>> data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) {
             return;
         }
-        CompoundTag tag = data.copyTag();
+        CompoundTag tag = data.copyTagWithoutId();
 
-        int status = tag.getInt(TeapotBlockEntity.STATUS);
+        int status = tag.getIntOr(TeapotBlockEntity.STATUS, ITeapot.PUT_INGREDIENT);
         if (status == ITeapot.PUT_INGREDIENT) {
-            String fluidId = StringUtils.defaultIfBlank(tag.getString(TeapotBlockEntity.TEA_FLUID_ID), EMPTY_TEA_FLUID.toString());
+            String fluidId = StringUtils.defaultIfBlank(tag.getStringOr(TeapotBlockEntity.TEA_FLUID_ID, ""), EMPTY_TEA_FLUID.toString());
             if (fluidId.equals(EMPTY_TEA_FLUID.toString())) {
                 return;
             }
@@ -348,7 +359,8 @@ public class TeapotItem extends BlockItem {
 
         ClientLevel level = Minecraft.getInstance().level;
         if (status == ITeapot.FINISHED && level != null) {
-            ItemStack result = ItemStack.parseOptional(level.registryAccess(), tag.getCompound(TeapotBlockEntity.RESULT));
+            ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), tag);
+            ItemStack result = input.read(TeapotBlockEntity.RESULT, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
             if (result.isEmpty()) {
                 return;
             }

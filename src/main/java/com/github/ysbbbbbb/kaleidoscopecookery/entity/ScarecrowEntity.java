@@ -4,12 +4,10 @@ import com.github.ysbbbbbb.kaleidoscopecookery.advancements.critereon.ModEventTr
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModTrigger;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -17,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -34,6 +33,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -336,7 +339,8 @@ public class ScarecrowEntity extends LivingEntity {
 
     private void respawnEntityOnShoulder(CompoundTag tag) {
         if (this.level() instanceof ServerLevel serverLevel && !tag.isEmpty()) {
-            EntityType.create(tag, this.level()).ifPresent(entity -> {
+            ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, serverLevel.registryAccess(), tag);
+            EntityType.create(input, serverLevel, EntitySpawnReason.LOAD).ifPresent(entity -> {
                 entity.setPos(this.getX(), this.getY() + 1.675, this.getZ());
                 serverLevel.addWithUUID(entity);
             });
@@ -344,43 +348,39 @@ public class ScarecrowEntity extends LivingEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        RegistryAccess registryAccess = this.level().registryAccess();
-        tag.put(HAND_ITEMS_TAG, (new ItemStackHandler(this.handItems)).serializeNBT(registryAccess));
-        tag.put(ARMOR_ITEMS_TAG, (new ItemStackHandler(this.armorItems)).serializeNBT(registryAccess));
+    public void addAdditionalSaveData(ValueOutput output) {
+        new ItemStackHandler(this.handItems).serialize(output.child(HAND_ITEMS_TAG));
+        new ItemStackHandler(this.armorItems).serialize(output.child(ARMOR_ITEMS_TAG));
         if (!this.getShoulderEntity().isEmpty()) {
-            tag.put(SHOULDER_ENTITY_TAG, this.getShoulderEntity());
+            output.store(SHOULDER_ENTITY_TAG, CompoundTag.CODEC, this.getShoulderEntity());
         }
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        RegistryAccess registryAccess = this.level().registryAccess();
-        super.readAdditionalSaveData(tag);
-        if (tag.contains(HAND_ITEMS_TAG)) {
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        input.child(HAND_ITEMS_TAG).ifPresent(items -> {
             ItemStackHandler handler = new ItemStackHandler();
-            handler.deserializeNBT(registryAccess, tag.getCompound(HAND_ITEMS_TAG));
+            handler.deserialize(items);
             for (int i = 0; i < this.handItems.size(); ++i) {
                 ItemStack stack = handler.getStackInSlot(i);
                 if (!stack.isEmpty()) {
                     this.handItems.set(i, stack);
                 }
             }
-        }
-        if (tag.contains(ARMOR_ITEMS_TAG)) {
+        });
+        input.child(ARMOR_ITEMS_TAG).ifPresent(items -> {
             ItemStackHandler handler = new ItemStackHandler();
-            handler.deserializeNBT(registryAccess, tag.getCompound(ARMOR_ITEMS_TAG));
+            handler.deserialize(items);
             for (int i = 0; i < this.armorItems.size(); ++i) {
                 ItemStack stack = handler.getStackInSlot(i);
                 if (!stack.isEmpty()) {
                     this.armorItems.set(i, stack);
                 }
             }
-        }
+        });
 
-        if (tag.contains(SHOULDER_ENTITY_TAG, Tag.TAG_COMPOUND)) {
-            this.setShoulderEntity(tag.getCompound(SHOULDER_ENTITY_TAG));
-        }
+        input.read(SHOULDER_ENTITY_TAG, CompoundTag.CODEC).ifPresent(this::setShoulderEntity);
     }
 
     @Override
@@ -442,14 +442,14 @@ public class ScarecrowEntity extends LivingEntity {
     }
 
     private boolean setEntityOnShoulder(ShoulderRidingEntity entity) {
-        CompoundTag tag = new CompoundTag();
         String id = entity.getEncodeId();
         if (id == null) {
             return false;
         }
-        tag.putString("id", id);
-        entity.saveWithoutId(tag);
-        if (this.setEntityOnShoulder(tag)) {
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.registryAccess());
+        output.putString("id", id);
+        entity.saveWithoutId(output);
+        if (this.setEntityOnShoulder(output.buildResult())) {
             entity.discard();
             return true;
         }

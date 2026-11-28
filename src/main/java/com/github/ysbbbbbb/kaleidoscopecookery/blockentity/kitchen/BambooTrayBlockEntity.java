@@ -6,11 +6,10 @@ import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.BambooTrayRecipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.github.ysbbbbbb.kaleidoscopecookery.util.ItemUtils;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Container;
@@ -24,10 +23,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.PointedDripstoneBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import org.jspecify.annotations.Nullable;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 
@@ -209,33 +211,34 @@ public class BambooTrayBlockEntity extends BaseBlockEntity implements WorldlyCon
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, this.items, true, registries);
-        tag.putIntArray(PROGRESS_TAG, this.processingProgress);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        ContainerHelper.saveAllItems(output, this.items, true);
+        output.putIntArray(PROGRESS_TAG, this.processingProgress);
 
         byte[] completionValues = new byte[this.completionStates.length];
         for (int i = 0; i < this.completionStates.length; i++) {
             completionValues[i] = this.completionStates[i].getSerializedValue();
         }
-        tag.putByteArray(COMPLETION_STATES_TAG, completionValues);
+        output.store(COMPLETION_STATES_TAG, Codec.BYTE_BUFFER, ByteBuffer.wrap(completionValues));
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
         this.items.clear();
 
         Arrays.fill(this.processingProgress, 0);
         Arrays.fill(this.completionStates, CompletionState.NONE);
-        ContainerHelper.loadAllItems(tag, this.items, registries);
+        ContainerHelper.loadAllItems(input, this.items);
 
-        int[] progress = tag.getIntArray(PROGRESS_TAG);
-        System.arraycopy(progress, 0, this.processingProgress, 0, Math.min(progress.length, this.processingProgress.length));
-        byte[] completionValues = tag.getByteArray(COMPLETION_STATES_TAG);
-        for (int i = 0; i < Math.min(completionValues.length, this.completionStates.length); i++) {
-            this.completionStates[i] = CompletionState.fromSerializedValue(completionValues[i]);
-        }
+        input.getIntArray(PROGRESS_TAG).ifPresent(progress ->
+                System.arraycopy(progress, 0, this.processingProgress, 0, Math.min(progress.length, this.processingProgress.length)));
+        input.read(COMPLETION_STATES_TAG, Codec.BYTE_BUFFER).ifPresent(completionValues -> {
+            for (int i = 0; i < this.completionStates.length && completionValues.hasRemaining(); i++) {
+                this.completionStates[i] = CompletionState.fromSerializedValue(completionValues.get());
+            }
+        });
     }
 
     @Override

@@ -8,11 +8,13 @@ import com.github.ysbbbbbb.kaleidoscopecookery.item.FruitBasketItem;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -30,10 +32,10 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -130,10 +132,15 @@ public class FruitBasketBlock extends HorizontalDirectionalBlock implements Enti
 
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
-        ItemStack cloneItemStack = super.getCloneItemStack(state, target, level, pos, player);
-        level.getBlockEntity(pos, ModBlocks.FRUIT_BASKET_BE.get())
-                .ifPresent(e -> e.saveToItem(cloneItemStack, level.registryAccess()));
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
+        ItemStack cloneItemStack = super.getCloneItemStack(level, pos, state, includeData, player);
+        level.getBlockEntity(pos, ModBlocks.FRUIT_BASKET_BE.get()).ifPresent(basket -> {
+            TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+            basket.saveCustomOnly(output);
+            basket.removeComponentsFromTag(output);
+            BlockItem.setBlockEntityData(cloneItemStack, basket.getType(), output);
+            cloneItemStack.applyComponents(basket.collectComponents());
+        });
         return cloneItemStack;
     }
 

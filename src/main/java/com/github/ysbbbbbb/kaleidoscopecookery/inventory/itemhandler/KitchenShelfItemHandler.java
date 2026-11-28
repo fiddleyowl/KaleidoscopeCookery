@@ -1,10 +1,9 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.inventory.itemhandler;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.KitchenShelfBlockEntity;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,25 +27,16 @@ public class KitchenShelfItemHandler extends ItemStackHandler {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public void serialize(ValueOutput output) {
         ItemStack stack = stacks.getFirst();
-
-        CompoundTag root = new CompoundTag();
-        Tag itemTag = stack.copyWithCount(1).saveOptional(provider);
-
-        root.put("item", itemTag);
-        root.putInt("count", stack.getCount());
-
-        return root;
+        output.store("item", ItemStack.OPTIONAL_CODEC, stack.copyWithCount(1));
+        output.putInt("count", stack.getCount());
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        int count = nbt.getInt("count");
-
-        CompoundTag itemTag = nbt.getCompound("item");
-        ItemStack stack = ItemStack.parseOptional(provider, itemTag);
-
+    public void deserialize(ValueInput input) {
+        int count = input.getIntOr("count", 0);
+        ItemStack stack = input.read("item", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
         this.stacks.set(0, stack.copyWithCount(count));
     }
 
