@@ -2,12 +2,16 @@ package com.github.ysbbbbbb.kaleidoscopecookery.event.effect;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModEffects;
+import com.github.ysbbbbbb.kaleidoscopecookery.item.quality.QualityUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.minecraft.world.item.consume_effects.ConsumeEffect;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
@@ -21,14 +25,18 @@ public class PreservationEvent {
         ItemStack stack = event.getItem();
         LivingEntity entity = event.getEntity();
         if (stack.has(DataComponents.FOOD) && entity.hasEffect(ModEffects.PRESERVATION)) {
-            FoodProperties foodProperties = stack.getFoodProperties(entity);
-            if (foodProperties == null) {
+            Consumable consumable = QualityUtils.getFoodConsumable(stack);
+            if (consumable == null) {
                 return;
             }
-            for (var effectPair : foodProperties.effects()) {
-                Holder<MobEffect> effect = effectPair.effect().getEffect();
-                if (effect.value().getCategory() == HARMFUL) {
-                    entity.removeEffect(effect);
+            for (ConsumeEffect effect : consumable.onConsumeEffects()) {
+                if (effect instanceof ApplyStatusEffectsConsumeEffect statusEffect) {
+                    for (MobEffectInstance instance : statusEffect.effects()) {
+                        Holder<MobEffect> holder = instance.getEffect();
+                        if (holder.value().getCategory() == HARMFUL) {
+                            entity.removeEffect(holder);
+                        }
+                    }
                 }
             }
         }

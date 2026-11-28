@@ -9,6 +9,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -34,6 +35,11 @@ public class BambooTrayRecipe extends SingleItemRecipe {
     @Override
     public boolean isSpecial() {
         return true;
+    }
+
+    @Override
+    public RecipeSerializer<BambooTrayRecipe> getSerializer() {
+        return ModRecipes.BAMBOO_TRAY_SERIALIZER.get();
     }
 
     public Ingredient getIngredient() {

@@ -132,7 +132,14 @@ public class ReiFlexPotRecipeCategory implements DisplayCategory<ReiFlexPotRecip
 
                     List<EntryIngredient> inputs = ReiUtil.ofIngredients(r.getIngredients());
                     List<EntryIngredient> output = ReiUtil.ofItemStacks(r.getResultItem(RegistryAccess.EMPTY));
-                    EntryIngredient carrier = r.carrier().isEmpty() ? EntryIngredient.empty() : ReiUtil.ofIngredient(r.carrier());
+                    Optional<Ingredient> recipeCarrier = r.carrier();
+                    EntryIngredient carrier = EntryIngredient.empty();
+                    if (recipeCarrier.isPresent()) {
+                        Ingredient ingredient = recipeCarrier.get();
+                        if (!ingredient.isEmpty()) {
+                            carrier = ReiUtil.ofIngredient(ingredient);
+                        }
+                    }
 
                     registry.add(new FlexPotRecipeDisplay(holder.id(), inputs, output, carrier, r.stirFryCount()));
                 });

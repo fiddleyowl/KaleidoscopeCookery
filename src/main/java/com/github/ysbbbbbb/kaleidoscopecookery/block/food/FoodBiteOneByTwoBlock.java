@@ -1,11 +1,11 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.block.food;
 
+import com.github.ysbbbbbb.kaleidoscopecookery.init.ModFoods.Food;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.FoodBiteAnimateTicks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -28,7 +28,7 @@ public class FoodBiteOneByTwoBlock extends FoodBiteBlock {
     public static final int LEFT = 0;
     public static final int RIGHT = 1;
 
-    public FoodBiteOneByTwoBlock(FoodProperties foodProperties, int maxBites,
+    public FoodBiteOneByTwoBlock(Food foodProperties, int maxBites,
                                  @Nullable FoodBiteAnimateTicks.AnimateTick animateTick) {
         super(foodProperties, maxBites, animateTick);
         this.registerDefaultState(this.stateDefinition.any()

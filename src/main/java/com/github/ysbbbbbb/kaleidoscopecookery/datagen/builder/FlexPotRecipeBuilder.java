@@ -2,7 +2,6 @@ package com.github.ysbbbbbb.kaleidoscopecookery.datagen.builder;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.FlexPotRecipe;
-import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.HolderGetter;
@@ -23,6 +22,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class FlexPotRecipeBuilder implements RecipeBuilder {
     private static final String NAME = "flex_pot";
@@ -30,7 +30,7 @@ public class FlexPotRecipeBuilder implements RecipeBuilder {
     private final HolderGetter<Item> items;
     private int time = 200;
     private int stirFryCount = 3;
-    private Ingredient carrier = ModRecipes.EMPTY_INGREDIENT;
+    private Optional<Ingredient> carrier = Optional.empty();
     private List<Ingredient> ingredients = Lists.newArrayList();
     private ItemStack result = ItemStack.EMPTY;
 
@@ -52,23 +52,23 @@ public class FlexPotRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
-    public FlexPotRecipeBuilder setCarrier(Ingredient ingredient) {
-        this.carrier = ingredient;
+    public FlexPotRecipeBuilder setCarrier(@Nullable Ingredient ingredient) {
+        this.carrier = Optional.ofNullable(ingredient);
         return this;
     }
 
     public FlexPotRecipeBuilder setCarrier(TagKey<Item> tagKey) {
-        this.carrier = Ingredient.of(this.items.getOrThrow(tagKey));
+        this.carrier = Optional.of(Ingredient.of(this.items.getOrThrow(tagKey)));
         return this;
     }
 
     public FlexPotRecipeBuilder setCarrier(ItemLike itemLike) {
-        this.carrier = Ingredient.of(itemLike);
+        this.carrier = Optional.of(Ingredient.of(itemLike));
         return this;
     }
 
     public FlexPotRecipeBuilder setBowlCarrier() {
-        this.carrier = Ingredient.of(Items.BOWL);
+        this.carrier = Optional.of(Ingredient.of(Items.BOWL));
         return this;
     }
 

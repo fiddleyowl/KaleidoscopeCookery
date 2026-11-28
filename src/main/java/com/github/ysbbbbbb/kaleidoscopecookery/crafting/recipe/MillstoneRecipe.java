@@ -39,7 +39,7 @@ public record MillstoneRecipe(Ingredient ingredient, List<RandomOutput> results)
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<MillstoneRecipe> getSerializer() {
         return ModRecipes.MILLSTONE_SERIALIZER.get();
     }
 

@@ -16,9 +16,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public class StockpotRecipeSerializer implements RecipeSerializer<StockpotRecipe> {
+import java.util.Optional;
+
+import static com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.PotRecipeSerializer.CARRIER_CODEC;
+
+public class StockpotRecipeSerializer {
     public static final int DEFAULT_TIME = 300;
     public static final Ingredient DEFAULT_CARRIER = Ingredient.of(Items.BOWL);
     public static final Identifier DEFAULT_SOUP_BASE = ModSoupBases.WATER;
@@ -30,7 +33,7 @@ public class StockpotRecipeSerializer implements RecipeSerializer<StockpotRecipe
                 DEFAULT_SOUP_BASE,
                 ItemStack.EMPTY,
                 DEFAULT_TIME,
-                DEFAULT_CARRIER,
+                Optional.of(DEFAULT_CARRIER),
                 StockpotVisuals.DEFAULT
         );
         return new RecipeHolder<>(EMPTY_ID, stockpotRecipe);
@@ -44,7 +47,7 @@ public class StockpotRecipeSerializer implements RecipeSerializer<StockpotRecipe
             Identifier.CODEC.optionalFieldOf("soup_base", DEFAULT_SOUP_BASE).forGetter(StockpotRecipe::soupBase),
             ItemStack.CODEC.fieldOf("result").forGetter(StockpotRecipe::result),
             Codec.INT.optionalFieldOf("time", DEFAULT_TIME).forGetter(StockpotRecipe::time),
-            Ingredient.CODEC.optionalFieldOf("carrier", DEFAULT_CARRIER).forGetter(StockpotRecipe::carrier),
+            CARRIER_CODEC.optionalFieldOf("carrier", Optional.of(DEFAULT_CARRIER)).forGetter(StockpotRecipe::carrier),
             StockpotVisuals.CODEC.forGetter(StockpotRecipe::visuals)
     ).apply(instance, StockpotRecipe::new));
 
@@ -53,18 +56,8 @@ public class StockpotRecipeSerializer implements RecipeSerializer<StockpotRecipe
             Identifier.STREAM_CODEC, StockpotRecipe::soupBase,
             ItemStack.STREAM_CODEC, StockpotRecipe::result,
             ByteBufCodecs.INT, StockpotRecipe::time,
-            Ingredient.CONTENTS_STREAM_CODEC, StockpotRecipe::carrier,
+            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC, StockpotRecipe::carrier,
             StockpotVisuals.STREAM_CODEC, StockpotRecipe::visuals,
             StockpotRecipe::new
     );
-
-    @Override
-    public MapCodec<StockpotRecipe> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, StockpotRecipe> streamCodec() {
-        return STREAM_CODEC;
-    }
 }

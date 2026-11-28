@@ -32,6 +32,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class FlexStockpotRecipeCategory implements IRecipeCategory<RecipeHolder<FlexStockpotRecipe>> {
     public static final RecipeType<RecipeHolder<FlexStockpotRecipe>> TYPE = RecipeType.createRecipeHolderType(
@@ -118,9 +119,13 @@ public class FlexStockpotRecipeCategory implements IRecipeCategory<RecipeHolder<
             builder.addSlot(RecipeIngredientRole.INPUT, 72, 61)
                     .addIngredients(Ingredient.of(displayStack));
         }
-        if (!recipe.carrier().isEmpty()) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 133, 18)
-                    .addIngredients(recipe.carrier());
+        Optional<Ingredient> recipeCarrier = recipe.carrier();
+        if (recipeCarrier.isPresent()) {
+            Ingredient carrier = recipeCarrier.get();
+            if (!carrier.isEmpty()) {
+                builder.addSlot(RecipeIngredientRole.INPUT, 133, 18)
+                        .addIngredients(carrier);
+            }
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, 143, 60)
                 .addItemStack(output);

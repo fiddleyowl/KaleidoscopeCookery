@@ -23,6 +23,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class FlexStockpotRecipeBuilder implements RecipeBuilder {
     private static final String NAME = "flex_stockpot";
@@ -31,7 +32,7 @@ public class FlexStockpotRecipeBuilder implements RecipeBuilder {
     private List<Ingredient> ingredients = Lists.newArrayList();
     private ItemStack result = ItemStack.EMPTY;
     private int time = StockpotRecipeSerializer.DEFAULT_TIME;
-    private Ingredient carrier = StockpotRecipeSerializer.DEFAULT_CARRIER;
+    private Optional<Ingredient> carrier = Optional.of(StockpotRecipeSerializer.DEFAULT_CARRIER);
     private Identifier soupBase = StockpotRecipeSerializer.DEFAULT_SOUP_BASE;
     private StockpotVisuals visuals = StockpotVisuals.DEFAULT;
 
@@ -91,7 +92,7 @@ public class FlexStockpotRecipeBuilder implements RecipeBuilder {
     }
 
     public FlexStockpotRecipeBuilder setCarrier(ItemLike carrier) {
-        this.carrier = Ingredient.of(carrier);
+        this.carrier = Optional.of(Ingredient.of(carrier));
         return this;
     }
 

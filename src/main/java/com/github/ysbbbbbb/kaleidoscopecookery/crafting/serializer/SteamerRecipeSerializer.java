@@ -9,9 +9,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public class SteamerRecipeSerializer implements RecipeSerializer<SteamerRecipe> {
+public class SteamerRecipeSerializer {
     public static final MapCodec<SteamerRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Ingredient.CODEC.fieldOf("ingredient").forGetter(SteamerRecipe::getIngredient),
@@ -25,14 +24,4 @@ public class SteamerRecipeSerializer implements RecipeSerializer<SteamerRecipe> 
             ItemStack.STREAM_CODEC, SteamerRecipe::getResult,
             ByteBufCodecs.INT, SteamerRecipe::getCookTick,
             SteamerRecipe::new);
-
-    @Override
-    public MapCodec<SteamerRecipe> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, SteamerRecipe> streamCodec() {
-        return STREAM_CODEC;
-    }
 }

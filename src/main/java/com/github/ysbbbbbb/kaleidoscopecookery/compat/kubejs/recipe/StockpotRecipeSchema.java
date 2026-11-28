@@ -1,5 +1,6 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.compat.kubejs.recipe;
 
+import com.mojang.datafixers.util.Either;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.recipe.component.IngredientComponent;
 import dev.latvian.mods.kubejs.recipe.component.ItemStackComponent;
@@ -11,6 +12,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;
 
+import static com.github.ysbbbbbb.kaleidoscopecookery.compat.kubejs.recipe.PotRecipeSchema.CARRIER_COMPONENT;
 import static com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.StockpotVisuals.*;
 import static com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.StockpotRecipeSerializer.*;
 
@@ -19,7 +21,7 @@ public interface StockpotRecipeSchema {
     RecipeKey<List<Ingredient>> INGREDIENTS = IngredientComponent.INGREDIENT.asListOrSelf().inputKey("ingredients");
     RecipeKey<String> SOUP_BASE = StringComponent.ID.inputKey("soup_base").optional(DEFAULT_SOUP_BASE.toString());
     RecipeKey<Integer> TIME = NumberComponent.INT.otherKey("time").optional(DEFAULT_TIME);
-    RecipeKey<Ingredient> CARRIER = IngredientComponent.OPTIONAL_INGREDIENT.inputKey("carrier").optional(DEFAULT_CARRIER);
+    RecipeKey<Either<Ingredient, List<Ingredient>>> CARRIER = CARRIER_COMPONENT.inputKey("carrier").optional(Either.left(DEFAULT_CARRIER));
     RecipeKey<String> COOKING_TEXTURE = StringComponent.ID.otherKey("cooking_texture").optional(DEFAULT_COOKING_TEXTURE.toString());
     RecipeKey<String> FINISHED_TEXTURE = StringComponent.ID.otherKey("finished_texture").optional(DEFAULT_FINISHED_TEXTURE.toString());
     RecipeKey<Integer> COOKING_BUBBLE_COLOR = NumberComponent.INT.otherKey("cooking_bubble_color").optional(DEFAULT_COOKING_BUBBLE_COLOR);

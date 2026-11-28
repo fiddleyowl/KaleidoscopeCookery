@@ -1,7 +1,6 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.datagen.recipe;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.datagen.builder.PotRecipeBuilder;
-import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
@@ -12,6 +11,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
+import org.jspecify.annotations.Nullable;
 
 import static com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems.*;
 
@@ -49,14 +49,14 @@ public class SimplePotRecipeProvider extends ModRecipeProvider {
     }
 
     public void addSingleItemRecipe(TagKey<Item> inputItem, Item outputItem, String idInput, RecipeOutput consumer) {
-        this.addSingleItemRecipe(inputItem, outputItem, idInput, ModRecipes.EMPTY_INGREDIENT, consumer);
+        this.addSingleItemRecipe(inputItem, outputItem, idInput, null, consumer);
     }
 
     public void addSingleItemRecipe(ItemLike inputItem, Item outputItem, String idInput, RecipeOutput consumer) {
-        this.addSingleItemRecipe(inputItem, outputItem, idInput, ModRecipes.EMPTY_INGREDIENT, consumer);
+        this.addSingleItemRecipe(inputItem, outputItem, idInput, null, consumer);
     }
 
-    public void addSingleItemRecipe(TagKey<Item> inputItem, Item outputItem, String idInput, Ingredient carrier, RecipeOutput consumer) {
+    public void addSingleItemRecipe(TagKey<Item> inputItem, Item outputItem, String idInput, @Nullable Ingredient carrier, RecipeOutput consumer) {
         for (int i = 1; i <= 9; i++) {
             TagKey<Item>[] inputs = this.getItemsWithCount(inputItem, i);
             ItemStack output = new ItemStack(outputItem, i);
@@ -66,7 +66,7 @@ public class SimplePotRecipeProvider extends ModRecipeProvider {
         }
     }
 
-    public void addSingleItemRecipe(ItemLike inputItem, Item outputItem, String idInput, Ingredient carrier, RecipeOutput consumer) {
+    public void addSingleItemRecipe(ItemLike inputItem, Item outputItem, String idInput, @Nullable Ingredient carrier, RecipeOutput consumer) {
         for (int i = 1; i <= 9; i++) {
             ItemLike[] inputs = this.getItemsWithCount(inputItem, i);
             ItemStack output = new ItemStack(outputItem, i);

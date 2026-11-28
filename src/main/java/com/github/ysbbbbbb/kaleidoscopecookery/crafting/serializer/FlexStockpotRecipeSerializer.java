@@ -11,11 +11,14 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+
+import java.util.Optional;
+
+import static com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.PotRecipeSerializer.CARRIER_CODEC;
 
 import static com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.StockpotRecipeSerializer.*;
 
-public class FlexStockpotRecipeSerializer implements RecipeSerializer<FlexStockpotRecipe> {
+public class FlexStockpotRecipeSerializer {
     public static final MapCodec<FlexStockpotRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Ingredient.CODEC.listOf().fieldOf("ingredients").xmap(
                     list -> list,
@@ -24,7 +27,7 @@ public class FlexStockpotRecipeSerializer implements RecipeSerializer<FlexStockp
             Identifier.CODEC.optionalFieldOf("soup_base", DEFAULT_SOUP_BASE).forGetter(FlexStockpotRecipe::soupBase),
             ItemStack.CODEC.fieldOf("result").forGetter(FlexStockpotRecipe::result),
             Codec.INT.optionalFieldOf("time", DEFAULT_TIME).forGetter(FlexStockpotRecipe::time),
-            Ingredient.CODEC.optionalFieldOf("carrier", DEFAULT_CARRIER).forGetter(FlexStockpotRecipe::carrier),
+            CARRIER_CODEC.optionalFieldOf("carrier", Optional.of(DEFAULT_CARRIER)).forGetter(FlexStockpotRecipe::carrier),
             StockpotVisuals.CODEC.forGetter(FlexStockpotRecipe::visuals)
     ).apply(instance, FlexStockpotRecipe::new));
 
@@ -33,18 +36,8 @@ public class FlexStockpotRecipeSerializer implements RecipeSerializer<FlexStockp
             Identifier.STREAM_CODEC, FlexStockpotRecipe::soupBase,
             ItemStack.STREAM_CODEC, FlexStockpotRecipe::result,
             ByteBufCodecs.INT, FlexStockpotRecipe::time,
-            Ingredient.CONTENTS_STREAM_CODEC, FlexStockpotRecipe::carrier,
+            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC, FlexStockpotRecipe::carrier,
             StockpotVisuals.STREAM_CODEC, FlexStockpotRecipe::visuals,
             FlexStockpotRecipe::new
     );
-
-    @Override
-    public MapCodec<FlexStockpotRecipe> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, FlexStockpotRecipe> streamCodec() {
-        return STREAM_CODEC;
-    }
 }

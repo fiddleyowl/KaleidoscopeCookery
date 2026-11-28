@@ -4,7 +4,6 @@ import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.StockpotRecipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.StockpotVisuals;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.StockpotRecipeSerializer;
-import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.HolderGetter;
@@ -24,6 +23,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Objects;
 
 public class StockpotRecipeBuilder implements RecipeBuilder {
@@ -33,8 +33,7 @@ public class StockpotRecipeBuilder implements RecipeBuilder {
     private List<Ingredient> ingredients = Lists.newArrayList();
     private ItemStack result = ItemStack.EMPTY;
     private int time = StockpotRecipeSerializer.DEFAULT_TIME;
-    private Ingredient carrier = StockpotRecipeSerializer.DEFAULT_CARRIER;
-    private boolean emptyCarrier = false;
+    private Optional<Ingredient> carrier = Optional.of(StockpotRecipeSerializer.DEFAULT_CARRIER);
     private Identifier soupBase = StockpotRecipeSerializer.DEFAULT_SOUP_BASE;
     private StockpotVisuals visuals = StockpotVisuals.DEFAULT;
 
@@ -94,14 +93,12 @@ public class StockpotRecipeBuilder implements RecipeBuilder {
     }
 
     public StockpotRecipeBuilder setCarrier(ItemLike carrier) {
-        this.carrier = Ingredient.of(carrier);
-        this.emptyCarrier = false;
+        this.carrier = Optional.of(Ingredient.of(carrier));
         return this;
     }
 
     public StockpotRecipeBuilder setEmptyCarrier() {
-        this.carrier = ModRecipes.EMPTY_INGREDIENT;
-        this.emptyCarrier = true;
+        this.carrier = Optional.empty();
         return this;
     }
 

@@ -68,7 +68,7 @@ public class RiceBowlRecipe extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<RiceBowlRecipe> getSerializer() {
         return ModRecipes.RICE_BOWL_SERIALIZER.get();
     }
 

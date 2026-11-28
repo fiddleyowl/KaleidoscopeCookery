@@ -18,16 +18,36 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 public class ModRecipes {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(BuiltInRegistries.RECIPE_SERIALIZER, KaleidoscopeCookery.MOD_ID);
 
-    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> POT_SERIALIZER = RECIPE_SERIALIZERS.register("pot", PotRecipeSerializer::new);
-    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> FLEX_POT_SERIALIZER = RECIPE_SERIALIZERS.register("flex_pot", FlexPotRecipeSerializer::new);
-    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> CHOPPING_BOARD_SERIALIZER = RECIPE_SERIALIZERS.register("chopping_board", ChoppingBoardRecipeSerializer::new);
-    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> STOCKPOT_SERIALIZER = RECIPE_SERIALIZERS.register("stockpot", StockpotRecipeSerializer::new);
-    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> FLEX_STOCKPOT_SERIALIZER = RECIPE_SERIALIZERS.register("flex_stockpot", FlexStockpotRecipeSerializer::new);
-    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> MILLSTONE_SERIALIZER = RECIPE_SERIALIZERS.register("millstone", MillstoneRecipeSerializer::new);
-    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> STEAMER_SERIALIZER = RECIPE_SERIALIZERS.register("steamer", SteamerRecipeSerializer::new);
-    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> TEAPOT_SERIALIZER = RECIPE_SERIALIZERS.register("teapot", TeapotRecipeSerializer::new);
-    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> RICE_BOWL_SERIALIZER = RECIPE_SERIALIZERS.register("rice_bowl", RiceBowlRecipeSerializer::new);
-    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<?>> BAMBOO_TRAY_SERIALIZER = RECIPE_SERIALIZERS.register("bamboo_tray", BambooTrayRecipeSerializer::new);
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<PotRecipe>> POT_SERIALIZER =
+            RECIPE_SERIALIZERS.register("pot", () -> new RecipeSerializer<>(
+                    PotRecipeSerializer.CODEC, PotRecipeSerializer.STREAM_CODEC));
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FlexPotRecipe>> FLEX_POT_SERIALIZER =
+            RECIPE_SERIALIZERS.register("flex_pot", () -> new RecipeSerializer<>(
+                    FlexPotRecipeSerializer.CODEC, FlexPotRecipeSerializer.STREAM_CODEC));
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ChoppingBoardRecipe>> CHOPPING_BOARD_SERIALIZER =
+            RECIPE_SERIALIZERS.register("chopping_board", () -> new RecipeSerializer<>(
+                    ChoppingBoardRecipeSerializer.CODEC, ChoppingBoardRecipeSerializer.STREAM_CODEC));
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<StockpotRecipe>> STOCKPOT_SERIALIZER =
+            RECIPE_SERIALIZERS.register("stockpot", () -> new RecipeSerializer<>(
+                    StockpotRecipeSerializer.CODEC, StockpotRecipeSerializer.STREAM_CODEC));
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FlexStockpotRecipe>> FLEX_STOCKPOT_SERIALIZER =
+            RECIPE_SERIALIZERS.register("flex_stockpot", () -> new RecipeSerializer<>(
+                    FlexStockpotRecipeSerializer.CODEC, FlexStockpotRecipeSerializer.STREAM_CODEC));
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MillstoneRecipe>> MILLSTONE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("millstone", () -> new RecipeSerializer<>(
+                    MillstoneRecipeSerializer.CODEC, MillstoneRecipeSerializer.STREAM_CODEC));
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<SteamerRecipe>> STEAMER_SERIALIZER =
+            RECIPE_SERIALIZERS.register("steamer", () -> new RecipeSerializer<>(
+                    SteamerRecipeSerializer.CODEC, SteamerRecipeSerializer.STREAM_CODEC));
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<TeapotRecipe>> TEAPOT_SERIALIZER =
+            RECIPE_SERIALIZERS.register("teapot", () -> new RecipeSerializer<>(
+                    TeapotRecipeSerializer.CODEC, TeapotRecipeSerializer.STREAM_CODEC));
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<RiceBowlRecipe>> RICE_BOWL_SERIALIZER =
+            RECIPE_SERIALIZERS.register("rice_bowl", () -> new RecipeSerializer<>(
+                    RiceBowlRecipeSerializer.CODEC, RiceBowlRecipeSerializer.STREAM_CODEC));
+    public static DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BambooTrayRecipe>> BAMBOO_TRAY_SERIALIZER =
+            RECIPE_SERIALIZERS.register("bamboo_tray", () -> new RecipeSerializer<>(
+                    BambooTrayRecipeSerializer.CODEC, BambooTrayRecipeSerializer.STREAM_CODEC));
 
     public static RecipeType<PotRecipe> POT_RECIPE;
     public static RecipeType<FlexPotRecipe> FLEX_POT_RECIPE;

@@ -2,6 +2,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.block.food;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.block.kitchen.NinePart;
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.food.FoodBiteThreeByThreeBlockEntity;
+import com.github.ysbbbbbb.kaleidoscopecookery.init.ModFoods.Food;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.FoodBiteAnimateTicks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,7 +10,6 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -49,7 +49,7 @@ public class FoodBiteThreeByThreeBlock extends FoodBiteBlock implements EntityBl
     private static final VoxelShape DOWN = Block.box(0, 0, 0, 16, 2, 12);
     private static final VoxelShape RIGHT_DOWN = Block.box(0, 0, 0, 12, 2, 12);
 
-    public FoodBiteThreeByThreeBlock(FoodProperties foodProperties, int maxBites,
+    public FoodBiteThreeByThreeBlock(Food foodProperties, int maxBites,
                                      @Nullable FoodBiteAnimateTicks.AnimateTick animateTick) {
         super(foodProperties, maxBites, animateTick);
         this.registerDefaultState(this.stateDefinition.any()

@@ -9,10 +9,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.UseRemainder;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Pair;
@@ -52,20 +53,26 @@ public class ItemUtils {
         return Pair.of(0, ItemStack.EMPTY);
     }
 
+    public static boolean isConsumableFood(ItemStack stack) {
+        return stack.has(DataComponents.FOOD) && stack.has(DataComponents.CONSUMABLE);
+    }
+
     public static Item getContainerItem(ItemStack stack) {
         if (stack.isEmpty()) {
             return Items.AIR;
         }
-        FoodProperties foodProperties = stack.get(DataComponents.FOOD);
-        if (foodProperties != null) {
-            return foodProperties.usingConvertsTo()
-                    .map(ItemStack::getItem)
-                    .orElse(Items.AIR);
+        if (isConsumableFood(stack)) {
+            // 食物容器统一从UseRemainder读取
+            UseRemainder remainder = stack.get(DataComponents.USE_REMAINDER);
+            if (remainder == null) {
+                return Items.AIR;
+            }
+            return remainder.convertInto().item().value();
         }
         Item item = stack.getItem();
-        ItemStack remainingItem = item.getCraftingRemainingItem(stack);
-        if (!remainingItem.isEmpty()) {
-            return remainingItem.getItem();
+        ItemStackTemplate remainingItem = stack.getCraftingRemainder();
+        if (remainingItem != null) {
+            return remainingItem.item().value();
         }
         if (item instanceof IHasContainer hasContainer) {
             return hasContainer.getContainerItem();

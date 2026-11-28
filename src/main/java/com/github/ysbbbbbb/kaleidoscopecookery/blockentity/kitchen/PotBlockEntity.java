@@ -7,6 +7,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.compat.tetra.TetraCompat;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.container.SimpleInput;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.FlexPotRecipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.PotRecipe;
+import com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.PotRecipeSerializer;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.*;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.KitchenShovelItem;
@@ -45,6 +46,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.github.ysbbbbbb.kaleidoscopecookery.block.kitchen.PotBlock.HAS_OIL;
 import static com.github.ysbbbbbb.kaleidoscopecookery.block.kitchen.PotBlock.SHOW_OIL;
@@ -70,7 +72,7 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
     public StirFryAnimationData animationData = new StirFryAnimationData();
 
     private NonNullList<ItemStack> inputs = NonNullList.withSize(PotRecipe.RECIPES_SIZE, ItemStack.EMPTY);
-    private Ingredient carrier = Ingredient.EMPTY;
+    private Optional<Ingredient> carrier = Optional.empty();
     private ItemStack result = ItemStack.EMPTY;
     private int status = PUT_INGREDIENT;
     private int currentTick = 0;
@@ -181,7 +183,7 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
             // 检查翻炒次数
             if (this.stirFryCount > 0) {
                 this.result = getItem(SUSPICIOUS_STIR_FRY).getDefaultInstance();
-                this.carrier = Ingredient.of(Items.BOWL);
+                this.carrier = Optional.of(Ingredient.of(Items.BOWL));
             }
             this.currentTick = TAKEOUT_TIME;
             this.setChanged();
@@ -347,7 +349,7 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
 
     private void applySuspiciousRecipe() {
         // 不符合，进入迷之炒菜阶段
-        this.carrier = Ingredient.of(Items.BOWL);
+        this.carrier = Optional.of(Ingredient.of(Items.BOWL));
         this.result = getItem(SUSPICIOUS_STIR_FRY).getDefaultInstance();
         this.currentTick = 10 * 20; // 迷之炒菜时间
         this.stirFryCount = 0; // 迷之炒菜不计翻炒次数
@@ -364,7 +366,7 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
         // 烧焦时取出的是黑暗料理
         ItemStack finallyResult = this.status == FINISHED ? this.result : getItem(DARK_CUISINE).getDefaultInstance();
 
-        if (!this.carrier.isEmpty()) {
+        if (this.hasCarrier()) {
             return this.takeOutWithCarrier(level, user, stack, finallyResult);
         } else {
             return this.takeOutWithoutCarrier(level, user, stack, finallyResult);
@@ -391,8 +393,10 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
     }
 
     private boolean takeOutWithCarrier(Level level, LivingEntity user, ItemStack mainHandItem, ItemStack finallyResult) {
-        Component carrierName = carrier.getItems()[0].getHoverName();
-        if (this.carrier.test(mainHandItem)) {
+        Ingredient carrier = this.carrier.orElseThrow();
+        Item carrierItem = carrier.items().findFirst().orElseThrow().value();
+        Component carrierName = carrierItem.getDefaultInstance().getHoverName();
+        if (carrier.test(mainHandItem)) {
             if (mainHandItem.getCount() < finallyResult.getCount()) {
                 this.sendActionBarMessage(user, "carrier_count_not_enough", finallyResult.getCount(), carrierName);
                 return false;
@@ -517,7 +521,7 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
 
     public void reset() {
         this.inputs.clear();
-        this.carrier = Ingredient.EMPTY;
+        this.carrier = Optional.empty();
         this.result = ItemStack.EMPTY;
         this.status = PUT_INGREDIENT;
         this.currentTick = 0;
@@ -533,7 +537,9 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.put(INPUTS, ContainerHelper.saveAllItems(new CompoundTag(), this.inputs, registries));
-        tag.put(CARRIER, Ingredient.CODEC.encodeStart(NbtOps.INSTANCE, this.carrier).getOrThrow());
+        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+        Tag carrierTag = PotRecipeSerializer.CARRIER_CODEC.encodeStart(ops, this.carrier).getOrThrow();
+        tag.put(CARRIER, carrierTag);
         tag.put(RESULT, this.result.saveOptional(registries));
         tag.putInt(STATUS, this.status);
         tag.putInt(CURRENT_TICK, this.currentTick);
@@ -548,9 +554,13 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
         if (tag.contains(INPUTS, Tag.TAG_COMPOUND)) {
             ContainerHelper.loadAllItems(tag.getCompound(INPUTS), this.inputs, registries);
         }
-        if (tag.contains(CARRIER, Tag.TAG_COMPOUND)) {
-            CompoundTag compound = tag.getCompound(CARRIER);
-            this.carrier = Ingredient.CODEC.decode(NbtOps.INSTANCE, compound).getOrThrow().getFirst();
+        Tag carrierTag = tag.get(CARRIER);
+        if (carrierTag == null) {
+            this.carrier = Optional.empty();
+        } else {
+            var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+            var decodedCarrier = PotRecipeSerializer.CARRIER_CODEC.parse(ops, carrierTag);
+            this.carrier = decodedCarrier.result().orElseGet(Optional::empty);
         }
         if (tag.contains(RESULT, Tag.TAG_COMPOUND)) {
             this.result = ItemStack.parseOptional(registries, tag.getCompound(RESULT));
@@ -584,7 +594,10 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
     }
 
     public boolean hasCarrier() {
-        return !carrier.isEmpty();
+        if (this.carrier.isEmpty()) {
+            return false;
+        }
+        return !this.carrier.get().isEmpty();
     }
 
     public ItemStack getResult() {

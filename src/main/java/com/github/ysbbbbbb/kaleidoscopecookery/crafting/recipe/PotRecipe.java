@@ -13,10 +13,11 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.RecipeMatcher;
 
 import java.util.List;
+import java.util.Optional;
 
-public record PotRecipe(int time, int stirFryCount, Ingredient carrier,
+public record PotRecipe(int time, int stirFryCount, Optional<Ingredient> carrier,
                         NonNullList<Ingredient> ingredients, ItemStack result) implements BaseRecipe<SimpleInput> {
-    public PotRecipe(int time, int stirFryCount, Ingredient carrier,
+    public PotRecipe(int time, int stirFryCount, Optional<Ingredient> carrier,
                      List<Ingredient> ingredients, ItemStack result) {
         this(time, stirFryCount, carrier, NonNullList.of(Ingredient.EMPTY,
                 BaseRecipe.fillInputs(ingredients)), result);
@@ -38,7 +39,7 @@ public record PotRecipe(int time, int stirFryCount, Ingredient carrier,
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<PotRecipe> getSerializer() {
         return ModRecipes.POT_SERIALIZER.get();
     }
 

@@ -29,6 +29,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PotRecipeCategory implements IRecipeCategory<RecipeHolder<PotRecipe>> {
     public static final RecipeType<RecipeHolder<PotRecipe>> TYPE = RecipeType.createRecipeHolderType(
@@ -91,8 +92,12 @@ public class PotRecipeCategory implements IRecipeCategory<RecipeHolder<PotRecipe
             int yOffset = (i / 3) * 18 + 24;
             builder.addSlot(RecipeIngredientRole.INPUT, xOffset, yOffset).addIngredients(inputs.get(i)).setBackground(slotDraw, -1, -1);
         }
-        if (!recipe.value().carrier().isEmpty()) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 133, 18).addIngredients(recipe.value().carrier());
+        Optional<Ingredient> recipeCarrier = recipe.value().carrier();
+        if (recipeCarrier.isPresent()) {
+            Ingredient carrier = recipeCarrier.get();
+            if (!carrier.isEmpty()) {
+                builder.addSlot(RecipeIngredientRole.INPUT, 133, 18).addIngredients(carrier);
+            }
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, 143, 60).addItemStack(output).setBackground(slotDraw, -1, -1);
     }

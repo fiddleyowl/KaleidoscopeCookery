@@ -9,9 +9,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public class BambooTrayRecipeSerializer implements RecipeSerializer<BambooTrayRecipe> {
+public class BambooTrayRecipeSerializer {
     public static final int DEFAULT_DURATION = 60 * 20;
 
     public static final MapCodec<BambooTrayRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -27,14 +26,4 @@ public class BambooTrayRecipeSerializer implements RecipeSerializer<BambooTrayRe
             BambooTrayRecipe.Subtype.STREAM_CODEC, BambooTrayRecipe::getSubtype,
             ByteBufCodecs.VAR_INT, BambooTrayRecipe::getDuration,
             BambooTrayRecipe::new);
-
-    @Override
-    public MapCodec<BambooTrayRecipe> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, BambooTrayRecipe> streamCodec() {
-        return STREAM_CODEC;
-    }
 }

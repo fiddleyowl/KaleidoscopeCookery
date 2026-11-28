@@ -117,14 +117,14 @@ public final class ModItems {
     public static DeferredItem<Item> EIGHT_IMMORTALS_TABLE = ITEMS.register("eight_immortals_table", () -> new BlockItem(ModBlocks.EIGHT_IMMORTALS_TABLE.get(), new Item.Properties()));
 
     // 蔬菜食材
-    public static DeferredItem<Item> TOMATO = ITEMS.register("tomato", () -> new Item(new Item.Properties().food(ModFoods.TOMATO)));
+    public static DeferredItem<Item> TOMATO = ITEMS.register("tomato", () -> new Item(ModFoods.TOMATO.applyTo(new Item.Properties())));
     public static DeferredItem<Item> RED_CHILI = ITEMS.register("red_chili", () -> new ChiliItem(2));
     public static DeferredItem<Item> GREEN_CHILI = ITEMS.register("green_chili", () -> new ChiliItem(1));
-    public static DeferredItem<Item> LETTUCE = ITEMS.register("lettuce", () -> new Item(new Item.Properties().food(ModFoods.LETTUCE)));
+    public static DeferredItem<Item> LETTUCE = ITEMS.register("lettuce", () -> new Item(ModFoods.LETTUCE.applyTo(new Item.Properties())));
     public static DeferredItem<Item> RICE_PANICLE = ITEMS.register("rice_panicle", () -> new Item(new Item.Properties()));
     public static DeferredItem<Item> FRESH_TEA_LEAVES = ITEMS.register("fresh_tea_leaves", () -> new Item(new Item.Properties()));
     public static DeferredItem<Item> DRIED_TEA_LEAVES = ITEMS.register("dried_tea_leaves", () -> new Item(new Item.Properties()));
-    public static DeferredItem<Item> CATERPILLAR = ITEMS.register("caterpillar", () -> new WithTooltipsItem(new Item.Properties().food(ModFoods.CATERPILLAR), "caterpillar"));
+    public static DeferredItem<Item> CATERPILLAR = ITEMS.register("caterpillar", () -> new WithTooltipsItem(ModFoods.CATERPILLAR.applyTo(new Item.Properties()), "caterpillar"));
 
     // 面类食材
     public static DeferredItem<Item> FLOUR = ITEMS.register("flour", FlourItem::new);
@@ -135,12 +135,12 @@ public final class ModItems {
     public static DeferredItem<Item> RAW_BAMBOO_TUBE_RICE = ITEMS.register("raw_bamboo_tube_rice", () -> new Item(new Item.Properties()));
 
     // 基础食物
-    public static DeferredItem<Item> FRIED_EGG = ITEMS.register("fried_egg", () -> new Item(new Item.Properties().food(ModFoods.FRIED_EGG)));
+    public static DeferredItem<Item> FRIED_EGG = ITEMS.register("fried_egg", () -> new Item(ModFoods.FRIED_EGG.applyTo(new Item.Properties())));
     public static DeferredItem<Item> TEA_EGG = ITEMS.register("tea_egg", () -> new FoodWithEffectsItem(ModFoods.TEA_EGG));
     public static DeferredItem<Item> DONKEY_BURGER = ITEMS.register("donkey_burger", () -> new FoodWithEffectsItem(ModFoods.DONKEY_BURGER));
     public static DeferredItem<Item> BAOZI = ITEMS.register("baozi", () -> new FoodWithEffectsItem(ModFoods.BAOZI));
     public static DeferredItem<Item> SHENGJIAN_MANTOU = ITEMS.register("shengjian_mantou", () -> new FoodWithEffectsItem(ModFoods.SHENGJIAN_MANTOU_ITEM));
-    public static DeferredItem<Item> DUMPLING = ITEMS.register("dumpling", () -> new Item(new Item.Properties().food(ModFoods.DUMPLING)));
+    public static DeferredItem<Item> DUMPLING = ITEMS.register("dumpling", () -> new Item(ModFoods.DUMPLING.applyTo(new Item.Properties())));
     public static DeferredItem<Item> SAMSA = ITEMS.register("samsa", () -> new FoodWithEffectsItem(ModFoods.SAMSA));
     public static DeferredItem<Item> MANTOU = ITEMS.register("mantou", () -> new FoodWithEffectsItem(ModFoods.MANTOU));
     public static DeferredItem<Item> MEAT_PIE = ITEMS.register("meat_pie", () -> new FoodWithEffectsItem(ModFoods.MEAT_PIE));
@@ -184,19 +184,19 @@ public final class ModItems {
     public static DeferredItem<Item> HOT_DRY_NOODLES = ITEMS.register("hot_dry_noodles", () -> new BowlFoodOnlyItem(ModFoods.HOT_DRY_NOODLES));
 
     // 生肉类
-    public static DeferredItem<Item> SASHIMI = ITEMS.register("sashimi", () -> new Item(new Item.Properties().food(ModFoods.SASHIMI)));
-    public static DeferredItem<Item> RAW_LAMB_CHOPS = ITEMS.register("raw_lamb_chops", () -> new Item(new Item.Properties().food(ModFoods.RAW_LAMB_CHOPS)));
-    public static DeferredItem<Item> RAW_COW_OFFAL = ITEMS.register("raw_cow_offal", () -> new Item(new Item.Properties().food(ModFoods.RAW_COW_OFFAL)));
-    public static DeferredItem<Item> RAW_PORK_BELLY = ITEMS.register("raw_pork_belly", () -> new Item(new Item.Properties().food(ModFoods.RAW_PORK_BELLY)));
-    public static DeferredItem<Item> RAW_CUT_SMALL_MEATS = ITEMS.register("raw_cut_small_meats", () -> new Item(new Item.Properties().food(ModFoods.RAW_CUT_SMALL_MEATS)));
-    public static DeferredItem<Item> RAW_MEATBALL = ITEMS.register("raw_meatball", () -> new Item(new Item.Properties().food(ModFoods.RAW_MEATBALL)));
+    public static DeferredItem<Item> SASHIMI = ITEMS.register("sashimi", () -> new Item(ModFoods.SASHIMI.applyTo(new Item.Properties())));
+    public static DeferredItem<Item> RAW_LAMB_CHOPS = ITEMS.register("raw_lamb_chops", () -> new Item(ModFoods.RAW_LAMB_CHOPS.applyTo(new Item.Properties())));
+    public static DeferredItem<Item> RAW_COW_OFFAL = ITEMS.register("raw_cow_offal", () -> new Item(ModFoods.RAW_COW_OFFAL.applyTo(new Item.Properties())));
+    public static DeferredItem<Item> RAW_PORK_BELLY = ITEMS.register("raw_pork_belly", () -> new Item(ModFoods.RAW_PORK_BELLY.applyTo(new Item.Properties())));
+    public static DeferredItem<Item> RAW_CUT_SMALL_MEATS = ITEMS.register("raw_cut_small_meats", () -> new Item(ModFoods.RAW_CUT_SMALL_MEATS.applyTo(new Item.Properties())));
+    public static DeferredItem<Item> RAW_MEATBALL = ITEMS.register("raw_meatball", () -> new Item(ModFoods.RAW_MEATBALL.applyTo(new Item.Properties())));
 
     // 熟肉类
-    public static DeferredItem<Item> COOKED_LAMB_CHOPS = ITEMS.register("cooked_lamb_chops", () -> new Item(new Item.Properties().food(ModFoods.COOKED_LAMB_CHOPS)));
-    public static DeferredItem<Item> COOKED_COW_OFFAL = ITEMS.register("cooked_cow_offal", () -> new Item(new Item.Properties().food(ModFoods.COOKED_COW_OFFAL)));
-    public static DeferredItem<Item> COOKED_PORK_BELLY = ITEMS.register("cooked_pork_belly", () -> new Item(new Item.Properties().food(ModFoods.COOKED_PORK_BELLY)));
-    public static DeferredItem<Item> COOKED_CUT_SMALL_MEATS = ITEMS.register("cooked_cut_small_meats", () -> new Item(new Item.Properties().food(ModFoods.COOKED_CUT_SMALL_MEATS)));
-    public static DeferredItem<Item> COOKED_MEATBALL = ITEMS.register("cooked_meatball", () -> new Item(new Item.Properties().food(ModFoods.COOKED_MEATBALL)));
+    public static DeferredItem<Item> COOKED_LAMB_CHOPS = ITEMS.register("cooked_lamb_chops", () -> new Item(ModFoods.COOKED_LAMB_CHOPS.applyTo(new Item.Properties())));
+    public static DeferredItem<Item> COOKED_COW_OFFAL = ITEMS.register("cooked_cow_offal", () -> new Item(ModFoods.COOKED_COW_OFFAL.applyTo(new Item.Properties())));
+    public static DeferredItem<Item> COOKED_PORK_BELLY = ITEMS.register("cooked_pork_belly", () -> new Item(ModFoods.COOKED_PORK_BELLY.applyTo(new Item.Properties())));
+    public static DeferredItem<Item> COOKED_CUT_SMALL_MEATS = ITEMS.register("cooked_cut_small_meats", () -> new Item(ModFoods.COOKED_CUT_SMALL_MEATS.applyTo(new Item.Properties())));
+    public static DeferredItem<Item> COOKED_MEATBALL = ITEMS.register("cooked_meatball", () -> new Item(ModFoods.COOKED_MEATBALL.applyTo(new Item.Properties())));
 
     // 特殊
     public static DeferredItem<Item> COLD_CUT_HAM_SLICES = ITEMS.register("cold_cut_ham_slices", () -> new LiftBlockItem(ModBlocks.COLD_CUT_HAM_SLICES.get(), "cold_cut_ham_slices"));

@@ -10,15 +10,14 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public class TeapotRecipeSerializer implements RecipeSerializer<TeapotRecipe> {
+public class TeapotRecipeSerializer {
     public static final int DEFAULT_TIME = 2400;
     public static final int DEFAULT_INGREDIENT_COUNT = 12;
 
     public static final Identifier EMPTY_TEA_FLUID = Identifier.withDefaultNamespace("empty");
 
-    private static final MapCodec<TeapotRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+    public static final MapCodec<TeapotRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
             Identifier.CODEC.optionalFieldOf("tea_fluid", EMPTY_TEA_FLUID).forGetter(TeapotRecipe::teaFluid),
             Ingredient.CODEC.fieldOf("ingredient").forGetter(TeapotRecipe::ingredient),
             Codec.INT.optionalFieldOf("ingredient_count", DEFAULT_INGREDIENT_COUNT).forGetter(TeapotRecipe::ingredientCount),
@@ -26,7 +25,7 @@ public class TeapotRecipeSerializer implements RecipeSerializer<TeapotRecipe> {
             ItemStack.STRICT_CODEC.fieldOf("result").forGetter(TeapotRecipe::result)
     ).apply(inst, TeapotRecipe::new));
 
-    private static final StreamCodec<RegistryFriendlyByteBuf, TeapotRecipe> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, TeapotRecipe> STREAM_CODEC = StreamCodec.composite(
             Identifier.STREAM_CODEC, TeapotRecipe::teaFluid,
             Ingredient.CONTENTS_STREAM_CODEC, TeapotRecipe::ingredient,
             ByteBufCodecs.VAR_INT, TeapotRecipe::ingredientCount,
@@ -34,14 +33,4 @@ public class TeapotRecipeSerializer implements RecipeSerializer<TeapotRecipe> {
             ItemStack.STREAM_CODEC, TeapotRecipe::result,
             TeapotRecipe::new
     );
-
-    @Override
-    public MapCodec<TeapotRecipe> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, TeapotRecipe> streamCodec() {
-        return STREAM_CODEC;
-    }
 }

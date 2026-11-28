@@ -1,20 +1,21 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.item;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.api.item.IHasContainer;
+import com.github.ysbbbbbb.kaleidoscopecookery.init.ModFoods.Food;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class BambooTubeRiceBlockItem extends BlockItem implements IHasContainer {
-    public BambooTubeRiceBlockItem(Block block, FoodProperties properties) {
-        super(block, new Item.Properties().food(properties));
+    public BambooTubeRiceBlockItem(Block block, Food properties) {
+        super(block, properties.applyTo(new Item.Properties()));
     }
 
     @Override
@@ -24,7 +25,7 @@ public class BambooTubeRiceBlockItem extends BlockItem implements IHasContainer 
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
         MutableComponent full = Component.translatable("tooltip.kaleidoscope_cookery.bamboo_tube_rice.maxim")
                 .withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC);
 
@@ -32,7 +33,7 @@ public class BambooTubeRiceBlockItem extends BlockItem implements IHasContainer 
         String text = full.getString();
         for (String line : text.split("\n")) {
             if (!line.isEmpty()) {
-                tooltip.add(Component.literal(line).withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+                tooltip.accept(Component.literal(line).withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
             }
         }
     }

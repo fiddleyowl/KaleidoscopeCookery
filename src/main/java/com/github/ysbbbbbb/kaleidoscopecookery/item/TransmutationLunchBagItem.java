@@ -26,7 +26,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -185,8 +184,7 @@ public class TransmutationLunchBagItem extends Item {
                 continue;
             }
 
-            FoodProperties foodProperties = stackInSlot.getItem().getFoodProperties(stackInSlot, null);
-            if (foodProperties != null) {
+            if (ItemUtils.isConsumableFood(stackInSlot)) {
                 while (!items.getStackInSlot(i).isEmpty() && entity instanceof Player player
                        && player.getFoodData().getFoodLevel() < 20) {
                     ItemStack consumed = items.extractItem(i, 1, false);
@@ -210,7 +208,10 @@ public class TransmutationLunchBagItem extends Item {
     }
 
     private static boolean canConsume(ItemStack stack) {
-        return !stack.isEmpty() && (stack.has(DataComponents.FOOD) || stack.is(Items.POTION));
+        if (stack.isEmpty()) {
+            return false;
+        }
+        return ItemUtils.isConsumableFood(stack) || stack.is(Items.POTION);
     }
 
     private static void consumeOne(ItemStack stack, Level level, LivingEntity entity) {
@@ -232,7 +233,7 @@ public class TransmutationLunchBagItem extends Item {
         ItemStackHandler items = getItems(stack);
         for (int i = 0; i < items.getSlots(); i++) {
             ItemStack stored = items.getStackInSlot(i);
-            if (stored.has(DataComponents.FOOD)) {
+            if (ItemUtils.isConsumableFood(stored)) {
                 return ItemUseAnimation.EAT;
             }
             if (stored.is(Items.POTION)) {
@@ -302,7 +303,7 @@ public class TransmutationLunchBagItem extends Item {
         if (!food.getItem().canFitInsideContainerItems()) {
             return false;
         }
-        return food.has(DataComponents.FOOD) || food.has(DataComponents.POTION_CONTENTS);
+        return ItemUtils.isConsumableFood(food) || food.has(DataComponents.POTION_CONTENTS);
     }
 
     private static Optional<ItemStack> removeOne(ItemStack bag) {

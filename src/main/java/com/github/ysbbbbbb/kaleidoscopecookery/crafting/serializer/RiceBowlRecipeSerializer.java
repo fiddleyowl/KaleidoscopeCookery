@@ -8,9 +8,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public class RiceBowlRecipeSerializer implements RecipeSerializer<RiceBowlRecipe> {
+public class RiceBowlRecipeSerializer {
     public static final MapCodec<RiceBowlRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(RiceBowlRecipe::category),
@@ -25,14 +24,4 @@ public class RiceBowlRecipeSerializer implements RecipeSerializer<RiceBowlRecipe
             ItemStack.STREAM_CODEC, RiceBowlRecipe::getResult,
             RiceBowlRecipe::new
     );
-
-    @Override
-    public MapCodec<RiceBowlRecipe> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, RiceBowlRecipe> streamCodec() {
-        return STREAM_CODEC;
-    }
 }

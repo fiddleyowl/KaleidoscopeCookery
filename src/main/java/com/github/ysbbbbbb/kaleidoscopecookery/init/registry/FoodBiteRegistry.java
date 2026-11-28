@@ -1,11 +1,11 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.init.registry;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
+import com.github.ysbbbbbb.kaleidoscopecookery.init.ModFoods.Food;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -245,12 +245,12 @@ public class FoodBiteRegistry {
         private final BlockType blockType;
         private final int maxBites;
         private final List<ItemLike> lootItems = Lists.newArrayList();
-        private final FoodProperties blockFood;
-        private final FoodProperties itemFood;
+        private final Food blockFood;
+        private final Food itemFood;
         private @Nullable FoodBiteAnimateTicks.AnimateTick animateTick = null;
         private @Nullable VoxelShape aabb = null;
 
-        private FoodData(BlockType blockType, int maxBites, FoodProperties blockFood, FoodProperties itemFood) {
+        private FoodData(BlockType blockType, int maxBites, Food blockFood, Food itemFood) {
             this.blockType = blockType;
             this.maxBites = maxBites;
             this.lootItems.add(Items.BOWL);
@@ -258,11 +258,11 @@ public class FoodBiteRegistry {
             this.itemFood = itemFood;
         }
 
-        public static FoodData create(int maxBites, FoodProperties blockFood, FoodProperties itemFood) {
+        public static FoodData create(int maxBites, Food blockFood, Food itemFood) {
             return new FoodData(BlockType.SINGLE, maxBites, blockFood, itemFood);
         }
 
-        public static FoodData createOneByTwo(int maxBites, FoodProperties blockFood, FoodProperties itemFood) {
+        public static FoodData createOneByTwo(int maxBites, Food blockFood, Food itemFood) {
             return new FoodData(BlockType.ONE_BY_TWO, maxBites, blockFood, itemFood);
         }
 
@@ -327,11 +327,11 @@ public class FoodBiteRegistry {
             return lootItems;
         }
 
-        public FoodProperties blockFood() {
+        public Food blockFood() {
             return blockFood;
         }
 
-        public FoodProperties itemFood() {
+        public Food itemFood() {
             return itemFood;
         }
     }

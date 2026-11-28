@@ -3,6 +3,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -24,6 +25,11 @@ public class SteamerRecipe extends SingleItemRecipe {
     @Override
     public boolean isSpecial() {
         return true;
+    }
+
+    @Override
+    public RecipeSerializer<SteamerRecipe> getSerializer() {
+        return ModRecipes.STEAMER_SERIALIZER.get();
     }
 
     public Ingredient getIngredient() {

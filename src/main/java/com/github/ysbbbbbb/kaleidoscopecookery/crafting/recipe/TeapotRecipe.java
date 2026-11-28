@@ -37,7 +37,7 @@ public record TeapotRecipe(Identifier teaFluid,
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<TeapotRecipe> getSerializer() {
         return ModRecipes.TEAPOT_SERIALIZER.get();
     }
 

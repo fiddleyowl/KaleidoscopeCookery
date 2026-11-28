@@ -1,5 +1,6 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.block.food;
 
+import com.github.ysbbbbbb.kaleidoscopecookery.init.ModFoods.Food;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.FoodBiteAnimateTicks;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.quality.Quality;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.quality.QualityUtils;
@@ -14,6 +15,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.minecraft.world.item.consume_effects.ConsumeEffect;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -44,14 +47,14 @@ public class FoodBiteBlock extends FoodBlock {
     public static final IntegerProperty QUALITY = IntegerProperty.create("quality", 0, Quality.values().length);
     public static final int DEFAULT_QUALITY = Quality.values().length;
 
-    protected final FoodProperties foodProperties;
+    protected final Food foodProperties;
     protected final IntegerProperty bites;
     protected final int maxBites;
     protected final @Nullable FoodBiteAnimateTicks.AnimateTick animateTick;
 
     protected VoxelShape aabb = FoodBlock.AABB;
 
-    public FoodBiteBlock(FoodProperties foodProperties, int maxBites, @Nullable FoodBiteAnimateTicks.AnimateTick animateTick) {
+    public FoodBiteBlock(Food foodProperties, int maxBites, @Nullable FoodBiteAnimateTicks.AnimateTick animateTick) {
         super();
         this.maxBites = maxBites;
         this.foodProperties = foodProperties;
@@ -69,7 +72,7 @@ public class FoodBiteBlock extends FoodBlock {
         );
     }
 
-    public FoodBiteBlock(FoodProperties foodProperties) {
+    public FoodBiteBlock(Food foodProperties) {
         this(foodProperties, 3, null);
     }
 
@@ -109,7 +112,8 @@ public class FoodBiteBlock extends FoodBlock {
     }
 
     protected InteractionResult eat(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!player.canEat(foodProperties.canAlwaysEat())) {
+        FoodProperties food = this.foodProperties.properties();
+        if (!player.canEat(food.canAlwaysEat())) {
             return InteractionResult.PASS;
         }
 
@@ -120,23 +124,29 @@ public class FoodBiteBlock extends FoodBlock {
         }
 
         player.getFoodData().eat(
-                (int) Math.round(foodProperties.nutrition() * radio),
-                (float) (foodProperties.saturation() * radio)
+                (int) Math.round(food.nutrition() * radio),
+                (float) (food.saturation() * radio)
         );
 
-        for (FoodProperties.PossibleEffect possibleEffect : foodProperties.effects()) {
-            MobEffectInstance instance = possibleEffect.effect();
-            if (!level.isClientSide() && level.getRandom().nextFloat() < possibleEffect.probability()) {
-                MobEffectInstance newInstance = new MobEffectInstance(
-                        instance.getEffect(),
-                        (int) Math.round(instance.getDuration() * radio),
-                        instance.getAmplifier()
-                );
-                player.addEffect(newInstance);
+        for (ConsumeEffect consumeEffect : this.foodProperties.consumable().onConsumeEffects()) {
+            // 摆盘菜品只注册了施加状态效果的食用动作，强制转换
+            var applyStatusEffects = (ApplyStatusEffectsConsumeEffect) consumeEffect;
+            List<MobEffectInstance> statusEffects = applyStatusEffects.effects();
+            float probability = applyStatusEffects.probability();
+            if (!level.isClientSide() && level.getRandom().nextFloat() < probability) {
+                // Consumable 的 apply_effects 接收效果列表，厨房仍为每个效果单独建组
+                for (MobEffectInstance instance : statusEffects) {
+                    MobEffectInstance newInstance = new MobEffectInstance(
+                            instance.getEffect(),
+                            (int) Math.round(instance.getDuration() * radio),
+                            instance.getAmplifier()
+                    );
+                    player.addEffect(newInstance);
+                }
             }
         }
 
-        level.playSound(null, pos, SoundEvents.GENERIC_EAT, SoundSource.PLAYERS,
+        level.playSound(null, pos, SoundEvents.GENERIC_EAT.value(), SoundSource.PLAYERS,
                 0.5F, level.getRandom().nextFloat() * 0.1F + 0.9F);
         level.gameEvent(player, GameEvent.EAT, pos);
 

@@ -2,7 +2,6 @@ package com.github.ysbbbbbb.kaleidoscopecookery.datagen.builder;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.PotRecipe;
-import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.HolderGetter;
@@ -23,6 +22,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Objects;
 
 public class PotRecipeBuilder implements RecipeBuilder {
@@ -31,7 +31,7 @@ public class PotRecipeBuilder implements RecipeBuilder {
     private final HolderGetter<Item> items;
     private int time = 200;
     private int stirFryCount = 3;
-    private Ingredient carrier = ModRecipes.EMPTY_INGREDIENT;
+    private Optional<Ingredient> carrier = Optional.empty();
     private List<Ingredient> ingredients = Lists.newArrayList();
     private ItemStack result = ItemStack.EMPTY;
 
@@ -53,23 +53,23 @@ public class PotRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
-    public PotRecipeBuilder setCarrier(Ingredient ingredient) {
-        this.carrier = ingredient;
+    public PotRecipeBuilder setCarrier(@Nullable Ingredient ingredient) {
+        this.carrier = Optional.ofNullable(ingredient);
         return this;
     }
 
     public PotRecipeBuilder setCarrier(TagKey<Item> tagKey) {
-        this.carrier = Ingredient.of(this.items.getOrThrow(tagKey));
+        this.carrier = Optional.of(Ingredient.of(this.items.getOrThrow(tagKey)));
         return this;
     }
 
     public PotRecipeBuilder setCarrier(ItemLike itemLike) {
-        this.carrier = Ingredient.of(itemLike);
+        this.carrier = Optional.of(Ingredient.of(itemLike));
         return this;
     }
 
     public PotRecipeBuilder setBowlCarrier() {
-        this.carrier = Ingredient.of(Items.BOWL);
+        this.carrier = Optional.of(Ingredient.of(Items.BOWL));
         return this;
     }
 

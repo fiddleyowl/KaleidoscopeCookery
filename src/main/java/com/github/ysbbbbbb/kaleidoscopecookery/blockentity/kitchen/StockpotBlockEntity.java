@@ -54,6 +54,7 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
     public static final int MAX_TAKEOUT_COUNT = 9;
@@ -509,13 +510,13 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
             return false;
         }
 
-        Ingredient carrier;
+        Optional<Ingredient> carrier;
         if (this.recipeId.equals(StockpotRecipeSerializer.EMPTY_ID)) {
-            carrier = StockpotRecipeSerializer.DEFAULT_CARRIER;
+            carrier = Optional.of(StockpotRecipeSerializer.DEFAULT_CARRIER);
         } else {
             var recipe = this.getRecipeById(level, this.recipeId);
             if (recipe == null) {
-                carrier = StockpotRecipeSerializer.DEFAULT_CARRIER;
+                carrier = Optional.of(StockpotRecipeSerializer.DEFAULT_CARRIER);
             } else {
                 carrier = recipe.map(
                         left -> left.value().carrier(),
@@ -525,12 +526,15 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
         }
 
         // 兼容容器是否正确
-        if (!carrier.isEmpty() && !carrier.test(stack)) {
-            Component carrierName = carrier.getItems()[0].getHoverName();
-            this.sendActionBarMessage(user, "tip.kaleidoscope_cookery.pot.need_carrier", carrierName);
-            return false;
-        }
-        if (!carrier.isEmpty()) {
+        Optional<Ingredient> requiredCarrier = carrier.filter(ingredient -> !ingredient.isEmpty());
+        if (requiredCarrier.isPresent()) {
+            Ingredient ingredient = requiredCarrier.get();
+            if (!ingredient.test(stack)) {
+                Item carrierItem = ingredient.items().findFirst().orElseThrow().value();
+                Component carrierName = carrierItem.getDefaultInstance().getHoverName();
+                this.sendActionBarMessage(user, "tip.kaleidoscope_cookery.pot.need_carrier", carrierName);
+                return false;
+            }
             stack.shrink(1);
         }
 

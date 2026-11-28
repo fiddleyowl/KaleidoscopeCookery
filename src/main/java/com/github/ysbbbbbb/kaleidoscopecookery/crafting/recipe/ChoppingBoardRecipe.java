@@ -4,6 +4,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -32,6 +33,11 @@ public class ChoppingBoardRecipe extends SingleItemRecipe {
     @Override
     public boolean isSpecial() {
         return true;
+    }
+
+    @Override
+    public RecipeSerializer<ChoppingBoardRecipe> getSerializer() {
+        return ModRecipes.CHOPPING_BOARD_SERIALIZER.get();
     }
 
     public Ingredient getIngredient() {

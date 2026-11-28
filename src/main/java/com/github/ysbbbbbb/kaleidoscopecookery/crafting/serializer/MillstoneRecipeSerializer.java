@@ -12,12 +12,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-public class MillstoneRecipeSerializer implements RecipeSerializer<MillstoneRecipe> {
+public class MillstoneRecipeSerializer {
     private static final MapCodec<List<RandomOutput>> RESULTS_MAP_CODEC = new MapCodec<>() {
         @Override
         public <T> DataResult<List<RandomOutput>> decode(DynamicOps<T> ops, MapLike<T> input) {
@@ -65,15 +64,5 @@ public class MillstoneRecipeSerializer implements RecipeSerializer<MillstoneReci
     public static RecipeHolder<MillstoneRecipe> getEmptyRecipe() {
         MillstoneRecipe recipe = new MillstoneRecipe(Ingredient.EMPTY, NonNullList.withSize(4, RandomOutput.EMPTY));
         return new RecipeHolder<>(EMPTY_ID, recipe);
-    }
-
-    @Override
-    public MapCodec<MillstoneRecipe> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, MillstoneRecipe> streamCodec() {
-        return STREAM_CODEC;
     }
 }

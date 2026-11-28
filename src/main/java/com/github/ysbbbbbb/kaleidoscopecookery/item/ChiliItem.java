@@ -10,7 +10,7 @@ public class ChiliItem extends Item {
     private final int damage;
 
     public ChiliItem(int damage) {
-        super(new Item.Properties().food(ModFoods.CHILI));
+        super(ModFoods.CHILI.applyTo(new Item.Properties()));
         this.damage = damage;
     }
 

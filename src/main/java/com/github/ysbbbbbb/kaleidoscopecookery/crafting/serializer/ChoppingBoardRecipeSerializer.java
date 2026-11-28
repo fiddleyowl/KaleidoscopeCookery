@@ -12,11 +12,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import java.util.List;
 
-public class ChoppingBoardRecipeSerializer implements RecipeSerializer<ChoppingBoardRecipe> {
+public class ChoppingBoardRecipeSerializer {
     public static final Identifier EMPTY = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "empty");
 
     public static final Codec<List<ItemStack>> ITEM_STACKS_CODEC = Codec.either(ItemStack.CODEC, ItemStack.CODEC.listOf()).xmap(
@@ -38,14 +37,4 @@ public class ChoppingBoardRecipeSerializer implements RecipeSerializer<ChoppingB
             ByteBufCodecs.INT, ChoppingBoardRecipe::getCutCount,
             Identifier.STREAM_CODEC, ChoppingBoardRecipe::getModelId,
             ChoppingBoardRecipe::new);
-
-    @Override
-    public MapCodec<ChoppingBoardRecipe> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, ChoppingBoardRecipe> streamCodec() {
-        return STREAM_CODEC;
-    }
 }

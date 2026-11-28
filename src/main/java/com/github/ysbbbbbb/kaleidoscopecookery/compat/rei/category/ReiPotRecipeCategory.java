@@ -124,7 +124,14 @@ public class ReiPotRecipeCategory implements DisplayCategory<ReiPotRecipeCategor
                 .forEach(r -> {
                     List<EntryIngredient> inputs = ReiUtil.ofIngredients(r.value().getIngredients());
                     List<EntryIngredient> output = ReiUtil.ofItemStacks(r.value().getResultItem(RegistryAccess.EMPTY));
-                    EntryIngredient carrier = r.value().carrier().isEmpty() ? EntryIngredient.empty() : ReiUtil.ofIngredient(r.value().carrier());
+                    Optional<Ingredient> recipeCarrier = r.value().carrier();
+                    EntryIngredient carrier = EntryIngredient.empty();
+                    if (recipeCarrier.isPresent()) {
+                        Ingredient ingredient = recipeCarrier.get();
+                        if (!ingredient.isEmpty()) {
+                            carrier = ReiUtil.ofIngredient(ingredient);
+                        }
+                    }
 
                     registry.add(new PotRecipeDisplay(r.id(), inputs, output, carrier, r.value().stirFryCount()));
                 });

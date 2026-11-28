@@ -3,10 +3,10 @@ package com.github.ysbbbbbb.kaleidoscopecookery.item;
 import com.github.ysbbbbbb.kaleidoscopecookery.api.item.IHasContainer;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.food.FoodBiteBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.config.ClientConfig;
+import com.github.ysbbbbbb.kaleidoscopecookery.init.ModFoods.Food;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.CompatRegistry;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.quality.Quality;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.quality.QualityUtils;
-import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.util.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,14 +20,13 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -39,46 +38,23 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class BowlFoodBlockItem extends BlockItem implements IHasContainer {
-    private final List<MobEffectInstance> effectInstances = Lists.newArrayList();
-    private final Function<Quality, List<MobEffectInstance>> effectCache = Util.memoize(
-            quality -> QualityUtils.modifyEffects(this.effectInstances, quality)
-    );
-    private final BiFunction<Quality, FoodProperties, FoodProperties> foodPropertiesCache = Util.memoize(
-            (quality, raw) -> QualityUtils.modifyFoodProperties(raw, quality)
-    );
-    private final Optional<ItemStack> usingConvertsTo;
+    private final List<MobEffectInstance> effectInstances;
+    private final Function<Quality, List<MobEffectInstance>> effectCache;
+    private final Optional<Item> usingConvertsTo;
 
-    public BowlFoodBlockItem(Block block, FoodProperties properties, @Nullable ItemLike usingConvertsTo) {
-        super(block, new Item.Properties().stacksTo(16).food(
-                new FoodProperties(
-                        properties.nutrition(),
-                        properties.saturation(),
-                        properties.canAlwaysEat(),
-                        properties.eatSeconds(),
-                        usingConvertsTo == null ? Optional.empty() : Optional.of(new ItemStack(usingConvertsTo)),
-                        properties.effects())
-        ));
-        this.usingConvertsTo = usingConvertsTo == null ? Optional.empty() : Optional.of(new ItemStack(usingConvertsTo));
-        properties.effects().forEach(effect -> {
-            if (effect.probability() >= 1F) {
-                effectInstances.add(effect.effect());
-            }
-        });
-    }
-
-    @Override
-    public @Nullable FoodProperties getFoodProperties(ItemStack stack, @Nullable LivingEntity entity) {
-        FoodProperties raw = super.getFoodProperties(stack, entity);
-        if (!QualityUtils.hasQuality(stack) || raw == null) {
-            return raw;
+    public BowlFoodBlockItem(Block block, Food properties, @Nullable ItemLike usingConvertsTo) {
+        Item.Properties itemProperties = properties.applyTo(new Item.Properties().stacksTo(16));
+        if (usingConvertsTo != null) {
+            itemProperties = itemProperties.usingConvertsTo(usingConvertsTo.asItem());
         }
-        // 如果有品质，那么依据品质
-        Quality quality = QualityUtils.getQuality(stack);
-        return this.foodPropertiesCache.apply(quality, raw);
+        super(block, itemProperties);
+        this.usingConvertsTo = Optional.ofNullable(usingConvertsTo).map(ItemLike::asItem);
+        this.effectInstances = properties.guaranteedEffects();
+        this.effectCache = Util.memoize(quality -> QualityUtils.modifyEffects(this.effectInstances, quality));
     }
 
     @Override
@@ -91,13 +67,15 @@ public class BowlFoodBlockItem extends BlockItem implements IHasContainer {
                     .withOptionalParameter(LootContextParams.BLOCK_ENTITY, null);
             BlockState state = foodBiteBlock.defaultBlockState().setValue(foodBiteBlock.getBites(), foodBiteBlock.getMaxBites());
             List<ItemStack> drops = getDrops(state, builder);
-            drops.forEach(itemStack -> {
+            for (ItemStack itemStack : drops) {
                 if (itemStack.isEmpty()) {
-                    return;
+                    continue;
                 }
                 // 需要剔除 usingConvertsTo，因为已经给过了
-                if (this.usingConvertsTo.isPresent() && ItemStack.isSameItem(itemStack, this.usingConvertsTo.get())) {
-                    return;
+                if (this.usingConvertsTo.isPresent()) {
+                    if (itemStack.getItem() == this.usingConvertsTo.get()) {
+                        continue;
+                    }
                 }
                 if (entity instanceof Player player) {
                     ItemHandlerHelper.giveItemToPlayer(player, itemStack);
@@ -105,26 +83,26 @@ public class BowlFoodBlockItem extends BlockItem implements IHasContainer {
                     ItemEntity itemEntity = new ItemEntity(level, entity.getX(), entity.getY(), entity.getZ(), itemStack);
                     level.addFreshEntity(itemEntity);
                 }
-            });
+            }
         }
-        return super.finishUsingItem(stack, level, entity);
+        return QualityUtils.finishUsingFood(stack, level, entity);
     }
 
     private List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-        ResourceKey<LootTable> resourcekey = state.getBlock().getLootTable();
-        if (resourcekey == BuiltInLootTables.EMPTY) {
+        Optional<ResourceKey<LootTable>> resourcekey = state.getBlock().getLootTable();
+        if (resourcekey.isEmpty()) {
             return Collections.emptyList();
         } else {
             LootParams lootParams = params.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
             ServerLevel serverLevel = lootParams.getLevel();
-            LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(resourcekey);
+            LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(resourcekey.orElseThrow());
             return lootTable.getRandomItems(lootParams);
         }
     }
 
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
         // 描述
         Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (id != null) {
@@ -134,9 +112,9 @@ public class BowlFoodBlockItem extends BlockItem implements IHasContainer {
             String text = full.getString();
             for (String line : text.split("\n")) {
                 if (!line.isEmpty()) {
-                    tooltip.add(Component.literal(line).withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
+                    tooltip.accept(Component.literal(line).withStyle(ChatFormatting.DARK_GRAY, ChatFormatting.ITALIC));
                 } else {
-                    tooltip.add(CommonComponents.EMPTY);
+                    tooltip.accept(CommonComponents.EMPTY);
                 }
             }
         }
@@ -148,14 +126,14 @@ public class BowlFoodBlockItem extends BlockItem implements IHasContainer {
         // 品质
         if (QualityUtils.hasQuality(stack)) {
             Quality quality = QualityUtils.getQuality(stack);
-            tooltip.add(quality.getTooltip());
+            tooltip.accept(quality.getTooltip());
             if (showEffect) {
-                tooltip.add(CommonComponents.space());
-                PotionContents.addPotionTooltip(this.effectCache.apply(quality), tooltip::add, 1.0F, context.tickRate());
+                tooltip.accept(CommonComponents.space());
+                PotionContents.addPotionTooltip(this.effectCache.apply(quality), tooltip, 1.0F, context.tickRate());
             }
         } else {
-            tooltip.add(CommonComponents.space());
-            PotionContents.addPotionTooltip(this.effectInstances, tooltip::add, 1.0F, context.tickRate());
+            tooltip.accept(CommonComponents.space());
+            PotionContents.addPotionTooltip(this.effectInstances, tooltip, 1.0F, context.tickRate());
         }
     }
 

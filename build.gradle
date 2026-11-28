@@ -165,7 +165,7 @@ dependencies {
 
     // runtimeOnly "maven.modrinth:diet:2.1.1+1.20.1-forge"
     // runtimeOnly 'curse.maven:touhou-little-maid-355044:6613831-sources-6613865'
-    runtimeOnly "maven.modrinth:appleskin:i8MiVItH" // 3.0.9+mc26.1
+    implementation "maven.modrinth:appleskin:i8MiVItH" // 3.0.9+mc26.1
     runtimeOnly "maven.modrinth:just-enough-effect-descriptions-jeed:MxLBsDB4" // 26.1.2-2.5.3
     runtimeOnly "maven.modrinth:carry-on:c2uJiLoV" // 2.10.0
     // runtimeOnly "curse.maven:ecliptic-seasons-1118306:7041469"

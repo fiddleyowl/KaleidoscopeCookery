@@ -29,6 +29,7 @@ import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +137,14 @@ public class ReiFlexStockpotRecipeCategory implements DisplayCategory<ReiFlexSto
 
                     List<EntryIngredient> inputs = ReiUtil.ofIngredients(r.getIngredients());
                     List<EntryIngredient> output = ReiUtil.ofItemStacks(r.getResultItem(RegistryAccess.EMPTY));
-                    EntryIngredient carrier = r.carrier().isEmpty() ? EntryIngredient.empty() : ReiUtil.ofIngredient(r.carrier());
+                    Optional<Ingredient> recipeCarrier = r.carrier();
+                    EntryIngredient carrier = EntryIngredient.empty();
+                    if (recipeCarrier.isPresent()) {
+                        Ingredient ingredient = recipeCarrier.get();
+                        if (!ingredient.isEmpty()) {
+                            carrier = ReiUtil.ofIngredient(ingredient);
+                        }
+                    }
 
                     ISoupBase soupBase = SoupBaseManager.getSoupBase(r.soupBase());
                     if (soupBase == null) {

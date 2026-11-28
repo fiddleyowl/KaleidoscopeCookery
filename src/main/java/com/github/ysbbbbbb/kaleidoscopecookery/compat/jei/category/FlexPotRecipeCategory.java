@@ -30,6 +30,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class FlexPotRecipeCategory implements IRecipeCategory<RecipeHolder<FlexPotRecipe>> {
     public static final RecipeType<RecipeHolder<FlexPotRecipe>> TYPE = RecipeType.createRecipeHolderType(
@@ -107,9 +108,13 @@ public class FlexPotRecipeCategory implements IRecipeCategory<RecipeHolder<FlexP
                     .addIngredients(inputs.get(i))
                     .setStandardSlotBackground();
         }
-        if (!recipe.carrier().isEmpty()) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 133, 18)
-                    .addIngredients(recipe.carrier());
+        Optional<Ingredient> recipeCarrier = recipe.carrier();
+        if (recipeCarrier.isPresent()) {
+            Ingredient carrier = recipeCarrier.get();
+            if (!carrier.isEmpty()) {
+                builder.addSlot(RecipeIngredientRole.INPUT, 133, 18)
+                        .addIngredients(carrier);
+            }
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, 143, 60)
                 .addItemStack(output)
