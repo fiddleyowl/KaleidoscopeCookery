@@ -46,8 +46,8 @@ public class BowlFoodBlockItem extends BlockItem implements IHasContainer {
     private final Function<Quality, List<MobEffectInstance>> effectCache;
     private final Optional<Item> usingConvertsTo;
 
-    public BowlFoodBlockItem(Block block, Food properties, @Nullable ItemLike usingConvertsTo) {
-        Item.Properties itemProperties = properties.applyTo(new Item.Properties().stacksTo(16));
+    public BowlFoodBlockItem(Item.Properties itemProperties, Block block, Food properties, @Nullable ItemLike usingConvertsTo) {
+        itemProperties = properties.applyTo(itemProperties.stacksTo(16));
         if (usingConvertsTo != null) {
             itemProperties = itemProperties.usingConvertsTo(usingConvertsTo.asItem());
         }

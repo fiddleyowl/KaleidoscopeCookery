@@ -41,15 +41,15 @@ public class CandiedSkewerItem extends BlockItem implements IHasContainer {
     private final int attackEffectDuration;
     private final Supplier<Block> sideBlock;
 
-    public CandiedSkewerItem(Supplier<Block> uprightBlock, Supplier<Block> sideBlock, Food foodProperties) {
-        this(uprightBlock, sideBlock, foodProperties, null, 0);
+    public CandiedSkewerItem(Properties properties, Supplier<Block> uprightBlock, Supplier<Block> sideBlock, Food foodProperties) {
+        this(properties, uprightBlock, sideBlock, foodProperties, null, 0);
     }
 
-    public CandiedSkewerItem(Supplier<Block> uprightBlock, Supplier<Block> sideBlock, Food foodProperties,
+    public CandiedSkewerItem(Properties properties, Supplier<Block> uprightBlock, Supplier<Block> sideBlock, Food foodProperties,
                              @Nullable Holder<MobEffect> attackEffect, int attackEffectDuration) {
         super(
                 uprightBlock.get(),
-                foodProperties.applyTo(new Properties()).attributes(
+                foodProperties.applyTo(properties).attributes(
                         ItemAttributeModifiers.builder().add(
                                 Attributes.ATTACK_KNOCKBACK,
                                 new AttributeModifier(KNOCKBACK_MODIFIER_ID, 3, ADD_VALUE),

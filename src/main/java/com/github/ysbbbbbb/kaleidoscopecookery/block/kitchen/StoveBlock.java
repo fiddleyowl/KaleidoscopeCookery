@@ -39,11 +39,11 @@ import static com.github.ysbbbbbb.kaleidoscopecookery.item.KitchenShovelItem.has
 import static com.github.ysbbbbbb.kaleidoscopecookery.item.KitchenShovelItem.setHasOil;
 
 public class StoveBlock extends HorizontalDirectionalBlock {
-    public static final MapCodec<StoveBlock> CODEC = simpleCodec(p -> new StoveBlock());
+    public static final MapCodec<StoveBlock> CODEC = simpleCodec(StoveBlock::new);
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-    public StoveBlock() {
-        super(Properties.of()
+    public StoveBlock(Properties properties) {
+        super(properties
                 .mapColor(MapColor.STONE)
                 .sound(SoundType.STONE)
                 .requiresCorrectToolForDrops()

@@ -60,8 +60,8 @@ public class TableBlock extends Block implements SimpleWaterloggedBlock, EntityB
     private static final VoxelShape SELECTION_SHAPE = Block.box(0, 0, 0, 16, 16, 16);
     private static final VoxelShape COLLISION_SHAPE = Block.box(0, 14, 0, 16, 16, 16);
 
-    public TableBlock() {
-        super(Properties.of()
+    public TableBlock(Properties properties) {
+        super(properties
                 .mapColor(MapColor.WOOD)
                 .instrument(NoteBlockInstrument.BASS)
                 .strength(2.0F, 3.0F)

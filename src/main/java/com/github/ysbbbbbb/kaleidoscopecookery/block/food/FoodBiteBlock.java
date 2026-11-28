@@ -54,8 +54,8 @@ public class FoodBiteBlock extends FoodBlock {
 
     protected VoxelShape aabb = FoodBlock.AABB;
 
-    public FoodBiteBlock(Food foodProperties, int maxBites, FoodBiteAnimateTicks.@Nullable AnimateTick animateTick) {
-        super();
+    public FoodBiteBlock(Properties properties, Food foodProperties, int maxBites, FoodBiteAnimateTicks.@Nullable AnimateTick animateTick) {
+        super(properties);
         this.maxBites = maxBites;
         this.foodProperties = foodProperties;
         this.bites = IntegerProperty.create("bites", 0, maxBites);
@@ -72,8 +72,8 @@ public class FoodBiteBlock extends FoodBlock {
         );
     }
 
-    public FoodBiteBlock(Food foodProperties) {
-        this(foodProperties, 3, null);
+    public FoodBiteBlock(Properties properties, Food foodProperties) {
+        this(properties, foodProperties, 3, null);
     }
 
     public FoodBiteBlock setAABB(VoxelShape aabb) {
@@ -129,8 +129,10 @@ public class FoodBiteBlock extends FoodBlock {
         );
 
         for (ConsumeEffect consumeEffect : this.foodProperties.consumable().onConsumeEffects()) {
-            // 摆盘菜品只注册了施加状态效果的食用动作，强制转换
-            var applyStatusEffects = (ApplyStatusEffectsConsumeEffect) consumeEffect;
+            // 摆盘食用只处理状态效果。
+            if (!(consumeEffect instanceof ApplyStatusEffectsConsumeEffect applyStatusEffects)) {
+                continue;
+            }
             List<MobEffectInstance> statusEffects = applyStatusEffects.effects();
             float probability = applyStatusEffects.probability();
             if (!level.isClientSide() && level.getRandom().nextFloat() < probability) {

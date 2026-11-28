@@ -37,8 +37,8 @@ public class BaseCropBlock extends CropBlock {
     protected final DeferredItem<Item> result;
     protected final DeferredItem<Item> seed;
 
-    public BaseCropBlock(DeferredItem<Item> result, DeferredItem<Item> seed) {
-        super(Properties.of()
+    public BaseCropBlock(Properties properties, DeferredItem<Item> result, DeferredItem<Item> seed) {
+        super(properties
                 .mapColor(MapColor.PLANT)
                 .noCollision()
                 .randomTicks()

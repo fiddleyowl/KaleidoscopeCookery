@@ -83,7 +83,7 @@ public class MillstoneRecipeCategory implements IRecipeCategory<RecipeHolder<Mil
         List<RandomOutput> outputs = recipe.results();
 
         var inputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 69, 39).setStandardSlotBackground();
-        recipe.ingredient().ifPresent(inputSlot::addIngredients);
+        recipe.optionalIngredient().ifPresent(inputSlot::addIngredients);
 
         // 主输出
         RandomOutput output = outputs.get(0);

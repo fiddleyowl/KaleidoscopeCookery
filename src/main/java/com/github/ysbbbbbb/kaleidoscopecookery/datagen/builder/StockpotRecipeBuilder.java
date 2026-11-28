@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
@@ -50,9 +51,14 @@ public class StockpotRecipeBuilder implements RecipeBuilder {
     public StockpotRecipeBuilder addInput(Object... ingredients) {
         for (Object ingredient : ingredients) {
             if (ingredient instanceof ItemLike itemLike) {
-                this.ingredients.add(Ingredient.of(itemLike));
+                Item item = itemLike.asItem();
+                if (item != Items.AIR) {
+                    this.ingredients.add(Ingredient.of(item));
+                }
             } else if (ingredient instanceof ItemStack stack) {
-                this.ingredients.add(Ingredient.of(stack.getItem()));
+                if (!stack.isEmpty()) {
+                    this.ingredients.add(Ingredient.of(stack.getItem()));
+                }
             } else if (ingredient instanceof TagKey tagKey) {
                 this.ingredients.add(Ingredient.of(this.items.getOrThrow(tagKey)));
             } else if (ingredient instanceof Ingredient ingredientObj) {
@@ -94,7 +100,8 @@ public class StockpotRecipeBuilder implements RecipeBuilder {
     }
 
     public StockpotRecipeBuilder setCarrier(ItemLike carrier) {
-        this.carrier = Optional.of(Ingredient.of(carrier));
+        Item item = carrier.asItem();
+        this.carrier = item == Items.AIR ? Optional.empty() : Optional.of(Ingredient.of(item));
         return this;
     }
 

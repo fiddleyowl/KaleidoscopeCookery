@@ -9,8 +9,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 public class FruitSkewerItem extends Item implements IHasContainer {
-    public FruitSkewerItem(Food properties) {
-        super(properties.applyTo(new Item.Properties()));
+    public FruitSkewerItem(Item.Properties itemProperties, Food properties) {
+        super(properties.applyTo(itemProperties));
     }
 
     @Override

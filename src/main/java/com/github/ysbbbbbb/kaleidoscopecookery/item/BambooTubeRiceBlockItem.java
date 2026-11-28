@@ -14,8 +14,8 @@ import net.minecraft.world.level.block.Block;
 import java.util.function.Consumer;
 
 public class BambooTubeRiceBlockItem extends BlockItem implements IHasContainer {
-    public BambooTubeRiceBlockItem(Block block, Food properties) {
-        super(block, properties.applyTo(new Item.Properties()));
+    public BambooTubeRiceBlockItem(Item.Properties itemProperties, Block block, Food properties) {
+        super(block, properties.applyTo(itemProperties));
     }
 
     @Override

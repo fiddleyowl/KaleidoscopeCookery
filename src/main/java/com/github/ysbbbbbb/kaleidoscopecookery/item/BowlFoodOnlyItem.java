@@ -6,12 +6,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 public class BowlFoodOnlyItem extends FoodWithEffectsItem implements IHasContainer {
-    public BowlFoodOnlyItem(Food properties) {
-        super(new Item.Properties().usingConvertsTo(Items.BOWL), properties);
+    public BowlFoodOnlyItem(Item.Properties itemProperties, Food properties) {
+        super(itemProperties.usingConvertsTo(Items.BOWL), properties);
     }
 
-    public BowlFoodOnlyItem(Food properties, Item craftingItem) {
-        super(new Item.Properties().craftRemainder(craftingItem).usingConvertsTo(Items.BOWL), properties);
+    public BowlFoodOnlyItem(Item.Properties itemProperties, Food properties, Item craftingItem) {
+        super(itemProperties, properties, craftingItem);
     }
 
     @Override

@@ -17,7 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -37,15 +36,15 @@ import java.util.function.Supplier;
 @SuppressWarnings("deprecation")
 public class PlateBlock extends HorizontalDirectionalBlock {
     public static final VoxelShape AABB = Block.box(1, 0, 1, 15, 2, 15);
-    protected static final MapCodec<PlateBlock> PLATE_BLOCK_CODEC = simpleCodec(p -> new PlateBlock(1, List.of()));
+    protected static final MapCodec<PlateBlock> PLATE_BLOCK_CODEC = simpleCodec(properties -> new PlateBlock(properties, 1, List.of()));
 
     protected final IntegerProperty servings;
     protected final List<Supplier<Item>> items;
     protected final int maxCount;
     protected VoxelShape aabb = AABB;
 
-    public PlateBlock(int maxCount, List<Supplier<Item>> items) {
-        super(BlockBehaviour.Properties.of()
+    public PlateBlock(Properties properties, int maxCount, List<Supplier<Item>> items) {
+        super(properties
                 .forceSolidOn()
                 .instabreak()
                 .mapColor(MapColor.WOOD)

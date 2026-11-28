@@ -114,7 +114,7 @@ public interface ISoupBaseRender {
         renderSurface(state, poseStack, collector);
     }
 
-    final class SoupBaseRenderState {
+    class SoupBaseRenderState {
         private final TextureAtlasSprite sprite;
         private final int color; // 流体颜色
         private final int packedLight;
@@ -129,6 +129,26 @@ public interface ISoupBaseRender {
             this.packedLight = blockEntityState.lightCoords;
             this.soupHeight = soupHeight;
             this.breakProgress = blockEntityState.breakProgress;
+        }
+
+        public TextureAtlasSprite getSprite() {
+            return this.sprite;
+        }
+
+        public int getColor() {
+            return this.color;
+        }
+
+        public int getPackedLight() {
+            return this.packedLight;
+        }
+
+        public float getSoupHeight() {
+            return this.soupHeight;
+        }
+
+        public ModelFeatureRenderer.@Nullable CrumblingOverlay getBreakProgress() {
+            return this.breakProgress;
         }
     }
 }

@@ -30,9 +30,9 @@ public class FoodBiteOneByTwoBlock extends FoodBiteBlock {
     public static final int LEFT = 0;
     public static final int RIGHT = 1;
 
-    public FoodBiteOneByTwoBlock(Food foodProperties, int maxBites,
+    public FoodBiteOneByTwoBlock(Properties properties, Food foodProperties, int maxBites,
                                  FoodBiteAnimateTicks.@Nullable AnimateTick animateTick) {
-        super(foodProperties, maxBites, animateTick);
+        super(properties, foodProperties, maxBites, animateTick);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(bites, 0)
                 .setValue(FACING, Direction.SOUTH)

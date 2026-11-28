@@ -12,8 +12,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class ChiliCropBlock extends BaseCropBlock {
-    public ChiliCropBlock() {
-        super(ModItems.RED_CHILI, ModItems.CHILI_SEED);
+    public ChiliCropBlock(Properties properties) {
+        super(properties, ModItems.RED_CHILI, ModItems.CHILI_SEED);
     }
 
     @Override

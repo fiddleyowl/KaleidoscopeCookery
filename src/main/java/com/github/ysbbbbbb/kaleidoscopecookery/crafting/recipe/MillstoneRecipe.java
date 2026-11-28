@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Optional;
 
-public record MillstoneRecipe(Optional<Ingredient> ingredient, List<RandomOutput> results)
+public record MillstoneRecipe(Optional<Ingredient> optionalIngredient, List<RandomOutput> results)
         implements BaseRecipe<SimpleInput> {
     public MillstoneRecipe {
         Preconditions.checkArgument(!results.isEmpty(), "Millstone recipe must have at least one output");
@@ -25,14 +25,19 @@ public record MillstoneRecipe(Optional<Ingredient> ingredient, List<RandomOutput
         this(Optional.of(ingredient), results);
     }
 
+    // 匹配事件的空配方通过 optionalIngredient() 读取。
+    public Ingredient ingredient() {
+        return this.optionalIngredient.orElseThrow();
+    }
+
     @Override
     public boolean matches(SimpleInput input, Level level) {
-        return Ingredient.testOptionalIngredient(this.ingredient, input.getItem(0));
+        return Ingredient.testOptionalIngredient(this.optionalIngredient, input.getItem(0));
     }
 
     public NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> ingredients = NonNullList.create();
-        this.ingredient.ifPresent(ingredients::add);
+        this.optionalIngredient.ifPresent(ingredients::add);
         return ingredients;
     }
 

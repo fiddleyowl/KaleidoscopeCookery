@@ -34,8 +34,8 @@ public class TeacupItem extends BlockItem implements IHasContainer {
     private final List<Pair<Supplier<MobEffectInstance>, Float>> effects;
     private final List<MobEffectInstance> showEffects = Lists.newArrayList();
 
-    public TeacupItem(Block block, List<Pair<Supplier<MobEffectInstance>, Float>> effects) {
-        super(block, new Properties().stacksTo(16));
+    public TeacupItem(Properties properties, Block block, List<Pair<Supplier<MobEffectInstance>, Float>> effects) {
+        super(block, properties.stacksTo(16));
         this.effects = effects;
         this.effects.forEach(effect -> {
             if (effect.getSecond() >= 1F) {

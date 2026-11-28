@@ -26,9 +26,9 @@ public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(KaleidoscopeCookery.MOD_ID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, KaleidoscopeCookery.MOD_ID);
 
-    public static DeferredBlock<Block> STOVE = BLOCKS.register("stove", StoveBlock::new);
-    public static DeferredBlock<Block> POT = BLOCKS.register("pot", PotBlock::new);
-    public static DeferredBlock<Block> STOCKPOT = BLOCKS.register("stockpot", StockpotBlock::new);
+    public static DeferredBlock<Block> STOVE = BLOCKS.registerBlock("stove", StoveBlock::new);
+    public static DeferredBlock<Block> POT = BLOCKS.registerBlock("pot", PotBlock::new);
+    public static DeferredBlock<Block> STOCKPOT = BLOCKS.registerBlock("stockpot", StockpotBlock::new);
     public static DeferredBlock<Block> FRUIT_BASKET = BLOCKS.register("fruit_basket", FruitBasketBlock::new);
     public static DeferredBlock<Block> CHOPPING_BOARD = BLOCKS.register("chopping_board", ChoppingBoardBlock::new);
     public static DeferredBlock<Block> OIL_BLOCK = BLOCKS.register("oil_block", OilBlock::new);
@@ -53,47 +53,47 @@ public class ModBlocks {
     public static DeferredBlock<Block> RECIPE_BLOCK = BLOCKS.register("recipe_block", RecipeBlock::new);
     public static DeferredBlock<Block> TEA_BANNER = BLOCKS.register("tea_banner", TeaBannerBlock::new);
 
-    public static DeferredBlock<Block> TOMATO_CROP = BLOCKS.register("tomato_crop", () -> new BaseCropBlock(ModItems.TOMATO, ModItems.TOMATO_SEED));
-    public static DeferredBlock<Block> CHILI_CROP = BLOCKS.register("chili_crop", ChiliCropBlock::new);
-    public static DeferredBlock<Block> LETTUCE_CROP = BLOCKS.register("lettuce_crop", LettuceCropBlock::new);
-    public static DeferredBlock<Block> RICE_CROP = BLOCKS.register("rice_crop", RiceCropBlock::new);
+    public static DeferredBlock<Block> TOMATO_CROP = BLOCKS.registerBlock("tomato_crop", properties -> new BaseCropBlock(properties, ModItems.TOMATO, ModItems.TOMATO_SEED));
+    public static DeferredBlock<Block> CHILI_CROP = BLOCKS.registerBlock("chili_crop", ChiliCropBlock::new);
+    public static DeferredBlock<Block> LETTUCE_CROP = BLOCKS.registerBlock("lettuce_crop", LettuceCropBlock::new);
+    public static DeferredBlock<Block> RICE_CROP = BLOCKS.registerBlock("rice_crop", RiceCropBlock::new);
     public static DeferredBlock<Block> TEA_TREE = BLOCKS.register("tea_tree", TeaTreeBlock::new);
 
-    public static DeferredBlock<Block> COOK_STOOL_OAK = BLOCKS.register("cook_stool_oak", CookStoolBlock::new);
-    public static DeferredBlock<Block> COOK_STOOL_SPRUCE = BLOCKS.register("cook_stool_spruce", CookStoolBlock::new);
-    public static DeferredBlock<Block> COOK_STOOL_ACACIA = BLOCKS.register("cook_stool_acacia", CookStoolBlock::new);
-    public static DeferredBlock<Block> COOK_STOOL_BAMBOO = BLOCKS.register("cook_stool_bamboo", CookStoolBlock::new);
-    public static DeferredBlock<Block> COOK_STOOL_BIRCH = BLOCKS.register("cook_stool_birch", CookStoolBlock::new);
-    public static DeferredBlock<Block> COOK_STOOL_CHERRY = BLOCKS.register("cook_stool_cherry", CookStoolBlock::new);
-    public static DeferredBlock<Block> COOK_STOOL_CRIMSON = BLOCKS.register("cook_stool_crimson", CookStoolBlock::new);
-    public static DeferredBlock<Block> COOK_STOOL_DARK_OAK = BLOCKS.register("cook_stool_dark_oak", CookStoolBlock::new);
-    public static DeferredBlock<Block> COOK_STOOL_JUNGLE = BLOCKS.register("cook_stool_jungle", CookStoolBlock::new);
-    public static DeferredBlock<Block> COOK_STOOL_MANGROVE = BLOCKS.register("cook_stool_mangrove", CookStoolBlock::new);
-    public static DeferredBlock<Block> COOK_STOOL_WARPED = BLOCKS.register("cook_stool_warped", CookStoolBlock::new);
+    public static DeferredBlock<Block> COOK_STOOL_OAK = BLOCKS.registerBlock("cook_stool_oak", CookStoolBlock::new);
+    public static DeferredBlock<Block> COOK_STOOL_SPRUCE = BLOCKS.registerBlock("cook_stool_spruce", CookStoolBlock::new);
+    public static DeferredBlock<Block> COOK_STOOL_ACACIA = BLOCKS.registerBlock("cook_stool_acacia", CookStoolBlock::new);
+    public static DeferredBlock<Block> COOK_STOOL_BAMBOO = BLOCKS.registerBlock("cook_stool_bamboo", CookStoolBlock::new);
+    public static DeferredBlock<Block> COOK_STOOL_BIRCH = BLOCKS.registerBlock("cook_stool_birch", CookStoolBlock::new);
+    public static DeferredBlock<Block> COOK_STOOL_CHERRY = BLOCKS.registerBlock("cook_stool_cherry", CookStoolBlock::new);
+    public static DeferredBlock<Block> COOK_STOOL_CRIMSON = BLOCKS.registerBlock("cook_stool_crimson", CookStoolBlock::new);
+    public static DeferredBlock<Block> COOK_STOOL_DARK_OAK = BLOCKS.registerBlock("cook_stool_dark_oak", CookStoolBlock::new);
+    public static DeferredBlock<Block> COOK_STOOL_JUNGLE = BLOCKS.registerBlock("cook_stool_jungle", CookStoolBlock::new);
+    public static DeferredBlock<Block> COOK_STOOL_MANGROVE = BLOCKS.registerBlock("cook_stool_mangrove", CookStoolBlock::new);
+    public static DeferredBlock<Block> COOK_STOOL_WARPED = BLOCKS.registerBlock("cook_stool_warped", CookStoolBlock::new);
 
-    public static DeferredBlock<Block> CHAIR_OAK = BLOCKS.register("chair_oak", ChairBlock::new);
-    public static DeferredBlock<Block> CHAIR_SPRUCE = BLOCKS.register("chair_spruce", ChairBlock::new);
-    public static DeferredBlock<Block> CHAIR_ACACIA = BLOCKS.register("chair_acacia", ChairBlock::new);
-    public static DeferredBlock<Block> CHAIR_BAMBOO = BLOCKS.register("chair_bamboo", ChairBlock::new);
-    public static DeferredBlock<Block> CHAIR_BIRCH = BLOCKS.register("chair_birch", ChairBlock::new);
-    public static DeferredBlock<Block> CHAIR_CHERRY = BLOCKS.register("chair_cherry", ChairBlock::new);
-    public static DeferredBlock<Block> CHAIR_CRIMSON = BLOCKS.register("chair_crimson", ChairBlock::new);
-    public static DeferredBlock<Block> CHAIR_DARK_OAK = BLOCKS.register("chair_dark_oak", ChairBlock::new);
-    public static DeferredBlock<Block> CHAIR_JUNGLE = BLOCKS.register("chair_jungle", ChairBlock::new);
-    public static DeferredBlock<Block> CHAIR_MANGROVE = BLOCKS.register("chair_mangrove", ChairBlock::new);
-    public static DeferredBlock<Block> CHAIR_WARPED = BLOCKS.register("chair_warped", ChairBlock::new);
+    public static DeferredBlock<Block> CHAIR_OAK = BLOCKS.registerBlock("chair_oak", ChairBlock::new);
+    public static DeferredBlock<Block> CHAIR_SPRUCE = BLOCKS.registerBlock("chair_spruce", ChairBlock::new);
+    public static DeferredBlock<Block> CHAIR_ACACIA = BLOCKS.registerBlock("chair_acacia", ChairBlock::new);
+    public static DeferredBlock<Block> CHAIR_BAMBOO = BLOCKS.registerBlock("chair_bamboo", ChairBlock::new);
+    public static DeferredBlock<Block> CHAIR_BIRCH = BLOCKS.registerBlock("chair_birch", ChairBlock::new);
+    public static DeferredBlock<Block> CHAIR_CHERRY = BLOCKS.registerBlock("chair_cherry", ChairBlock::new);
+    public static DeferredBlock<Block> CHAIR_CRIMSON = BLOCKS.registerBlock("chair_crimson", ChairBlock::new);
+    public static DeferredBlock<Block> CHAIR_DARK_OAK = BLOCKS.registerBlock("chair_dark_oak", ChairBlock::new);
+    public static DeferredBlock<Block> CHAIR_JUNGLE = BLOCKS.registerBlock("chair_jungle", ChairBlock::new);
+    public static DeferredBlock<Block> CHAIR_MANGROVE = BLOCKS.registerBlock("chair_mangrove", ChairBlock::new);
+    public static DeferredBlock<Block> CHAIR_WARPED = BLOCKS.registerBlock("chair_warped", ChairBlock::new);
 
-    public static DeferredBlock<Block> TABLE_OAK = BLOCKS.register("table_oak", TableBlock::new);
-    public static DeferredBlock<Block> TABLE_SPRUCE = BLOCKS.register("table_spruce", TableBlock::new);
-    public static DeferredBlock<Block> TABLE_ACACIA = BLOCKS.register("table_acacia", TableBlock::new);
-    public static DeferredBlock<Block> TABLE_BAMBOO = BLOCKS.register("table_bamboo", TableBlock::new);
-    public static DeferredBlock<Block> TABLE_BIRCH = BLOCKS.register("table_birch", TableBlock::new);
-    public static DeferredBlock<Block> TABLE_CHERRY = BLOCKS.register("table_cherry", TableBlock::new);
-    public static DeferredBlock<Block> TABLE_CRIMSON = BLOCKS.register("table_crimson", TableBlock::new);
-    public static DeferredBlock<Block> TABLE_DARK_OAK = BLOCKS.register("table_dark_oak", TableBlock::new);
-    public static DeferredBlock<Block> TABLE_JUNGLE = BLOCKS.register("table_jungle", TableBlock::new);
-    public static DeferredBlock<Block> TABLE_MANGROVE = BLOCKS.register("table_mangrove", TableBlock::new);
-    public static DeferredBlock<Block> TABLE_WARPED = BLOCKS.register("table_warped", TableBlock::new);
+    public static DeferredBlock<Block> TABLE_OAK = BLOCKS.registerBlock("table_oak", TableBlock::new);
+    public static DeferredBlock<Block> TABLE_SPRUCE = BLOCKS.registerBlock("table_spruce", TableBlock::new);
+    public static DeferredBlock<Block> TABLE_ACACIA = BLOCKS.registerBlock("table_acacia", TableBlock::new);
+    public static DeferredBlock<Block> TABLE_BAMBOO = BLOCKS.registerBlock("table_bamboo", TableBlock::new);
+    public static DeferredBlock<Block> TABLE_BIRCH = BLOCKS.registerBlock("table_birch", TableBlock::new);
+    public static DeferredBlock<Block> TABLE_CHERRY = BLOCKS.registerBlock("table_cherry", TableBlock::new);
+    public static DeferredBlock<Block> TABLE_CRIMSON = BLOCKS.registerBlock("table_crimson", TableBlock::new);
+    public static DeferredBlock<Block> TABLE_DARK_OAK = BLOCKS.registerBlock("table_dark_oak", TableBlock::new);
+    public static DeferredBlock<Block> TABLE_JUNGLE = BLOCKS.registerBlock("table_jungle", TableBlock::new);
+    public static DeferredBlock<Block> TABLE_MANGROVE = BLOCKS.registerBlock("table_mangrove", TableBlock::new);
+    public static DeferredBlock<Block> TABLE_WARPED = BLOCKS.registerBlock("table_warped", TableBlock::new);
 
     public static DeferredBlock<Block> LONG_BENCH = BLOCKS.register("long_bench", LongBenchBlock::new);
     public static DeferredBlock<Block> RED_LANTERN = BLOCKS.register("red_lantern", RedLanternBlock::new);
@@ -149,9 +149,9 @@ public class ModBlocks {
             () -> ModItems.CANDIED_CATERPILLAR_SKEWER.get(), 0
     );
 
-    public static DeferredBlock<Block> COLD_CUT_HAM_SLICES = BLOCKS.register(
-            "cold_cut_ham_slices", () -> new FoodBiteThreeByThreeBlock(
-            ModFoods.COLD_CUT_HAM_SLICES_BLOCK, 8, null
+    public static DeferredBlock<Block> COLD_CUT_HAM_SLICES = BLOCKS.registerBlock(
+            "cold_cut_ham_slices", properties -> new FoodBiteThreeByThreeBlock(
+            properties, ModFoods.COLD_CUT_HAM_SLICES_BLOCK, 8, null
     ));
 
     public static DeferredBlock<Block> BAMBOO_TUBE_RICE = BLOCKS.register("bamboo_tube_rice", StackableFoodBlock.create()

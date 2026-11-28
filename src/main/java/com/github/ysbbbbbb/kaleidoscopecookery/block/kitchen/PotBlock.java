@@ -48,7 +48,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
 public class PotBlock extends HorizontalDirectionalBlock implements EntityBlock, SimpleWaterloggedBlock {
-    public static final MapCodec<PotBlock> CODEC = simpleCodec(p -> new PotBlock());
+    public static final MapCodec<PotBlock> CODEC = simpleCodec(PotBlock::new);
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty HAS_OIL = BooleanProperty.create("has_oil");
     public static final BooleanProperty SHOW_OIL = BooleanProperty.create("show_oil");
@@ -57,8 +57,8 @@ public class PotBlock extends HorizontalDirectionalBlock implements EntityBlock,
     private static final VoxelShape AABB = Block.box(2, 0, 2, 14, 4, 14);
     private static final double DURABILITY_COST_PROBABILITY = 0.25;
 
-    public PotBlock() {
-        super(Properties.of()
+    public PotBlock(Properties properties) {
+        super(properties
                 .mapColor(MapColor.METAL)
                 .sound(ModSoundType.POT)
                 .noOcclusion()

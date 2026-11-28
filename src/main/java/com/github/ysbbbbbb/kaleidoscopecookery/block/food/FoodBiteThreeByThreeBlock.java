@@ -49,9 +49,9 @@ public class FoodBiteThreeByThreeBlock extends FoodBiteBlock implements EntityBl
     private static final VoxelShape DOWN = Block.box(0, 0, 0, 16, 2, 12);
     private static final VoxelShape RIGHT_DOWN = Block.box(0, 0, 0, 12, 2, 12);
 
-    public FoodBiteThreeByThreeBlock(Food foodProperties, int maxBites,
+    public FoodBiteThreeByThreeBlock(Properties properties, Food foodProperties, int maxBites,
                                      FoodBiteAnimateTicks.@Nullable AnimateTick animateTick) {
-        super(foodProperties, maxBites, animateTick);
+        super(properties, foodProperties, maxBites, animateTick);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(bites, 0)
                 .setValue(FACING, Direction.SOUTH)

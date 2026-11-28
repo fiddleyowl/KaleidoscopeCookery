@@ -48,7 +48,7 @@ import java.util.List;
 
 @SuppressWarnings({"deprecation", "unchecked"})
 public class StockpotBlock extends HorizontalDirectionalBlock implements EntityBlock, SimpleWaterloggedBlock {
-    public static final MapCodec<StockpotBlock> CODEC = simpleCodec(p -> new StockpotBlock());
+    public static final MapCodec<StockpotBlock> CODEC = simpleCodec(StockpotBlock::new);
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty HAS_LID = BooleanProperty.create("has_lid");
     public static final BooleanProperty HAS_BASE = BooleanProperty.create("has_base");
@@ -61,8 +61,8 @@ public class StockpotBlock extends HorizontalDirectionalBlock implements EntityB
             Block.box(2, 0, 2, 14, 9, 14),
             Block.box(1, 5, 1, 15, 7, 15));
 
-    public StockpotBlock() {
-        super(Properties.of()
+    public StockpotBlock(Properties properties) {
+        super(properties
                 .mapColor(MapColor.METAL)
                 .sound(ModSoundType.POT).noOcclusion()
                 .strength(1.5F, 6.0F));

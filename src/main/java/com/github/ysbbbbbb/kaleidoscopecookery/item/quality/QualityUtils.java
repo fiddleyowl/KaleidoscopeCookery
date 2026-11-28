@@ -95,7 +95,7 @@ public final class QualityUtils {
                 consumable.hasConsumeParticles(), effects);
     }
 
-    private static FoodProperties modifyFoodProperties(FoodProperties raw, Quality quality) {
+    public static FoodProperties modifyFoodProperties(FoodProperties raw, Quality quality) {
         double ratio = quality.getRatio();
         return new FoodProperties((int) Math.round(ratio * raw.nutrition()),
                 (float) ratio * raw.saturation(), raw.canAlwaysEat());

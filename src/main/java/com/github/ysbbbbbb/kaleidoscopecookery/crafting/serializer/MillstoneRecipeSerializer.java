@@ -51,13 +51,13 @@ public class MillstoneRecipeSerializer {
 
     public static final MapCodec<MillstoneRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.ingredient().orElseThrow()),
+                    Ingredient.CODEC.fieldOf("ingredient").forGetter(MillstoneRecipe::ingredient),
                     RESULTS_MAP_CODEC.forGetter(MillstoneRecipe::results)
             ).apply(instance, MillstoneRecipe::new)
     );
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MillstoneRecipe> STREAM_CODEC = StreamCodec.composite(
-            Ingredient.CONTENTS_STREAM_CODEC, recipe -> recipe.ingredient().orElseThrow(),
+            Ingredient.CONTENTS_STREAM_CODEC, MillstoneRecipe::ingredient,
             RandomOutput.STREAM_CODEC.apply(ByteBufCodecs.list(4)), MillstoneRecipe::results,
             MillstoneRecipe::new
     );

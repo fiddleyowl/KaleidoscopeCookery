@@ -29,15 +29,11 @@ public class FoodWithEffectsItem extends Item {
     private final List<MobEffectInstance> effectInstances;
     private final Function<Quality, List<MobEffectInstance>> effectCache;
 
-    public FoodWithEffectsItem(Food properties) {
-        this(new Item.Properties(), properties);
+    public FoodWithEffectsItem(Item.Properties itemProperties, Food properties, Item craftingItem) {
+        this(itemProperties.craftRemainder(craftingItem), properties);
     }
 
-    public FoodWithEffectsItem(Food properties, Item craftingItem) {
-        this(new Item.Properties().craftRemainder(craftingItem), properties);
-    }
-
-    protected FoodWithEffectsItem(Item.Properties itemProperties, Food properties) {
+    public FoodWithEffectsItem(Item.Properties itemProperties, Food properties) {
         super(properties.applyTo(itemProperties));
         this.effectInstances = properties.guaranteedEffects();
         this.effectCache = Util.memoize(quality -> QualityUtils.modifyEffects(this.effectInstances, quality));

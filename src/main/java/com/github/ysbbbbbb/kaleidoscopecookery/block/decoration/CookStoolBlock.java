@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -36,14 +35,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 public class CookStoolBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock {
-    public static final MapCodec<CookStoolBlock> CODEC = simpleCodec(p -> new CookStoolBlock());
+    public static final MapCodec<CookStoolBlock> CODEC = simpleCodec(CookStoolBlock::new);
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     private static final VoxelShape NORTH_SOUTH = Block.box(2, 0, 3, 14, 7, 13);
     private static final VoxelShape EAST_WEST = Block.box(3, 0, 2, 13, 7, 14);
 
-    public CookStoolBlock() {
-        super(BlockBehaviour.Properties.of()
+    public CookStoolBlock(Properties properties) {
+        super(properties
                 .mapColor(MapColor.WOOD)
                 .instrument(NoteBlockInstrument.BASS)
                 .strength(2.0F, 3.0F)

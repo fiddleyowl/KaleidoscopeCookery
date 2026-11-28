@@ -50,6 +50,10 @@ public class ChoppingBoardRecipe implements BaseRecipe<SingleRecipeInput> {
         return ingredients;
     }
 
+    public ItemStack getResult() {
+        return this.result();
+    }
+
     @Override
     public ItemStack result() {
         return this.results.isEmpty() ? ItemStack.EMPTY : this.results.getFirst();

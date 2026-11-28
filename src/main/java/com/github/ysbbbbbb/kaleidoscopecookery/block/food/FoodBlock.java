@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -14,8 +13,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class FoodBlock extends Block {
     public static final VoxelShape AABB = Block.box(1, 0, 1, 15, 2, 15);
 
-    public FoodBlock() {
-        super(BlockBehaviour.Properties.of()
+    public FoodBlock(Properties properties) {
+        super(properties
                 .forceSolidOn()
                 .instabreak()
                 .mapColor(MapColor.WOOD)

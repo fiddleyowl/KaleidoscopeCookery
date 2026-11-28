@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -42,7 +41,7 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class TeacupBlock extends HorizontalDirectionalBlock {
-    public static final MapCodec<TeacupBlock> CODEC = simpleCodec(p -> new TeacupBlock());
+    public static final MapCodec<TeacupBlock> CODEC = simpleCodec(TeacupBlock::new);
     public static final VoxelShape AABB = Block.box(1, 0, 1, 15, 2, 15);
 
     protected final IntegerProperty cupCount;
@@ -52,8 +51,8 @@ public class TeacupBlock extends HorizontalDirectionalBlock {
 
     protected VoxelShape aabb = AABB;
 
-    public TeacupBlock(int maxCount, FoodBiteAnimateTicks.@Nullable AnimateTick animateTick) {
-        super(BlockBehaviour.Properties.of()
+    public TeacupBlock(Properties properties, int maxCount, FoodBiteAnimateTicks.@Nullable AnimateTick animateTick) {
+        super(properties
                 .forceSolidOn()
                 .instabreak()
                 .mapColor(MapColor.WOOD)
@@ -76,8 +75,8 @@ public class TeacupBlock extends HorizontalDirectionalBlock {
                 .setValue(FACING, Direction.SOUTH));
     }
 
-    public TeacupBlock() {
-        this(4, null);
+    public TeacupBlock(Properties properties) {
+        this(properties, 4, null);
     }
 
     public TeacupBlock setAABB(VoxelShape aabb) {
