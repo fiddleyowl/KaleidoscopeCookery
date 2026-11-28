@@ -23,7 +23,6 @@ import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -207,7 +206,7 @@ public class TeapotItem extends BlockItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
 
         // 如果已经有流体了，返回
@@ -216,16 +215,16 @@ public class TeapotItem extends BlockItem {
             CompoundTag tag = data.copyTagWithoutId();
             String fluidId = StringUtils.defaultIfBlank(tag.getStringOr(TeapotBlockEntity.TEA_FLUID_ID, ""), EMPTY_TEA_FLUID.toString());
             if (!fluidId.equals(EMPTY_TEA_FLUID.toString())) {
-                return InteractionResultHolder.fail(itemInHand);
+                return InteractionResult.FAIL;
             }
         }
 
         BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
         if (hitResult.getType() == HitResult.Type.MISS) {
-            return InteractionResultHolder.pass(itemInHand);
+            return InteractionResult.PASS;
         }
         if (hitResult.getType() != HitResult.Type.BLOCK) {
-            return InteractionResultHolder.pass(itemInHand);
+            return InteractionResult.PASS;
         }
 
         BlockPos pos = hitResult.getBlockPos();
@@ -234,31 +233,31 @@ public class TeapotItem extends BlockItem {
 
         // 权限检查
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(relative, direction, itemInHand)) {
-            return InteractionResultHolder.fail(itemInHand);
+            return InteractionResult.FAIL;
         }
 
         BlockState blockState = level.getBlockState(pos);
         // 必须是可以用桶取流体的方块
         if (!(blockState.getBlock() instanceof BucketPickup bucketpickup)) {
-            return InteractionResultHolder.fail(itemInHand);
+            return InteractionResult.FAIL;
         }
 
         // 执行取流体操作
         ItemStack pickup = bucketpickup.pickupBlock(player, level, pos, blockState);
         if (pickup.isEmpty()) {
-            return InteractionResultHolder.fail(itemInHand);
+            return InteractionResult.FAIL;
         }
 
         var capability = pickup.getCapability(Capabilities.FluidHandler.ITEM);
         if (capability == null) {
-            return InteractionResultHolder.fail(itemInHand);
+            return InteractionResult.FAIL;
         }
         Fluid fluid = capability.getFluidInTank(0).getFluid();
         boolean result = fillFluid(itemInHand, fluid, player);
         if (result) {
-            return InteractionResultHolder.sidedSuccess(itemInHand, level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
-        return InteractionResultHolder.fail(itemInHand);
+        return InteractionResult.FAIL;
     }
 
     @Override

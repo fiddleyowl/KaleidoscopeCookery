@@ -59,7 +59,7 @@ public class ScarecrowItem extends Item {
                 ModTrigger.EVENT.get().trigger(context.getPlayer(), ModEventTriggerType.PLACE_SCARECROW);
             }
             stack.shrink(1);
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.FAIL;
     }

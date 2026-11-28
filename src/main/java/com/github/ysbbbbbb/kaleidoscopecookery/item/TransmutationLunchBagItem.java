@@ -22,7 +22,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
@@ -129,7 +128,7 @@ public class TransmutationLunchBagItem extends Item {
             TransmutationLunchBagItem.setItems(bag, bagItems);
             fruitBasket.refresh();
             playRemoveOneSound(player);
-            return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         // 果篮不为空，尝试取出物品
@@ -143,7 +142,7 @@ public class TransmutationLunchBagItem extends Item {
         TransmutationLunchBagItem.setItems(bag, bagItems);
         fruitBasket.refresh();
         playDropContentsSound(player);
-        return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
 
@@ -160,7 +159,7 @@ public class TransmutationLunchBagItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
         // 里面有物品
         if (hasItems(itemInHand)) {
@@ -168,16 +167,24 @@ public class TransmutationLunchBagItem extends Item {
             for (int i = 0; i < items.getSlots(); i++) {
                 if (canConsume(items.getStackInSlot(i))) {
                     player.startUsingItem(hand);
-                    return InteractionResultHolder.consume(itemInHand);
+                    return InteractionResult.CONSUME;
                 }
             }
         }
 
-        return InteractionResultHolder.fail(itemInHand);
+        return InteractionResult.FAIL;
+    }
+
+    @Override
+    public void onUseTick(Level level, LivingEntity entity, ItemStack bag, int remainingTicks) {
+        if (ItemUtils.shouldPlayUseEffects(bag, entity, remainingTicks)) {
+            ItemUtils.playUseEffects(level, entity, bag, SoundEvents.GENERIC_DRINK::value, 5);
+        }
     }
 
     @Override
     public ItemStack finishUsingItem(ItemStack bag, Level level, LivingEntity entity) {
+        ItemUtils.playUseEffects(level, entity, bag, SoundEvents.GENERIC_DRINK::value, 16);
         if (!hasItems(bag)) {
             return bag;
         }

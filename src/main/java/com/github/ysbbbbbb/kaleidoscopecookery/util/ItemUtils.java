@@ -3,6 +3,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.util;
 import com.github.ysbbbbbb.kaleidoscopecookery.api.item.IHasContainer;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -12,11 +13,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.UseRemainder;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.function.Supplier;
 
 public class ItemUtils {
     public static void getItemToLivingEntity(LivingEntity entity, ItemStack stack) {
@@ -55,6 +60,32 @@ public class ItemUtils {
 
     public static boolean isConsumableFood(ItemStack stack) {
         return stack.has(DataComponents.FOOD) && stack.has(DataComponents.CONSUMABLE);
+    }
+
+    // 举起物品后，每隔 4 tick 播放一次使用效果。
+    public static boolean shouldPlayUseEffects(ItemStack stack, LivingEntity entity, int ticksRemaining) {
+        if (stack.has(DataComponents.CONSUMABLE)) {
+            return false;
+        }
+        int duration = stack.getUseDuration(entity);
+        int ticksUsed = duration - ticksRemaining;
+        return ticksUsed > (int) (duration * 0.21875F) && ticksRemaining % 4 == 0;
+    }
+
+    public static void playUseEffects(Level level, LivingEntity entity, ItemStack stack,
+                                      Supplier<SoundEvent> drinkingSound, int particles) {
+        if (stack.isEmpty() || !entity.isUsingItem() || entity.getUseItem() != stack) {
+            return;
+        }
+        ItemUseAnimation animation = stack.getUseAnimation();
+        if (animation == ItemUseAnimation.DRINK) {
+            entity.playSound(drinkingSound.get(), 0.5F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+        } else if (animation == ItemUseAnimation.EAT) {
+            entity.spawnItemParticles(stack, particles);
+            RandomSource random = entity.getRandom();
+            entity.playSound(SoundEvents.GENERIC_EAT.value(), 0.5F + 0.5F * random.nextInt(2),
+                    (random.nextFloat() - random.nextFloat()) * 0.2F + 1.0F);
+        }
     }
 
     public static Item getContainerItem(ItemStack stack) {

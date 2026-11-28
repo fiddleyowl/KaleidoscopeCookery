@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,6 +21,9 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
+
+import static com.github.ysbbbbbb.kaleidoscopecookery.util.ItemUtils.playUseEffects;
+import static com.github.ysbbbbbb.kaleidoscopecookery.util.ItemUtils.shouldPlayUseEffects;
 
 public class ClayPotMilkTeaItem extends BlockItem implements IHasContainer {
     public ClayPotMilkTeaItem(Block block) {
@@ -37,18 +40,25 @@ public class ClayPotMilkTeaItem extends BlockItem implements IHasContainer {
         return ItemUseAnimation.DRINK;
     }
 
-    @Override
     public SoundEvent getDrinkingSound() {
-        return SoundEvents.HONEY_DRINK;
+        return SoundEvents.HONEY_DRINK.value();
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         return ItemUtils.startUsingInstantly(level, player, hand);
     }
 
     @Override
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int ticksRemaining) {
+        if (shouldPlayUseEffects(stack, entity, ticksRemaining)) {
+            playUseEffects(level, entity, stack, this::getDrinkingSound, 5);
+        }
+    }
+
+    @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+        playUseEffects(level, entity, stack, this::getDrinkingSound, 16);
         if (entity instanceof ServerPlayer serverPlayer) {
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
             serverPlayer.awardStat(Stats.ITEM_USED.get(this));

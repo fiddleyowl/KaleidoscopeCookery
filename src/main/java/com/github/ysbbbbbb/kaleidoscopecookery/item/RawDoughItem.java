@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -57,14 +57,13 @@ public class RawDoughItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-        ItemStack stack = playerIn.getItemInHand(handIn);
+    public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
         playerIn.startUsingItem(handIn);
-        return InteractionResultHolder.consume(stack);
+        return InteractionResult.CONSUME;
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+    public boolean releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
         int time = stack.getUseDuration(entityLiving) - timeLeft;
         if (time >= MIN_USE_DURATION) {
             int count = stack.getCount();
@@ -78,6 +77,8 @@ public class RawDoughItem extends Item {
                 ModTrigger.EVENT.get().trigger(serverPlayer, ModEventTriggerType.PULL_THE_DOUGH);
             }
         }
+        // 面条已经交给使用者，避免使用后的余留物覆盖主手产物。
+        return false;
     }
 
     @Override

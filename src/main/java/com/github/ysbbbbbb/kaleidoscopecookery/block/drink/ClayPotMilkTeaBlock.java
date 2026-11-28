@@ -48,7 +48,7 @@ public class ClayPotMilkTeaBlock extends HorizontalDirectionalBlock {
             level.removeBlock(pos, false);
             level.playSound(null, pos, SoundEvents.DECORATED_POT_BREAK, SoundSource.BLOCKS);
         }
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Override
