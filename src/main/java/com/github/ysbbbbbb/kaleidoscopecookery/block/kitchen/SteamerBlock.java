@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -249,6 +250,11 @@ public class SteamerBlock extends FallingBlock implements EntityBlock, SimpleWat
         if (shouldHasBase(level, pos)) {
             level.setBlock(pos, state.setValue(HAS_BASE, true), Block.UPDATE_ALL);
         }
+    }
+
+    @Override
+    public int getDustColor(BlockState state, BlockGetter level, BlockPos pos) {
+        return CommonColors.BLACK;
     }
 
     @Override

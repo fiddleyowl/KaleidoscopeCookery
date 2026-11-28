@@ -7,6 +7,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.registry.FoodBiteAnimateTick
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -113,7 +114,7 @@ public class FoodBiteThreeByThreeBlock extends FoodBiteBlock implements EntityBl
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
+    public void onBlockExploded(BlockState state, ServerLevel world, BlockPos pos, Explosion explosion) {
         handleRemove(world, pos, state, null);
         super.onBlockExploded(state, world, pos, explosion);
     }

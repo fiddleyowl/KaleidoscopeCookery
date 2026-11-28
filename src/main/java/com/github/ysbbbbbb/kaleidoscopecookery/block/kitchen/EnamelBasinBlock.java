@@ -181,7 +181,7 @@ public class EnamelBasinBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
         int count = state.getValue(OIL_COUNT);
         int baseValue = count > 0 ? 1 : 0;
         double ratio = (double) count / MAX_OIL_COUNT;

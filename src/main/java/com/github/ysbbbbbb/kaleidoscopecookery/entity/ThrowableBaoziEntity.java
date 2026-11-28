@@ -1,18 +1,21 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.entity;
 
+import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.advancements.critereon.ModEventTriggerType;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModTrigger;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -25,22 +28,25 @@ public class ThrowableBaoziEntity extends ThrowableItemProjectile {
             .sized(0.25F, 0.25F)
             .clientTrackingRange(4)
             .updateInterval(10)
-            .build("throwable_baozi");
+            .build(ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "throwable_baozi")));
 
     public ThrowableBaoziEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
         super(entityType, level);
     }
 
     public ThrowableBaoziEntity(EntityType<? extends ThrowableItemProjectile> entityType, double x, double y, double z, Level level) {
-        super(entityType, x, y, z, level);
+        this(entityType, level);
+        this.setPos(x, y, z);
     }
 
     public ThrowableBaoziEntity(EntityType<? extends ThrowableItemProjectile> entityType, LivingEntity shooter, Level level) {
-        super(entityType, shooter, level);
+        this(entityType, shooter.getX(), shooter.getEyeY() - 0.1F, shooter.getZ(), level);
+        this.setOwner(shooter);
     }
 
     public ThrowableBaoziEntity(Level level, LivingEntity shooter) {
-        super(TYPE, shooter, level);
+        this(TYPE, shooter, level);
     }
 
     @Override
@@ -50,9 +56,8 @@ public class ThrowableBaoziEntity extends ThrowableItemProjectile {
 
     @Override
     public void handleEntityEvent(byte id) {
-        ItemStack entityStack = new ItemStack(this.getDefaultItem());
         if (id == EntityEvent.DEATH) {
-            ParticleOptions option = new ItemParticleOption(ParticleTypes.ITEM, entityStack);
+            ParticleOptions option = new ItemParticleOption(ParticleTypes.ITEM, this.getDefaultItem());
             for (int i = 0; i < 12; i++) {
                 this.level().addParticle(option, this.getX(), this.getY(), this.getZ(),
                         (this.random.nextFloat() * 2 - 1) * 0.1,

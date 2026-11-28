@@ -29,7 +29,7 @@ public class StrawBlocks extends RotatedPillarBlock {
     }
 
     @Override
-    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
+    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, double fallDistance) {
         if (level.isClientSide()) {
             return;
         }
@@ -43,7 +43,7 @@ public class StrawBlocks extends RotatedPillarBlock {
             return;
         }
         // 完全免伤，但是稻草有几率会被破坏
-        float possibility = Mth.clamp(fallDistance / 30F, 0F, 1F);
+        double possibility = Mth.clamp(fallDistance / 30.0, 0.0, 1.0);
         if (level.getRandom().nextFloat() < possibility) {
             level.destroyBlock(pos, false);
             popResource(level, pos, new ItemStack(ModItems.RICE_PANICLE.get(), 5));

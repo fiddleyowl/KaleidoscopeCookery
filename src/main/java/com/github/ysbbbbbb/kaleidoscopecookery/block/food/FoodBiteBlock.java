@@ -174,7 +174,7 @@ public class FoodBiteBlock extends FoodBlock {
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
         int value = state.getValue(bites);
         return (3 - value) * 5;
     }

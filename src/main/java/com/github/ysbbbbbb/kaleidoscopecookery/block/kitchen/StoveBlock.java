@@ -155,8 +155,9 @@ public class StoveBlock extends HorizontalDirectionalBlock {
     @Override
     public void onProjectileHit(Level level, BlockState state, BlockHitResult hitResult, Projectile projectile) {
         BlockPos hitBlockPos = hitResult.getBlockPos();
-        if (!level.isClientSide() && projectile.isOnFire() && projectile.mayInteract(level, hitBlockPos) && !state.getValue(LIT)) {
-            level.setBlock(hitBlockPos, state.setValue(BlockStateProperties.LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+        if (level instanceof ServerLevel serverLevel && projectile.isOnFire()
+            && projectile.mayInteract(serverLevel, hitBlockPos) && !state.getValue(LIT)) {
+            serverLevel.setBlock(hitBlockPos, state.setValue(BlockStateProperties.LIT, true), Block.UPDATE_ALL_IMMEDIATE);
             if (projectile.getOwner() instanceof Player player) {
                 ModTrigger.EVENT.get().trigger(player, ModEventTriggerType.LIT_THE_STOVE);
             }

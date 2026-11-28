@@ -263,7 +263,7 @@ public class RiceCropBlock extends BaseCropBlock implements SimpleWaterloggedBlo
     }
 
     @Override
-    public ItemStack pickupBlock(Player player, LevelAccessor levelAccessor, BlockPos pos, BlockState state) {
+    public ItemStack pickupBlock(@Nullable LivingEntity user, LevelAccessor levelAccessor, BlockPos pos, BlockState state) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
             levelAccessor.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, false), Block.UPDATE_ALL);
             if (state.getValue(LOCATION) == DOWN) {

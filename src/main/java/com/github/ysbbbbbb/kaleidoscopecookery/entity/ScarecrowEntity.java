@@ -1,16 +1,20 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.entity;
 
+import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.advancements.critereon.ModEventTriggerType;
+import com.github.ysbbbbbb.kaleidoscopecookery.init.ModEntities;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModTrigger;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -50,9 +54,9 @@ public class ScarecrowEntity extends LivingEntity {
             .<ScarecrowEntity>of(ScarecrowEntity::new, MobCategory.MISC)
             .sized(0.5F, 2.375f)
             .clientTrackingRange(10)
-            .build("scarecrow");
+            .build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "scarecrow")));
 
-    private static final EntityDataAccessor<CompoundTag> DATA_SHOULDER = SynchedEntityData.defineId(ScarecrowEntity.class, EntityDataSerializers.COMPOUND_TAG);
+    private static final EntityDataAccessor<CompoundTag> DATA_SHOULDER = SynchedEntityData.defineId(ScarecrowEntity.class, ModEntities.SCARECROW_SHOULDER_SERIALIZER);
     private static final Predicate<Entity> RIDABLE_MINECARTS = e -> e instanceof AbstractMinecart minecart && minecart.isRideable();
     private static final Predicate<Entity> SHOULDER_RIDING_ENTITY = e -> e instanceof ShoulderRidingEntity entity && !entity.isOrderedToSit() && entity.canSitOnShoulder();
     private static final String HAND_ITEMS_TAG = "HandItems";
@@ -94,7 +98,7 @@ public class ScarecrowEntity extends LivingEntity {
     }
 
     @Override
-    public InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 vec3) {
         ItemStack itemInHand = player.getItemInHand(hand);
         if (itemInHand.is(Items.NAME_TAG)) {
             return InteractionResult.PASS;
@@ -103,6 +107,7 @@ public class ScarecrowEntity extends LivingEntity {
             return InteractionResult.SUCCESS;
         }
         if (player.level().isClientSide()) {
+            // 等服务端确认装备变动后再挥手。
             return InteractionResult.CONSUME;
         }
         if (hand == InteractionHand.OFF_HAND) {
@@ -126,7 +131,7 @@ public class ScarecrowEntity extends LivingEntity {
         if (itemInHand.isEmpty() && !headItem.isEmpty()) {
             this.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
             ItemHandlerHelper.giveItemToPlayer(player, headItem);
-            return InteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS_SERVER;
         }
 
         if (!(itemInHand.getItem() instanceof BlockItem blockItem) || !(blockItem.getBlock() instanceof SkullBlock)) {
@@ -137,14 +142,14 @@ public class ScarecrowEntity extends LivingEntity {
             this.setItemSlot(EquipmentSlot.HEAD, itemInHand.copyWithCount(1));
             this.level().playSound(null, this.blockPosition(), SoundEvents.ITEM_FRAME_ADD_ITEM, this.getSoundSource());
             ModTrigger.EVENT.get().trigger(player, ModEventTriggerType.PLACE_HEAD_ON_SCARECROW);
-            return InteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS_SERVER;
         }
         if (!itemInHand.isEmpty() && itemInHand.getCount() > 1) {
             if (headItem.isEmpty()) {
                 this.setItemSlot(EquipmentSlot.HEAD, itemInHand.split(1));
                 this.level().playSound(null, this.blockPosition(), SoundEvents.ITEM_FRAME_ADD_ITEM, this.getSoundSource());
                 ModTrigger.EVENT.get().trigger(player, ModEventTriggerType.PLACE_HEAD_ON_SCARECROW);
-                return InteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS_SERVER;
             }
             return InteractionResult.PASS;
         }
@@ -152,7 +157,7 @@ public class ScarecrowEntity extends LivingEntity {
         this.level().playSound(null, this.blockPosition(), SoundEvents.ITEM_FRAME_ADD_ITEM, this.getSoundSource());
         player.setItemInHand(InteractionHand.MAIN_HAND, headItem);
         ModTrigger.EVENT.get().trigger(player, ModEventTriggerType.PLACE_HEAD_ON_SCARECROW);
-        return InteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     private InteractionResult handleHandItems(Player player, ItemStack itemInHand) {
@@ -163,25 +168,25 @@ public class ScarecrowEntity extends LivingEntity {
             if (!mainhand.isEmpty()) {
                 this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
                 ItemHandlerHelper.giveItemToPlayer(player, mainhand);
-                return InteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS_SERVER;
             }
             if (!offhand.isEmpty()) {
                 this.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
                 ItemHandlerHelper.giveItemToPlayer(player, offhand);
-                return InteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS_SERVER;
             }
             return InteractionResult.PASS;
         }
         if (itemInHand.has(DataComponents.DAMAGE)) {
             if (swapHand(InteractionHand.MAIN_HAND, player, itemInHand)) {
                 this.level().playSound(null, this.blockPosition(), SoundEvents.ITEM_FRAME_ADD_ITEM, this.getSoundSource());
-                return InteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS_SERVER;
             }
         }
         if (itemInHand.has(DataComponents.DAMAGE)) {
             if (swapHand(InteractionHand.OFF_HAND, player, itemInHand)) {
                 this.level().playSound(null, this.blockPosition(), SoundEvents.ITEM_FRAME_ADD_ITEM, this.getSoundSource());
-                return InteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS_SERVER;
             }
         }
         return InteractionResult.PASS;
@@ -212,23 +217,23 @@ public class ScarecrowEntity extends LivingEntity {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (!(this.level() instanceof ServerLevel serverLevel) || this.isRemoved()) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (this.isRemoved()) {
             return false;
         }
 
         if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            this.kill();
+            this.kill(serverLevel);
             return false;
         }
 
-        if (this.isInvulnerableTo(source)) {
+        if (this.isInvulnerableTo(serverLevel, source)) {
             return false;
         }
 
         if (source.is(DamageTypeTags.IS_EXPLOSION)) {
             this.brokenByAnything(serverLevel, source);
-            this.kill();
+            this.kill(serverLevel);
             return false;
         }
 
@@ -242,7 +247,7 @@ public class ScarecrowEntity extends LivingEntity {
         if (source.isCreativePlayer()) {
             this.playBrokenSound();
             this.showBreakingParticles();
-            this.kill();
+            this.kill(serverLevel);
             return false;
         }
 
@@ -258,7 +263,7 @@ public class ScarecrowEntity extends LivingEntity {
         } else {
             this.brokenByPlayer(serverLevel, source);
             this.showBreakingParticles();
-            this.kill();
+            this.kill(serverLevel);
         }
 
         return true;
@@ -384,10 +389,9 @@ public class ScarecrowEntity extends LivingEntity {
     }
 
     @Override
-    protected float tickHeadTurn(float yRot, float animStep) {
+    protected void tickHeadTurn(float yRot) {
         this.yBodyRotO = this.yRotO;
         this.yBodyRot = this.getYRot();
-        return 0.0F;
     }
 
     @Override
@@ -403,7 +407,7 @@ public class ScarecrowEntity extends LivingEntity {
     }
 
     @Override
-    public void kill() {
+    public void kill(ServerLevel level) {
         if (!this.getShoulderEntity().isEmpty()) {
             this.removeEntitiesOnShoulder();
         }
@@ -460,12 +464,10 @@ public class ScarecrowEntity extends LivingEntity {
         return !this.isPassenger() && this.onGround() && !this.isInWater() && !this.isInPowderSnow && this.getShoulderEntity().isEmpty();
     }
 
-    @Override
     public Iterable<ItemStack> getHandSlots() {
         return this.handItems;
     }
 
-    @Override
     public Iterable<ItemStack> getArmorSlots() {
         return this.armorItems;
     }
@@ -485,14 +487,20 @@ public class ScarecrowEntity extends LivingEntity {
     }
 
     @Override
-    public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
-        this.verifyEquippedItem(stack);
+    public void setItemSlot(EquipmentSlot slot, ItemStack stack, boolean insideTransaction) {
+        ItemStack previous;
         switch (slot.getType()) {
             case HAND:
-                this.onEquipItem(slot, this.handItems.set(slot.getIndex(), stack), stack);
+                previous = this.handItems.set(slot.getIndex(), stack);
                 break;
             case HUMANOID_ARMOR:
-                this.onEquipItem(slot, this.armorItems.set(slot.getIndex(), stack), stack);
+                previous = this.armorItems.set(slot.getIndex(), stack);
+                break;
+            default:
+                return;
+        }
+        if (!insideTransaction) {
+            this.onEquipItem(slot, previous, stack);
         }
     }
 

@@ -30,7 +30,6 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
@@ -140,7 +139,7 @@ public class RecipeBlock extends FaceAttachedHorizontalDirectionalBlock implemen
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof RecipeBlockEntity recipeBlockEntity) {
             ItemStack itemStack = recipeBlockEntity.getItems().getStackInSlot(0);
@@ -148,7 +147,7 @@ public class RecipeBlock extends FaceAttachedHorizontalDirectionalBlock implemen
                 return itemStack.copy();
             }
         }
-        return super.getCloneItemStack(state, target, level, pos, player);
+        return super.getCloneItemStack(level, pos, state, includeData, player);
     }
 
     @Override

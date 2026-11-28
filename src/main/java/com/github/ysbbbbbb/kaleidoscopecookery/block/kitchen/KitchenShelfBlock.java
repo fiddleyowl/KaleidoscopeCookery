@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -132,7 +133,7 @@ public class KitchenShelfBlock extends BaseEntityBlock implements EntityBlock {
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos,
-                                Block neighborBlock, BlockPos fromPos, boolean isMoving) {
+                                Block neighborBlock, @Nullable Orientation orientation, boolean isMoving) {
         updateRedstone(level, pos);
     }
 

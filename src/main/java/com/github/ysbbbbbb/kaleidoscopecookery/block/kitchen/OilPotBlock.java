@@ -34,7 +34,6 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
@@ -158,7 +157,7 @@ public class OilPotBlock extends HorizontalDirectionalBlock implements SimpleWat
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
         if (level.getBlockEntity(pos) instanceof OilPotBlockEntity be) {
             double signal = (double) be.getOilCount() / (double) OilPotBlockEntity.MAX_OIL_COUNT;
             int baseSignal = be.getOilCount() > 0 ? 1 : 0;
@@ -168,8 +167,8 @@ public class OilPotBlock extends HorizontalDirectionalBlock implements SimpleWat
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
-        ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
+        ItemStack stack = super.getCloneItemStack(level, pos, state, includeData, player);
         if (level.getBlockEntity(pos) instanceof OilPotBlockEntity be) {
             int oilCount = be.getOilCount();
             OilPotItem.setOilCount(stack, oilCount);

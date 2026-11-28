@@ -110,12 +110,12 @@ public class LongBenchBlock extends Block {
                 Direction facing = state.getValue(AXIS) == Direction.Axis.X ? Direction.SOUTH : Direction.EAST;
                 sitEntity.setYRot(facing.toYRot());
                 level.addFreshEntity(sitEntity);
-                player.startRiding(sitEntity, true);
-                return InteractionResult.SUCCESS;
+                player.startRiding(sitEntity, true, true);
+                return InteractionResult.SUCCESS_SERVER;
             }
             return InteractionResult.PASS;
         }
-        return InteractionResult.sidedSuccess(true);
+        return InteractionResult.SUCCESS;
     }
 
     @Override

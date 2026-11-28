@@ -10,6 +10,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -31,6 +32,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
@@ -134,7 +136,7 @@ public class TrashCanBlock extends HorizontalDirectionalBlock implements SimpleW
     }
 
     @Override
-    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
+    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, double fallDistance) {
         super.fallOn(level, state, pos, entity, fallDistance);
         // 如果是玩家
         if (entity instanceof Player player && player.getVehicle() == null && fallDistance > 1f) {
@@ -146,7 +148,7 @@ public class TrashCanBlock extends HorizontalDirectionalBlock implements SimpleW
                 SitEntity entitySit = new SitEntity(level, pos, 0.875, SitEntity.TRASH_CAN);
                 entitySit.setYRot(state.getValue(FACING).toYRot());
                 level.addFreshEntity(entitySit);
-                player.startRiding(entitySit, true);
+                player.startRiding(entitySit, true, true);
             }
 
             // 清除周围生物对玩家的敌意
@@ -164,7 +166,8 @@ public class TrashCanBlock extends HorizontalDirectionalBlock implements SimpleW
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
+                             InsideBlockEffectApplier effectApplier, boolean isPrecise) {
         // 只有充能后才能吸取
         if (state.getValue(POWERED) && level.getBlockEntity(pos) instanceof TrashCanBlockEntity trashCan) {
             trashCan.entityInside(level, pos, entity);
@@ -172,7 +175,8 @@ public class TrashCanBlock extends HorizontalDirectionalBlock implements SimpleW
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock,
+                                @Nullable Orientation orientation, boolean isMoving) {
         boolean isPowered = level.hasNeighborSignal(pos);
         if (isPowered != state.getValue(POWERED)) {
             level.setBlockAndUpdate(pos, state.setValue(POWERED, isPowered));

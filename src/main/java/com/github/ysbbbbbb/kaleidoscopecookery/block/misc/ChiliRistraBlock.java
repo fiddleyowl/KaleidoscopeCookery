@@ -13,6 +13,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -89,8 +90,11 @@ public class ChiliRistraBlock extends Block {
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (!level.isClientSide() && entity instanceof Mob mob && mob.getType().builtInRegistryHolder().is(EntityTypeTags.UNDEAD)) {
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
+                             InsideBlockEffectApplier effectApplier, boolean isPrecise) {
+        // 移动轨迹也会触发回调，只对当前仍与方块重叠的生物造成伤害。
+        if (!level.isClientSide() && entity instanceof Mob mob && mob.getType().builtInRegistryHolder().is(EntityTypeTags.UNDEAD)
+            && mob.getBoundingBox().deflate(1.0E-7).intersects(pos)) {
             mob.hurt(level.damageSources().magic(), 2.0F);
         }
     }

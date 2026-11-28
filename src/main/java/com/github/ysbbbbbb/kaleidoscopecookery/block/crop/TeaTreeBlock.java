@@ -27,7 +27,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.CommonHooks;
@@ -35,7 +34,7 @@ import net.neoforged.neoforge.common.CommonHooks;
 public class TeaTreeBlock extends BushBlock implements BonemealableBlock {
     public static final int MAX_AGE = 5;
     public static final IntegerProperty AGE = IntegerProperty.create("age", 0, MAX_AGE);
-    private static final MapCodec<TeaTreeBlock> CODEC = simpleCodec(p -> new TeaTreeBlock());
+    private static final MapCodec<BushBlock> CODEC = simpleCodec(p -> new TeaTreeBlock());
     private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[]{
             Block.box(3, 0, 3, 13, 4, 13),
             Block.box(3, 0, 3, 13, 5, 13),
@@ -70,7 +69,7 @@ public class TeaTreeBlock extends BushBlock implements BonemealableBlock {
     }
 
     @Override
-    protected MapCodec<? extends BushBlock> codec() {
+    public MapCodec<BushBlock> codec() {
         return CODEC;
     }
 
@@ -86,7 +85,7 @@ public class TeaTreeBlock extends BushBlock implements BonemealableBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
         return new ItemStack(ModItems.TEA_SEED.get());
     }
 

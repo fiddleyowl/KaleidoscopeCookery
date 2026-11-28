@@ -3,12 +3,14 @@ package com.github.ysbbbbbb.kaleidoscopecookery.block.decoration;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -75,25 +77,39 @@ public class EightImmortalsTableBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock()) && !isMoving) {
-            Direction facing = state.getValue(FACING);
-            BlockPos anchor = getAnchorPos(pos, facing, state.getValue(PART));
-            for (Part part : Part.values()) {
-                BlockPos partPos = getPartPos(anchor, facing, part);
-                if (partPos.equals(pos)) {
-                    continue;
-                }
-                BlockState partState = level.getBlockState(partPos);
-                if (partState.is(this)
-                    && partState.getValue(FACING) == facing
-                    && partState.getValue(PART) == part) {
-                    level.setBlock(partPos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(),
-                            Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
-                }
+    public void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean isMoving) {
+        if (!isMoving) {
+            removeOtherParts(state, level, pos);
+        }
+        super.affectNeighborsAfterRemoval(state, level, pos, isMoving);
+    }
+
+    @Override
+    protected void updateIndirectNeighbourShapes(BlockState state, LevelAccessor level, BlockPos pos, int updateFlags, int updateLimit) {
+        // 仅更新方块形状的替换也需要拆除其余桌面。
+        if (level instanceof ServerLevel serverLevel && (updateFlags & Block.UPDATE_MOVE_BY_PISTON) == 0
+            && !serverLevel.getBlockState(pos).is(this)) {
+            removeOtherParts(state, serverLevel, pos);
+        }
+        super.updateIndirectNeighbourShapes(state, level, pos, updateFlags, updateLimit);
+    }
+
+    private void removeOtherParts(BlockState state, ServerLevel level, BlockPos pos) {
+        Direction facing = state.getValue(FACING);
+        BlockPos anchor = getAnchorPos(pos, facing, state.getValue(PART));
+        for (Part part : Part.values()) {
+            BlockPos partPos = getPartPos(anchor, facing, part);
+            if (partPos.equals(pos)) {
+                continue;
+            }
+            BlockState partState = level.getBlockState(partPos);
+            if (partState.is(this)
+                && partState.getValue(FACING) == facing
+                && partState.getValue(PART) == part) {
+                level.setBlock(partPos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(),
+                        Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
             }
         }
-        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override

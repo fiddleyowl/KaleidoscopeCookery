@@ -31,11 +31,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Saddleable;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -225,7 +225,8 @@ public class MillstoneBlockEntity extends BaseBlockEntity implements IMillstone 
                             5, 0.1, 0.1, 0.1,
                             0.05);
                 } else {
-                    ItemParticleOption option = new ItemParticleOption(ParticleTypes.ITEM, item.getDefaultInstance());
+                    ItemStackTemplate particleItem = ItemStackTemplate.fromNonEmptyStack(item.getDefaultInstance());
+                    ItemParticleOption option = new ItemParticleOption(ParticleTypes.ITEM, particleItem);
                     serverLevel.sendParticles(option,
                             particlePos.x, particlePos.y, particlePos.z,
                             5, 0.1, 0.1, 0.1,
@@ -309,11 +310,8 @@ public class MillstoneBlockEntity extends BaseBlockEntity implements IMillstone 
     }
 
     public boolean saddleEntityIsControlling(Mob mob) {
-        if (!(mob instanceof Saddleable saddleable)) {
-            return false;
-        }
         // 骑乘的生物不能被绑定
-        return saddleable.isSaddled() && mob.getControllingPassenger() != null;
+        return mob.isSaddled() && mob.getControllingPassenger() != null;
     }
 
     public boolean canBindEntity(LivingEntity entity) {

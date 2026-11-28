@@ -1,11 +1,15 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.entity;
 
+import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.misc.TrashCanBlockEntity;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModSounds;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -22,7 +26,8 @@ public class SitEntity extends Entity implements IEntityWithComplexSpawn {
             .sized(0.5f, 0.1f)
             .clientTrackingRange(10)
             .noSummon()
-            .build("sit");
+            .build(ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "sit")));
 
     public static final int DEFAULT = 0;
     public static final int TRASH_CAN = 1;
@@ -125,7 +130,7 @@ public class SitEntity extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damageAmount) {
+    public boolean hurtServer(ServerLevel level, DamageSource damageSource, float damageAmount) {
         return false;
     }
 
