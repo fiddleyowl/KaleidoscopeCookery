@@ -5,22 +5,27 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModDataComponents;
 import com.github.ysbbbbbb.kaleidoscopecookery.inventory.tooltip.ItemContainerTooltip;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class FruitBasketItem extends BlockItem {
     private static final int MAX_SLOTS = 8;
 
-    public FruitBasketItem() {
-        super(ModBlocks.FRUIT_BASKET.get(), new Properties().stacksTo(1));
+    public FruitBasketItem(Properties properties) {
+        super(ModBlocks.FRUIT_BASKET.get(), properties.stacksTo(1));
     }
 
     public static ItemStackHandler getItems(ItemStack stack) {
@@ -33,6 +38,11 @@ public class FruitBasketItem extends BlockItem {
 
     public static void saveItems(ItemStack stack, ItemStackHandler items) {
         stack.set(ModDataComponents.FRUIT_BASKET_ITEMS, new ItemContainer(items));
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(Component.translatable("tooltip.kaleidoscope_cookery.fruit_basket").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

@@ -4,11 +4,9 @@ import com.github.ysbbbbbb.kaleidoscopecookery.advancements.critereon.ModEventTr
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModTrigger;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagMod;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -18,10 +16,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -38,8 +34,6 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
-
-import java.util.List;
 
 import static com.github.ysbbbbbb.kaleidoscopecookery.item.KitchenShovelItem.hasOil;
 import static com.github.ysbbbbbb.kaleidoscopecookery.item.KitchenShovelItem.setHasOil;
@@ -178,11 +172,6 @@ public class StoveBlock extends HorizontalDirectionalBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(LIT, FACING);
-    }
-
-    @Override
-    public void appendHoverText(ItemStack pStack, Item.TooltipContext context, List<Component> pTooltip, TooltipFlag pFlag) {
-        pTooltip.add(Component.translatable("tooltip.kaleidoscope_cookery.stove").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

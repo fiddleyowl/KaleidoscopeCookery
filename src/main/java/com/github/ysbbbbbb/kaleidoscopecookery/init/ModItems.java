@@ -12,16 +12,22 @@ public final class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(KaleidoscopeCookery.MOD_ID);
 
     // 厨具
-    public static DeferredItem<Item> STOVE = ITEMS.register("stove", () -> new BlockItem(ModBlocks.STOVE.get(), new Item.Properties()));
-    public static DeferredItem<Item> POT = ITEMS.register("pot", () -> new BlockItem(ModBlocks.POT.get(), new Item.Properties()));
-    public static DeferredItem<Item> STOCKPOT = ITEMS.register("stockpot", () -> new BlockItem(ModBlocks.STOCKPOT.get(), new Item.Properties()));
+    public static DeferredItem<Item> STOVE = ITEMS.registerItem("stove",
+            properties -> new WithTooltipsBlockItem(ModBlocks.STOVE.get(), properties.useBlockDescriptionPrefix(), "stove"));
+    public static DeferredItem<Item> POT = ITEMS.registerItem("pot",
+            properties -> new WithTooltipsBlockItem(ModBlocks.POT.get(), properties.useBlockDescriptionPrefix(), "pot", "pot.fail"));
+    public static DeferredItem<Item> STOCKPOT = ITEMS.registerItem("stockpot",
+            properties -> new WithTooltipsBlockItem(ModBlocks.STOCKPOT.get(), properties.useBlockDescriptionPrefix(), "stockpot", "stockpot.fail"));
     public static DeferredItem<Item> STOCKPOT_LID = ITEMS.register("stockpot_lid", StockpotLidItem::new);
-    public static DeferredItem<Item> CHOPPING_BOARD = ITEMS.register("chopping_board", () -> new BlockItem(ModBlocks.CHOPPING_BOARD.get(), new Item.Properties()));
+    public static DeferredItem<Item> CHOPPING_BOARD = ITEMS.registerItem("chopping_board",
+            properties -> new WithTooltipsBlockItem(ModBlocks.CHOPPING_BOARD.get(), properties.useBlockDescriptionPrefix(), "chopping_board"));
     public static DeferredItem<Item> KITCHENWARE_RACKS = ITEMS.register("kitchenware_racks", () -> new WithTooltipsBlockItem(ModBlocks.KITCHENWARE_RACKS.get(), "kitchenware_racks"));
     public static DeferredItem<Item> KITCHEN_SHELF = ITEMS.register("kitchen_shelf", () -> new BlockItem(ModBlocks.KITCHEN_SHELF.get(), new Item.Properties()));
     public static DeferredItem<Item> BAMBOO_TRAY = ITEMS.register("bamboo_tray", () -> new BlockItem(ModBlocks.BAMBOO_TRAY.get(), new Item.Properties()));
-    public static DeferredItem<Item> SHAWARMA_SPIT = ITEMS.register("shawarma_spit", () -> new BlockItem(ModBlocks.SHAWARMA_SPIT.get(), new Item.Properties()));
-    public static DeferredItem<Item> MILLSTONE = ITEMS.register("millstone", () -> new BlockItem(ModBlocks.MILLSTONE.get(), new Item.Properties()));
+    public static DeferredItem<Item> SHAWARMA_SPIT = ITEMS.registerItem("shawarma_spit",
+            properties -> new WithTooltipsBlockItem(ModBlocks.SHAWARMA_SPIT.get(), properties.useBlockDescriptionPrefix(), "shawarma_spit"));
+    public static DeferredItem<Item> MILLSTONE = ITEMS.registerItem("millstone",
+            properties -> new WithTooltipsBlockItem(ModBlocks.MILLSTONE.get(), properties.useBlockDescriptionPrefix(), "millstone"));
     public static DeferredItem<Item> STEAMER = ITEMS.register("steamer", SteamerItem::new);
 
     // 茶
@@ -42,13 +48,15 @@ public final class ModItems {
     public static DeferredItem<Item> OIL = ITEMS.register("oil", OilItem::new);
     public static DeferredItem<Item> OIL_POT = ITEMS.register("oil_pot", OilPotItem::new);
     public static DeferredItem<Item> OIL_BLOCK = ITEMS.register("oil_block", () -> new BlockItem(ModBlocks.OIL_BLOCK.get(), new Item.Properties()));
-    public static DeferredItem<Item> ENAMEL_BASIN = ITEMS.register("enamel_basin", () -> new BlockItem(ModBlocks.ENAMEL_BASIN.get(), new Item.Properties()));
+    public static DeferredItem<Item> ENAMEL_BASIN = ITEMS.registerItem("enamel_basin",
+            properties -> new WithTooltipsBlockItem(ModBlocks.ENAMEL_BASIN.get(), properties.useBlockDescriptionPrefix(), "enamel_basin"));
 
     // 杂项
     public static DeferredItem<Item> CHILI_RISTRA = ITEMS.register("chili_ristra", () -> new BlockItem(ModBlocks.CHILI_RISTRA.get(), new Item.Properties()));
     public static DeferredItem<Item> STRUNG_MUSHROOMS = ITEMS.register("strung_mushrooms", () -> new BlockItem(ModBlocks.STRUNG_MUSHROOMS.get(), new Item.Properties()));
     public static DeferredItem<Item> STRAW_BLOCK = ITEMS.register("straw_block", () -> new BlockItem(ModBlocks.STRAW_BLOCK.get(), new Item.Properties()));
-    public static DeferredItem<Item> FRUIT_BASKET = ITEMS.register("fruit_basket", FruitBasketItem::new);
+    public static DeferredItem<Item> FRUIT_BASKET = ITEMS.registerItem("fruit_basket",
+            properties -> new FruitBasketItem(properties.useBlockDescriptionPrefix()));
     public static DeferredItem<Item> SCARECROW = ITEMS.register("scarecrow", ScarecrowItem::new);
     public static DeferredItem<Item> RECIPE_ITEM = ITEMS.register("recipe_item", RecipeItem::new);
     public static DeferredItem<Item> TRANSMUTATION_LUNCH_BAG = ITEMS.register("transmutation_lunch_bag", TransmutationLunchBagItem::new);
@@ -73,12 +81,17 @@ public final class ModItems {
             properties -> ModArmorMaterials.farmerArmor(properties, ArmorType.BOOTS));
 
     // 种子
-    public static DeferredItem<Item> TOMATO_SEED = ITEMS.register("tomato_seed", () -> new ItemNameBlockItem(ModBlocks.TOMATO_CROP.get(), new Item.Properties()));
-    public static DeferredItem<Item> CHILI_SEED = ITEMS.register("chili_seed", () -> new ItemNameBlockItem(ModBlocks.CHILI_CROP.get(), new Item.Properties()));
-    public static DeferredItem<Item> LETTUCE_SEED = ITEMS.register("lettuce_seed", () -> new ItemNameBlockItem(ModBlocks.LETTUCE_CROP.get(), new Item.Properties()));
-    public static DeferredItem<Item> RICE_SEED = ITEMS.register("rice", RiceItem::new);
-    public static DeferredItem<Item> WILD_RICE_SEED = ITEMS.register("wild_rice", () -> new ItemNameBlockItem(ModBlocks.RICE_CROP.get(), new Item.Properties()));
-    public static DeferredItem<Item> TEA_SEED = ITEMS.register("tea_seed", () -> new ItemNameBlockItem(ModBlocks.TEA_TREE.get(), new Item.Properties()));
+    public static DeferredItem<Item> TOMATO_SEED = ITEMS.registerItem("tomato_seed",
+            properties -> new WithTooltipsBlockItem(ModBlocks.TOMATO_CROP.get(), properties.useItemDescriptionPrefix(), "crop_seed"));
+    public static DeferredItem<Item> CHILI_SEED = ITEMS.registerItem("chili_seed",
+            properties -> new WithTooltipsBlockItem(ModBlocks.CHILI_CROP.get(), properties.useItemDescriptionPrefix(), "crop_seed"));
+    public static DeferredItem<Item> LETTUCE_SEED = ITEMS.registerItem("lettuce_seed",
+            properties -> new WithTooltipsBlockItem(ModBlocks.LETTUCE_CROP.get(), properties.useItemDescriptionPrefix(), "crop_seed"));
+    public static DeferredItem<Item> RICE_SEED = ITEMS.registerItem("rice", RiceItem::new);
+    public static DeferredItem<Item> WILD_RICE_SEED = ITEMS.registerItem("wild_rice",
+            properties -> new WithTooltipsBlockItem(ModBlocks.RICE_CROP.get(), properties.useItemDescriptionPrefix(), "crop_seed"));
+    public static DeferredItem<Item> TEA_SEED = ITEMS.registerItem("tea_seed",
+            properties -> new WithTooltipsBlockItem(ModBlocks.TEA_TREE.get(), properties.useItemDescriptionPrefix(), "crop_seed"));
 
     // 凳子
     public static DeferredItem<Item> COOK_STOOL_OAK = ITEMS.register("cook_stool_oak", () -> new BlockItem(ModBlocks.COOK_STOOL_OAK.get(), new Item.Properties()));

@@ -2,9 +2,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.block.crop;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModItems;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -13,9 +11,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -35,8 +31,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.CommonHooks;
-
-import java.util.List;
 
 public class TeaTreeBlock extends BushBlock implements BonemealableBlock {
     public static final int MAX_AGE = 5;
@@ -163,10 +157,5 @@ public class TeaTreeBlock extends BushBlock implements BonemealableBlock {
     @Override
     public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
         level.setBlock(pos, state.setValue(AGE, Math.min(MAX_AGE, this.getAge(state) + 1)), Block.UPDATE_CLIENTS);
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.kaleidoscope_cookery.crop_seed").withStyle(ChatFormatting.GRAY));
     }
 }
