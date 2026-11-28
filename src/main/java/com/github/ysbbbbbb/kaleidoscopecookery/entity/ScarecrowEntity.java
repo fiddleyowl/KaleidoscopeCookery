@@ -471,6 +471,11 @@ public class ScarecrowEntity extends LivingEntity {
     }
 
     @Override
+    protected boolean canDispenserEquipIntoSlot(EquipmentSlot slot) {
+        return false;
+    }
+
+    @Override
     public ItemStack getItemBySlot(EquipmentSlot slot) {
         return switch (slot.getType()) {
             case HAND -> this.handItems.get(slot.getIndex());

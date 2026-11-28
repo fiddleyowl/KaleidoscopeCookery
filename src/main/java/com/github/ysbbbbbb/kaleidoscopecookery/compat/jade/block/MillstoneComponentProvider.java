@@ -13,7 +13,7 @@ import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
-import snownee.jade.api.ui.IElementHelper;
+import snownee.jade.api.ui.JadeUI;
 
 public enum MillstoneComponentProvider implements IBlockComponentProvider {
     INSTANCE;
@@ -30,13 +30,12 @@ public enum MillstoneComponentProvider implements IBlockComponentProvider {
         if (millstone.getInput().isEmpty() && millstone.isOutputEmpty()) {
             return;
         }
-        IElementHelper helper = IElementHelper.get();
-        tooltip.add(helper.item(millstone.getInput()));
-        tooltip.append(helper.progress(millstone.getProgressPercent()));
+        tooltip.add(JadeUI.item(millstone.getInput()));
+        tooltip.append(JadeUI.progressArrow(millstone.getProgressPercent()));
         for (int i = 0; i < millstone.getOutputs().getSlots(); i++) {
             ItemStack outputStack = millstone.getOutputs().getStackInSlot(i);
             if (!outputStack.isEmpty()) {
-                tooltip.append(helper.item(outputStack));
+                tooltip.append(JadeUI.item(outputStack));
             }
         }
     }

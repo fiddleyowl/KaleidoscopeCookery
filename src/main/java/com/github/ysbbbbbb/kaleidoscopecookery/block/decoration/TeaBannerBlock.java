@@ -140,7 +140,7 @@ public class TeaBannerBlock extends FaceAttachedHorizontalDirectionalBlock imple
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Override

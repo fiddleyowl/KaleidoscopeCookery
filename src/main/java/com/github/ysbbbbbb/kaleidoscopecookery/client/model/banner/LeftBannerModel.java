@@ -1,8 +1,6 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.client.model.banner;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -12,7 +10,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 
 
-public class LeftBannerModel extends Model {
+public class LeftBannerModel extends Model<Float> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "left_banner"), "main");
 
     private final ModelPart bone;
@@ -20,7 +18,7 @@ public class LeftBannerModel extends Model {
     private final ModelPart back;
 
     public LeftBannerModel(ModelPart root) {
-        super(RenderTypes::entityCutout);
+        super(root, RenderTypes::entityCutout);
         this.bone = root.getChild("bone");
         this.front = this.bone.getChild("front");
         this.back = this.bone.getChild("back");
@@ -41,13 +39,9 @@ public class LeftBannerModel extends Model {
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
-    public void setWaveAngle(float angle) {
+    @Override
+    public void setupAnim(Float angle) {
         this.front.zRot = angle;
         this.back.zRot = angle;
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, -1);
     }
 }

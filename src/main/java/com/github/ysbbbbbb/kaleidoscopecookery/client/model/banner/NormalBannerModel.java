@@ -1,8 +1,6 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.client.model.banner;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -11,7 +9,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 
-public class NormalBannerModel extends Model {
+public class NormalBannerModel extends Model<Float> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "normal_banner"), "main");
 
     private final ModelPart bone;
@@ -19,7 +17,7 @@ public class NormalBannerModel extends Model {
     private final ModelPart back;
 
     public NormalBannerModel(ModelPart root) {
-        super(RenderTypes::entityCutout);
+        super(root, RenderTypes::entityCutout);
         this.bone = root.getChild("bone");
         this.front = this.bone.getChild("front");
         this.back = this.bone.getChild("back");
@@ -39,13 +37,9 @@ public class NormalBannerModel extends Model {
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
-    public void setWaveAngle(float angle) {
+    @Override
+    public void setupAnim(Float angle) {
         this.front.zRot = angle;
         this.back.zRot = angle;
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, -1);
     }
 }

@@ -1,6 +1,7 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.client.render.block;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.decoration.FruitBasketBlockEntity;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.event.ModModelEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -11,7 +12,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -35,12 +35,12 @@ public class FruitBasketBlockEntityRender implements BlockEntityRenderer<FruitBa
     public void extractRenderState(FruitBasketBlockEntity basket, State state, float partialTick,
                                    Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(basket, state, partialTick, cameraPosition, breakProgress);
+        ModModelEvent.copyBreakProgress(state);
         ItemStackHandler items = basket.getItems();
         state.rotation = basket.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING).get2DDataValue() * 90;
         for (int index = 0; index < state.items.length; index++) {
             ItemStack stack = items.getStackInSlot(index);
             if (stack.isEmpty()) {
-                state.items[index] = null;
                 continue;
             }
             ItemStackRenderState item = new ItemStackRenderState();
@@ -68,7 +68,7 @@ public class FruitBasketBlockEntityRender implements BlockEntityRenderer<FruitBa
                     poseStack.mulPose(Axis.YN.rotationDegrees(90));
                     poseStack.mulPose(Axis.XN.rotationDegrees(-30));
                     poseStack.scale(0.375f, 0.375f, 0.375f);
-                    item.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+                    ModModelEvent.submitItem(item, state, poseStack, collector);
                     poseStack.popPose();
                 }
             }

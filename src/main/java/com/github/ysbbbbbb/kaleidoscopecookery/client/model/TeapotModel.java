@@ -2,32 +2,26 @@ package com.github.ysbbbbbb.kaleidoscopecookery.client.model;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.block.kitchen.TeapotBlock;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.HierarchicalModel;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.animation.TeapotAnimation;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.render.block.TeapotBlockEntityRender;
+import net.minecraft.client.animation.KeyframeAnimation;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Entity;
 
-public class TeapotModel extends HierarchicalModel<Entity> {
+public class TeapotModel extends Model<TeapotBlockEntityRender.State> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "teapot"), "main");
-    private final ModelPart root;
-    private final ModelPart top;
-    private final ModelPart body;
-    private final ModelPart stick;
+    private final KeyframeAnimation boiling;
     private final ModelPart chain;
     private final ModelPart base;
 
     public TeapotModel(ModelPart root) {
-        super(RenderTypes::entityCutout);
-        this.root = root.getChild("root");
-        this.top = this.root.getChild("top");
-        this.body = this.root.getChild("body");
-        this.stick = this.body.getChild("stick");
+        super(root, RenderTypes::entityCutout);
+        this.boiling = TeapotAnimation.BOILING.bake(root.getChild("root"));
         this.chain = root.getChild("chain");
         this.base = root.getChild("base");
     }
@@ -68,18 +62,6 @@ public class TeapotModel extends HierarchicalModel<Entity> {
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        root.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        chain.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-        base.render(poseStack, vertexConsumer, packedLight, packedOverlay);
-    }
-
-    @Override
-    public ModelPart root() {
-        return this.root;
-    }
-
     public void updateVariant(int variant) {
         if (variant == TeapotBlock.BASED) {
             this.chain.visible = false;
@@ -94,6 +76,9 @@ public class TeapotModel extends HierarchicalModel<Entity> {
     }
 
     @Override
-    public void setupAnim(Entity entity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+    public void setupAnim(TeapotBlockEntityRender.State state) {
+        super.setupAnim(state);
+        this.updateVariant(state.variant);
+        this.boiling.apply(state.boilingState, state.ageInTicks);
     }
 }

@@ -5,14 +5,14 @@ import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.ChoppingBoard
 import com.github.ysbbbbbb.kaleidoscopecookery.client.event.ModModelEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -30,7 +30,6 @@ public class ChoppingBoardBlockEntityRender implements BlockEntityRenderer<Chopp
     public void extractRenderState(ChoppingBoardBlockEntity choppingBoard, State state, float partialTick,
                                    Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(choppingBoard, state, partialTick, cameraPosition, breakProgress);
-        state.model.clear();
         Identifier modelId = choppingBoard.getModelId();
         if (modelId == null) {
             return;
@@ -48,26 +47,27 @@ public class ChoppingBoardBlockEntityRender implements BlockEntityRenderer<Chopp
         }
         int index = Math.min(choppingBoard.getCurrentCutCount(), choppingBoard.cacheModels.length - 1);
         Identifier cacheModel = choppingBoard.cacheModels[index];
-        ModModelEvent.updateModel(state.model, cacheModel);
-        state.rotation = choppingBoard.getBlockState().getValue(ChoppingBoardBlock.FACING).get2DDataValue();
+        state.model = ModModelEvent.getModel(cacheModel);
+        ModModelEvent.copyBreakProgress(state);
+        state.rotationSteps = choppingBoard.getBlockState().getValue(ChoppingBoardBlock.FACING).get2DDataValue();
     }
 
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        if (state.model.isEmpty()) {
+        if (state.model == null) {
             return;
         }
 
         poseStack.pushPose();
         poseStack.translate(0.5D, 0, 0.5D);
-        poseStack.mulPose(Axis.YP.rotationDegrees(state.rotation * 90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(state.rotationSteps * 90));
         poseStack.translate(-0.5D, 0.125, -0.5D);
-        state.model.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+        ModModelEvent.submitModel(state.model, state, poseStack, collector, Sheets.cutoutBlockSheet());
         poseStack.popPose();
     }
 
     public static final class State extends BlockEntityRenderState {
-        private final BlockModelRenderState model = new BlockModelRenderState();
-        private int rotation;
+        private @Nullable BlockStateModelPart model;
+        private int rotationSteps;
     }
 }

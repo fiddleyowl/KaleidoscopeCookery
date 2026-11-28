@@ -1,35 +1,20 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.item;
 
-import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModArmorMaterials;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.equipment.ArmorType;
 
-import java.util.List;
+import java.util.function.Consumer;
 
-public class StrawHatItem extends ArmorItem {
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/models/armor/straw_hat.png");
-    private static final Identifier TEXTURE_FLOWER = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/models/armor/straw_hat_flower.png");
-
+public class StrawHatItem extends Item {
     private final boolean hasFlower;
 
-    public StrawHatItem(boolean hasFlower) {
-        super(ModArmorMaterials.FARMER, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1));
+    public StrawHatItem(boolean hasFlower, Properties properties) {
+        super(ModArmorMaterials.farmerArmor(properties, ArmorType.HELMET));
         this.hasFlower = hasFlower;
-    }
-
-    @Override
-    @Nullable
-    public Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
-        if (this.hasFlower) {
-            return TEXTURE_FLOWER;
-        }
-        return TEXTURE;
     }
 
     public boolean hasFlower() {
@@ -37,7 +22,8 @@ public class StrawHatItem extends ArmorItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.kaleidoscope_cookery.straw_hat").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display,
+                                Consumer<Component> tooltip, TooltipFlag flag) {
+        tooltip.accept(Component.translatable("tooltip.kaleidoscope_cookery.straw_hat").withStyle(ChatFormatting.GRAY));
     }
 }

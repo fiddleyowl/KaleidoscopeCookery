@@ -4,11 +4,12 @@ package com.github.ysbbbbbb.kaleidoscopecookery.client.tooltip;
 import com.github.ysbbbbbb.kaleidoscopecookery.inventory.tooltip.ItemContainerTooltip;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
@@ -32,7 +33,7 @@ public class ClientItemContainerTooltip implements ClientTooltipComponent {
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(Font font) {
         if (emptyTip != null) {
             return 10;
         }
@@ -50,16 +51,16 @@ public class ClientItemContainerTooltip implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(Font font, int pX, int pY, GuiGraphics guiGraphics) {
+    public void extractImage(Font font, int pX, int pY, int width, int height, GuiGraphicsExtractor guiGraphics) {
         if (emptyTip != null) {
-            guiGraphics.drawString(font, emptyTip, pX, pY, ChatFormatting.GRAY.getColor());
+            guiGraphics.text(font, emptyTip, pX, pY, ARGB.opaque(ChatFormatting.GRAY.getColor()));
         } else {
             int i = 0;
             for (ItemStack stack : this.items) {
                 int xOffset = pX + (i % 8) * 20;
                 int yOffset = pY + (i / 8) * 20;
-                guiGraphics.renderFakeItem(stack, xOffset, yOffset);
-                guiGraphics.renderItemDecorations(font, stack, xOffset, yOffset);
+                guiGraphics.fakeItem(stack, xOffset, yOffset);
+                guiGraphics.itemDecorations(font, stack, xOffset, yOffset);
                 i++;
             }
         }

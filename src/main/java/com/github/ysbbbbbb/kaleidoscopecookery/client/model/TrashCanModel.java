@@ -1,30 +1,33 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.client.model;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.HierarchicalModel;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.animation.TrashCanAnimation;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.render.block.TrashCanBlockEntityRender;
+import net.minecraft.client.animation.KeyframeAnimation;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Entity;
 
-public class TrashCanModel extends HierarchicalModel<Entity> {
+public class TrashCanModel extends Model<TrashCanBlockEntityRender.State> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "trash_can"), "main");
-    private final ModelPart root;
-    private final ModelPart bone;
-    private final ModelPart bone2;
-    private final ModelPart eye;
-    private final ModelPart bone3;
+    private final KeyframeAnimation put;
+    private final KeyframeAnimation withdraw;
+    private final KeyframeAnimation player1;
+    private final KeyframeAnimation player2;
+    private final KeyframeAnimation enter;
 
     public TrashCanModel(ModelPart root) {
-        this.root = root.getChild("root");
-        this.bone = this.root.getChild("bone");
-        this.bone2 = this.root.getChild("bone2");
-        this.eye = this.root.getChild("eye");
-        this.bone3 = this.eye.getChild("bone3");
+        super(root, RenderTypes::entityCutout);
+        ModelPart animationRoot = root.getChild("root");
+        this.put = TrashCanAnimation.PUT.bake(animationRoot);
+        this.withdraw = TrashCanAnimation.WITHDRAW.bake(animationRoot);
+        this.player1 = TrashCanAnimation.PLAYER1.bake(animationRoot);
+        this.player2 = TrashCanAnimation.PLAYER2.bake(animationRoot);
+        this.enter = TrashCanAnimation.ENTER.bake(animationRoot);
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -49,16 +52,12 @@ public class TrashCanModel extends HierarchicalModel<Entity> {
     }
 
     @Override
-    public ModelPart root() {
-        return this.root;
-    }
-
-    @Override
-    public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        root.render(poseStack, vertexConsumer, packedLight, packedOverlay);
+    public void setupAnim(TrashCanBlockEntityRender.State state) {
+        super.setupAnim(state);
+        this.put.apply(state.putState, state.ageInTicks);
+        this.withdraw.apply(state.withdrawState, state.ageInTicks);
+        this.player1.apply(state.player1State, state.ageInTicks);
+        this.player2.apply(state.player2State, state.ageInTicks);
+        this.enter.apply(state.enterState, state.ageInTicks);
     }
 }

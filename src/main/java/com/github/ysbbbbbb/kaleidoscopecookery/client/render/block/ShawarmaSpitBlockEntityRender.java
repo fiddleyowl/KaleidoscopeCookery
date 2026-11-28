@@ -2,6 +2,7 @@ package com.github.ysbbbbbb.kaleidoscopecookery.client.render.block;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.block.kitchen.ShawarmaSpitBlock;
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.ShawarmaSpitBlockEntity;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.event.ModModelEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -12,7 +13,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,10 +37,9 @@ public class ShawarmaSpitBlockEntityRender implements BlockEntityRenderer<Shawar
     public void extractRenderState(ShawarmaSpitBlockEntity shawarmaSpit, State state, float partialTick,
                                    Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(shawarmaSpit, state, partialTick, cameraPosition, breakProgress);
+        ModModelEvent.copyBreakProgress(state);
         ItemStack cookedItem = shawarmaSpit.cookedItem;
-        state.itemCount = 0;
         if (cookedItem.isEmpty()) {
-            state.item.clear();
             return;
         }
         ItemStack renderItem;
@@ -86,7 +85,7 @@ public class ShawarmaSpitBlockEntityRender implements BlockEntityRenderer<Shawar
             poseStack.pushPose();
             poseStack.rotateAround(Axis.YP.rotationDegrees(i * 45), 0.25f, 0, 0.25f);
             poseStack.scale(0.65F, 0.65F, 0.65F);
-            state.item.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+            ModModelEvent.submitItem(state.item, state, poseStack, collector);
             poseStack.popPose();
         }
     }

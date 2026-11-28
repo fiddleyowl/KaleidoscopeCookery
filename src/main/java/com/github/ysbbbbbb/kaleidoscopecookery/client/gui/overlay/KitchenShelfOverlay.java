@@ -4,18 +4,18 @@ import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.KitchenShelfB
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 
-public class KitchenShelfOverlay implements LayeredDraw.Layer {
+public class KitchenShelfOverlay implements GuiLayer {
     @Override
-    public void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
         if (player == null || !(minecraft.hitResult instanceof BlockHitResult hit)
@@ -34,8 +34,8 @@ public class KitchenShelfOverlay implements LayeredDraw.Layer {
         if (!stored.isEmpty()) {
             int x = graphics.guiWidth() / 2 - 8;
             int y = graphics.guiHeight() / 2 + 8;
-            graphics.renderFakeItem(stored, x, y);
-            graphics.renderItemDecorations(minecraft.font, stored, x, y);
+            graphics.fakeItem(stored, x, y);
+            graphics.itemDecorations(minecraft.font, stored, x, y);
         }
     }
 }

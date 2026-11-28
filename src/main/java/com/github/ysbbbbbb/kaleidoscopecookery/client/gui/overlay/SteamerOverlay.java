@@ -4,18 +4,18 @@ import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.SteamerBlockE
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 
-public class SteamerOverlay implements LayeredDraw.Layer {
+public class SteamerOverlay implements GuiLayer {
     @Override
-    public void render(GuiGraphics graphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
         if (player == null || !(minecraft.hitResult instanceof BlockHitResult hit)
@@ -35,8 +35,8 @@ public class SteamerOverlay implements LayeredDraw.Layer {
 
         for (ItemStack stack : steamer.getItems()) {
             if (!stack.isEmpty()) {
-                graphics.renderFakeItem(stack, x, y);
-                graphics.renderItemDecorations(minecraft.font, stack, x, y);
+                graphics.fakeItem(stack, x, y);
+                graphics.itemDecorations(minecraft.font, stack, x, y);
 
                 count++;
                 x += 20;

@@ -18,7 +18,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.CommonComponents;
@@ -70,17 +70,17 @@ public class FlexStockpotRecipeCategory implements IRecipeCategory<RecipeHolder<
     }
 
     @Override
-    public void draw(RecipeHolder<FlexStockpotRecipe> recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<FlexStockpotRecipe> recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         this.bgDraw.draw(guiGraphics);
 
         Component type = Component.translatable("jei.kaleidoscope_cookery.flex_recipe");
         drawCenteredString(guiGraphics, type, WIDTH / 2, 90);
     }
 
-    private void drawCenteredString(GuiGraphics guiGraphics, Component text, int centerX, int y) {
+    private void drawCenteredString(GuiGraphicsExtractor guiGraphics, Component text, int centerX, int y) {
         Font font = Minecraft.getInstance().font;
         FormattedCharSequence sequence = text.getVisualOrderText();
-        guiGraphics.drawString(font, sequence, centerX - font.width(sequence) / 2, y, 0x555555, false);
+        guiGraphics.text(font, sequence, centerX - font.width(sequence) / 2, y, 0xFF555555, false);
     }
 
     @Override

@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "minecraft:cookery_farmer"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "minecraft:cookery_farmer"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "minecraft:cookery_farmer"
+      }
+    ]
+  }
+}

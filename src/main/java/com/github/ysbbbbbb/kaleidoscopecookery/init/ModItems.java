@@ -4,6 +4,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.*;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -62,11 +63,14 @@ public final class ModItems {
     public static DeferredItem<Item> SICKLE = ITEMS.register("sickle", SickleItem::new);
 
     // 服装
-    public static DeferredItem<Item> STRAW_HAT = ITEMS.register("straw_hat", () -> new StrawHatItem(false));
-    public static DeferredItem<Item> STRAW_HAT_FLOWER = ITEMS.register("straw_hat_flower", () -> new StrawHatItem(true));
-    public static final DeferredItem<Item> FARMER_CHEST_PLATE = ITEMS.register("farmer_chest_plate", () -> new ArmorItem(ModArmorMaterials.FARMER, ArmorItem.Type.CHESTPLATE, new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> FARMER_LEGGINGS = ITEMS.register("farmer_leggings", () -> new ArmorItem(ModArmorMaterials.FARMER, ArmorItem.Type.LEGGINGS, new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> FARMER_BOOTS = ITEMS.register("farmer_boots", () -> new ArmorItem(ModArmorMaterials.FARMER, ArmorItem.Type.BOOTS, new Item.Properties().stacksTo(1)));
+    public static DeferredItem<Item> STRAW_HAT = ITEMS.registerItem("straw_hat", properties -> new StrawHatItem(false, properties));
+    public static DeferredItem<Item> STRAW_HAT_FLOWER = ITEMS.registerItem("straw_hat_flower", properties -> new StrawHatItem(true, properties));
+    public static final DeferredItem<Item> FARMER_CHEST_PLATE = ITEMS.registerSimpleItem("farmer_chest_plate",
+            properties -> ModArmorMaterials.farmerArmor(properties, ArmorType.CHESTPLATE));
+    public static final DeferredItem<Item> FARMER_LEGGINGS = ITEMS.registerSimpleItem("farmer_leggings",
+            properties -> ModArmorMaterials.farmerArmor(properties, ArmorType.LEGGINGS));
+    public static final DeferredItem<Item> FARMER_BOOTS = ITEMS.registerSimpleItem("farmer_boots",
+            properties -> ModArmorMaterials.farmerArmor(properties, ArmorType.BOOTS));
 
     // 种子
     public static DeferredItem<Item> TOMATO_SEED = ITEMS.register("tomato_seed", () -> new ItemNameBlockItem(ModBlocks.TOMATO_CROP.get(), new Item.Properties()));

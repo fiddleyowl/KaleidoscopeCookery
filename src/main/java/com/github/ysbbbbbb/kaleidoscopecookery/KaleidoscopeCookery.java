@@ -31,7 +31,6 @@ public class KaleidoscopeCookery {
         TeacupRegistry.init();
         PlateRegistry.init();
 
-        ModArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
         ModTrigger.TRIGGERS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
         ModBlocks.BLOCK_ENTITIES.register(modEventBus);

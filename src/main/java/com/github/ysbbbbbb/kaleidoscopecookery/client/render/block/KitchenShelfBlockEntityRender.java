@@ -1,6 +1,7 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.client.render.block;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.KitchenShelfBlockEntity;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.event.ModModelEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -11,7 +12,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -34,10 +34,10 @@ public class KitchenShelfBlockEntityRender implements BlockEntityRenderer<Kitche
     public void extractRenderState(KitchenShelfBlockEntity shelf, State state, float partialTick,
                                    Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(shelf, state, partialTick, cameraPosition, breakProgress);
+        ModModelEvent.copyBreakProgress(state);
         ItemStack stored = shelf.getStoredStack();
         state.displayCount = Math.min(16, stored.getCount());
         if (stored.isEmpty()) {
-            state.item.clear();
             return;
         }
 
@@ -70,7 +70,7 @@ public class KitchenShelfBlockEntityRender implements BlockEntityRenderer<Kitche
             );
             poseStack.mulPose(tilt);
             poseStack.scale(0.5f, 0.5f, 0.5f);
-            state.item.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+            ModModelEvent.submitItem(state.item, state, poseStack, collector);
             poseStack.popPose();
         }
 

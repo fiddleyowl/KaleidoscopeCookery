@@ -14,35 +14,41 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
+import net.minecraft.client.resources.model.EquipmentClientInfo;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
+
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 import static net.neoforged.neoforge.client.gui.VanillaGuiLayers.CROSSHAIR;
 
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = KaleidoscopeCookery.MOD_ID)
 public class ClientSetupEvent {
+    private static final Identifier STRAW_HAT_TEXTURE = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/models/armor/straw_hat.png");
+    private static final Identifier STRAW_HAT_FLOWER_TEXTURE = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "textures/models/armor/straw_hat_flower.png");
+    private static final Identifier FARMER_ARMOR_TEXTURE = Identifier.withDefaultNamespace("textures/models/armor/cookery_farmer_layer_1.png");
+    private static final Identifier FARMER_LEGGINGS_TEXTURE = Identifier.withDefaultNamespace("textures/models/armor/cookery_farmer_layer_2.png");
+
     @SubscribeEvent
     @SuppressWarnings("all")
     public static void onClientSetup(FMLClientSetupEvent event) {
@@ -88,8 +94,9 @@ public class ClientSetupEvent {
     }
 
     @SubscribeEvent
-    public static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(new ItemRenderReplacerReloadListener());
+    public static void onRegisterClientReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "item_render_replacer"),
+                new ItemRenderReplacerReloadListener());
     }
 
     @SubscribeEvent
@@ -110,26 +117,47 @@ public class ClientSetupEvent {
 
         // StrawHatItem - 草帽模型
         event.registerItem(new IClientItemExtensions() {
-            private StrawHatModel cachedModel = null;
+            private final Map<HumanoidModel<?>, StrawHatModel<?>> models = new IdentityHashMap<>();
+            private @Nullable EntityModelSet cachedModelSet;
 
             @Override
-            public int getArmorLayerTintColor(ItemStack stack, LivingEntity entity, ArmorMaterial.Layer layer, int layerIdx, int fallbackColor) {
-                if (layerIdx == 0) {
-                    return IClientItemExtensions.super.getArmorLayerTintColor(stack, entity, layer, layerIdx, fallbackColor);
+            public int getArmorLayerTintColor(ItemStack stack, EquipmentClientInfo.Layer layer, int layerIdx, int fallbackColor) {
+                if (stack.getItem() instanceof StrawHatItem && layerIdx != 0) {
+                    return 0;
                 }
-                return 0;
+                return IClientItemExtensions.super.getArmorLayerTintColor(stack, layer, layerIdx, fallbackColor);
             }
 
             @Override
-            public @NotNull Model getGenericArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
-                if (cachedModel == null) {
-                    cachedModel = new StrawHatModel(Minecraft.getInstance().getEntityModels().bakeLayer(StrawHatModel.LAYER_LOCATION));
+            public Model<?> getGenericArmorModel(ItemStack stack, EquipmentClientInfo.LayerType type, Model original) {
+                if (!(stack.getItem() instanceof StrawHatItem) || !(original instanceof HumanoidModel<?> humanoid)) {
+                    return original;
                 }
-                ModelPart head = cachedModel.getHead();
-                head.copyFrom(original.head);
-                return cachedModel;
+                EntityModelSet modelSet = Minecraft.getInstance().getEntityModels();
+                if (this.cachedModelSet != modelSet) {
+                    this.models.clear();
+                    this.cachedModelSet = modelSet;
+                }
+                return this.models.computeIfAbsent(humanoid, model ->
+                        new StrawHatModel<>(modelSet.bakeLayer(StrawHatModel.LAYER_LOCATION), model));
             }
-        }, ModItems.STRAW_HAT.get(), ModItems.STRAW_HAT_FLOWER.get());
+
+            @Override
+            public Identifier getArmorTexture(ItemStack stack, EquipmentClientInfo.LayerType type,
+                                              EquipmentClientInfo.Layer layer, Identifier fallback) {
+                if (stack.getItem() instanceof StrawHatItem hat) {
+                    if (hat.hasFlower()) {
+                        return STRAW_HAT_FLOWER_TEXTURE;
+                    }
+                    return STRAW_HAT_TEXTURE;
+                }
+                if (stack.is(ModItems.FARMER_LEGGINGS.get())) {
+                    return FARMER_LEGGINGS_TEXTURE;
+                }
+                return FARMER_ARMOR_TEXTURE;
+            }
+        }, ModItems.STRAW_HAT.get(), ModItems.STRAW_HAT_FLOWER.get(), ModItems.FARMER_CHEST_PLATE.get(),
+                ModItems.FARMER_LEGGINGS.get(), ModItems.FARMER_BOOTS.get());
     }
 
     public enum ItemModelProperty implements RangeSelectItemModelProperty {

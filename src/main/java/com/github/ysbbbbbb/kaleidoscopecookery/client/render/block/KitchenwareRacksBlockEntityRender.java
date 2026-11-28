@@ -1,6 +1,7 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.client.render.block;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.KitchenwareRacksBlockEntity;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.event.ModModelEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -11,7 +12,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
@@ -33,6 +33,7 @@ public class KitchenwareRacksBlockEntityRender implements BlockEntityRenderer<Ki
     public void extractRenderState(KitchenwareRacksBlockEntity blockEntity, State state, float partialTick,
                                    Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTick, cameraPosition, breakProgress);
+        ModModelEvent.copyBreakProgress(state);
         state.rotation = blockEntity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING).get2DDataValue() * 90;
         this.itemModelResolver.updateForTopItem(state.itemLeft, blockEntity.getItemLeft(), ItemDisplayContext.FIXED, blockEntity.getLevel(), null, 0);
         this.itemModelResolver.updateForTopItem(state.itemRight, blockEntity.getItemRight(), ItemDisplayContext.FIXED, blockEntity.getLevel(), null, 0);
@@ -46,24 +47,24 @@ public class KitchenwareRacksBlockEntityRender implements BlockEntityRenderer<Ki
         if (!state.itemLeft.isEmpty()) {
             poseStack.pushPose();
             poseStack.translate(-0.2, 0.4375, -0.3);
-            this.submitItem(state.itemLeft, poseStack, collector, state.lightCoords);
+            this.submitItem(state.itemLeft, poseStack, collector, state);
             poseStack.popPose();
         }
 
         if (!state.itemRight.isEmpty()) {
             poseStack.pushPose();
             poseStack.translate(0.2, 0.4375, -0.3);
-            this.submitItem(state.itemRight, poseStack, collector, state.lightCoords);
+            this.submitItem(state.itemRight, poseStack, collector, state);
             poseStack.popPose();
         }
     }
 
-    private void submitItem(ItemStackRenderState item, PoseStack poseStack, SubmitNodeCollector collector, int packedLight) {
+    private void submitItem(ItemStackRenderState item, PoseStack poseStack, SubmitNodeCollector collector, State state) {
         poseStack.scale(0.75f, 0.75f, 0.75f);
         poseStack.mulPose(Axis.XN.rotationDegrees(180));
         poseStack.mulPose(Axis.YN.rotationDegrees(-25));
         poseStack.mulPose(Axis.ZN.rotationDegrees(45));
-        item.submit(poseStack, collector, packedLight, OverlayTexture.NO_OVERLAY, 0);
+        ModModelEvent.submitItem(item, state, poseStack, collector);
     }
 
     public static final class State extends BlockEntityRenderState {

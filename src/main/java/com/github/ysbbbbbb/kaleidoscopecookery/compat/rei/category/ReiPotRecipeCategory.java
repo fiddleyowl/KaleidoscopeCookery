@@ -19,7 +19,7 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -59,7 +59,7 @@ public class ReiPotRecipeCategory implements DisplayCategory<ReiPotRecipeCategor
         widgets.add(Widgets.withTranslate(Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, v) -> {
             drawCenteredString(guiGraphics, Component.translatable("jei.kaleidoscope_cookery.strict_recipe"), WIDTH / 2, 5);
             drawCenteredString(guiGraphics, stirFryCount, WIDTH / 2, 85);
-        }), startX, startY, 0));
+        }), startX, startY));
 
         List<EntryIngredient> inputs = display.getInputEntries();
         for (int i = 0; i < inputs.size(); i++) {
@@ -84,10 +84,10 @@ public class ReiPotRecipeCategory implements DisplayCategory<ReiPotRecipeCategor
         return widgets;
     }
 
-    private void drawCenteredString(GuiGraphics guiGraphics, Component text, int centerX, int y) {
+    private void drawCenteredString(GuiGraphicsExtractor guiGraphics, Component text, int centerX, int y) {
         Font font = Minecraft.getInstance().font;
         FormattedCharSequence sequence = text.getVisualOrderText();
-        guiGraphics.drawString(font, sequence, centerX - font.width(sequence) / 2, y, 0x555555, false);
+        guiGraphics.text(font, sequence, centerX - font.width(sequence) / 2, y, 0xFF555555, false);
     }
 
     @Override

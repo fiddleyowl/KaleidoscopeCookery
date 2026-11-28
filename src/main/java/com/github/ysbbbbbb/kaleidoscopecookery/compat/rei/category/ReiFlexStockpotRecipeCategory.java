@@ -21,7 +21,7 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -60,7 +60,7 @@ public class ReiFlexStockpotRecipeCategory implements DisplayCategory<ReiFlexSto
         widgets.add(Widgets.createTexturedWidget(BG, startX, startY, 0, 0, WIDTH, HEIGHT));
         widgets.add(Widgets.withTranslate(Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, v) -> {
             drawCenteredString(guiGraphics, Component.translatable("jei.kaleidoscope_cookery.flex_recipe"), WIDTH / 2, 90);
-        }), startX, startY, 0));
+        }), startX, startY));
 
         if (!display.soupBase.isEmpty()) {
             widgets.add(Widgets.createSlot(new Point(startX + 72, startY + 61))
@@ -78,8 +78,8 @@ public class ReiFlexStockpotRecipeCategory implements DisplayCategory<ReiFlexSto
                     .markInput());
             if (!inputs.get(i).isEmpty()) {
                 widgets.add(Widgets.withTranslate(Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, v) -> {
-                    guiGraphics.drawString(Minecraft.getInstance().font, Component.literal("*"), xOffset, yOffset, 0xFFFFFF, true);
-                }), startX, startY, 0));
+                    guiGraphics.text(Minecraft.getInstance().font, Component.literal("*"), xOffset, yOffset, 0xFFFFFFFF, true);
+                }), startX, startY));
             }
         }
         if (!display.carrier.isEmpty()) {
@@ -96,10 +96,10 @@ public class ReiFlexStockpotRecipeCategory implements DisplayCategory<ReiFlexSto
         return widgets;
     }
 
-    private void drawCenteredString(GuiGraphics guiGraphics, Component text, int centerX, int y) {
+    private void drawCenteredString(GuiGraphicsExtractor guiGraphics, Component text, int centerX, int y) {
         Font font = Minecraft.getInstance().font;
         FormattedCharSequence sequence = text.getVisualOrderText();
-        guiGraphics.drawString(font, sequence, centerX - font.width(sequence) / 2, y, 0x555555, false);
+        guiGraphics.text(font, sequence, centerX - font.width(sequence) / 2, y, 0xFF555555, false);
     }
 
     @Override

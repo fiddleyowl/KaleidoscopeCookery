@@ -1,6 +1,7 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.client.render.block;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.kitchen.BambooTrayBlockEntity;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.event.ModModelEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -11,7 +12,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -37,10 +37,10 @@ public class BambooTrayBlockEntityRender implements BlockEntityRenderer<BambooTr
     public void extractRenderState(BambooTrayBlockEntity tray, State state, float partialTick,
                                    Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(tray, state, partialTick, cameraPosition, breakProgress);
+        ModModelEvent.copyBreakProgress(state);
         for (int slot = 0; slot < tray.getItems().size(); slot++) {
             ItemStack stack = tray.getItems().get(slot);
             if (stack.isEmpty()) {
-                state.items[slot] = null;
                 continue;
             }
             int copies = stack.getCount() == 1 ? 1 : Math.min(5, (stack.getCount() - 1) / 16 + 2);
@@ -74,7 +74,7 @@ public class BambooTrayBlockEntityRender implements BlockEntityRenderer<BambooTr
                 poseStack.mulPose(Axis.XP.rotationDegrees(90));
                 poseStack.mulPose(Axis.ZP.rotationDegrees(random.nextFloat() * 360));
                 poseStack.scale(0.5F, 0.5F, 0.5F);
-                items[copy].submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+                ModModelEvent.submitItem(items[copy], state, poseStack, collector);
                 poseStack.popPose();
             }
         }

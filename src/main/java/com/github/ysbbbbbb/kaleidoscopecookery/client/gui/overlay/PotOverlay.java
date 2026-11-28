@@ -7,12 +7,12 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -20,10 +20,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 
-public class PotOverlay implements LayeredDraw.Layer {
+public class PotOverlay implements GuiLayer {
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.gameMode == null || minecraft.gameMode.getPlayerMode() == GameType.SPECTATOR) {
             return;
@@ -72,9 +73,9 @@ public class PotOverlay implements LayeredDraw.Layer {
         }
     }
 
-    private static void drawWordWrap(GuiGraphics graphics, Font font, MutableComponent text, int pX, int pY, int color) {
+    private static void drawWordWrap(GuiGraphicsExtractor graphics, Font font, MutableComponent text, int pX, int pY, int color) {
         for (FormattedCharSequence sequence : font.split(text, 100)) {
-            graphics.drawString(font, sequence, pX - font.width(sequence) / 2, pY, color);
+            graphics.text(font, sequence, pX - font.width(sequence) / 2, pY, ARGB.opaque(color));
             pY += font.lineHeight;
         }
     }

@@ -1,8 +1,7 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.client.model;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.render.block.MillstoneBlockEntityRender;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -11,21 +10,17 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 
-public class MillstoneModel extends Model {
+public class MillstoneModel extends Model<MillstoneBlockEntityRender.State> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "millstone"), "main");
-    private final ModelPart base;
     private final ModelPart wheel;
     private final ModelPart roll;
-    private final ModelPart stick;
     private final ModelPart rotStick;
 
     public MillstoneModel(ModelPart root) {
-        super(RenderTypes::entityCutout);
-        this.base = root.getChild("base");
+        super(root, RenderTypes::entityCutout);
         this.wheel = root.getChild("wheel");
         this.roll = this.wheel.getChild("roll");
-        this.stick = this.wheel.getChild("stick");
-        this.rotStick = this.stick.getChild("rotStick");
+        this.rotStick = this.wheel.getChild("stick").getChild("rotStick");
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -61,20 +56,10 @@ public class MillstoneModel extends Model {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        base.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        wheel.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
-
-    public ModelPart getWheel() {
-        return wheel;
-    }
-
-    public ModelPart getRoll() {
-        return roll;
-    }
-
-    public ModelPart getRotStick() {
-        return rotStick;
+    public void setupAnim(MillstoneBlockEntityRender.State state) {
+        super.setupAnim(state);
+        this.wheel.yRot = state.wheelRotation;
+        this.roll.zRot = state.rollRotation;
+        this.rotStick.xRot = state.stickRotation;
     }
 }

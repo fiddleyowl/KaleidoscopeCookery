@@ -1,9 +1,8 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.client.model;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
-import com.github.ysbbbbbb.kaleidoscopecookery.entity.ScarecrowEntity;
+import com.github.ysbbbbbb.kaleidoscopecookery.client.render.entity.ScarecrowRender;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
@@ -12,25 +11,21 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.item.ItemStack;
 
-public class ScarecrowModel extends EntityModel<ScarecrowEntity> implements ArmedModel, HeadedModel {
+public class ScarecrowModel extends EntityModel<ScarecrowRender.State> implements ArmedModel<ScarecrowRender.State>, HeadedModel {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "scarecrow"), "main");
 
-    private final ModelPart group;
     private final ModelPart head;
-    private final ModelPart hat;
     private final ModelPart leftArm;
     private final ModelPart rightArm;
 
     public ScarecrowModel(ModelPart root) {
-        this.group = root.getChild("group");
-        this.head = this.group.getChild("head");
-        this.hat = this.head.getChild("hat");
-        this.rightArm = this.group.getChild("rightArm");
-        this.leftArm = this.group.getChild("leftArm");
+        super(root);
+        ModelPart group = root.getChild("group");
+        this.head = group.getChild("head");
+        this.rightArm = group.getChild("rightArm");
+        this.leftArm = group.getChild("leftArm");
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -61,18 +56,13 @@ public class ScarecrowModel extends EntityModel<ScarecrowEntity> implements Arme
     }
 
     @Override
-    public void setupAnim(ScarecrowEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        ItemStack stack = entity.getItemBySlot(EquipmentSlot.HEAD);
-        this.head.visible = stack.isEmpty();
+    public void setupAnim(ScarecrowRender.State state) {
+        super.setupAnim(state);
+        this.head.visible = state.showDefaultHead;
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        group.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
-
-    @Override
-    public void translateToHand(HumanoidArm arm, PoseStack poseStack) {
+    public void translateToHand(ScarecrowRender.State state, HumanoidArm arm, PoseStack poseStack) {
         if (arm == HumanoidArm.LEFT) {
             this.leftArm.translateAndRotate(poseStack);
         } else {

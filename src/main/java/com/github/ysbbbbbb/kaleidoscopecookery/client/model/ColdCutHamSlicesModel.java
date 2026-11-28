@@ -1,8 +1,6 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.client.model;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.KaleidoscopeCookery;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -12,7 +10,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 
 
-public class ColdCutHamSlicesModel extends Model {
+public class ColdCutHamSlicesModel extends Model<Integer> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "cold_cut_ham_slices"), "main");
 
     private final ModelPart food;
@@ -28,7 +26,7 @@ public class ColdCutHamSlicesModel extends Model {
     private final ModelPart bite8;
 
     public ColdCutHamSlicesModel(ModelPart root) {
-        super(RenderTypes::entityCutout);
+        super(root, RenderTypes::entityCutout);
 
         this.base = root.getChild("base");
         this.food = root.getChild("food");
@@ -104,12 +102,8 @@ public class ColdCutHamSlicesModel extends Model {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        food.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        base.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
-
-    public void updateBites(int bites) {
+    public void setupAnim(Integer bites) {
+        super.setupAnim(bites);
         this.bite1.visible = bites < 8;
         this.bite2.visible = bites < 7;
         this.bite3.visible = bites < 6;
@@ -118,16 +112,5 @@ public class ColdCutHamSlicesModel extends Model {
         this.bite6.visible = bites < 3;
         this.bite7.visible = bites < 2;
         this.bite8.visible = bites < 1;
-    }
-
-    public void resetBites() {
-        this.bite1.visible = true;
-        this.bite2.visible = true;
-        this.bite3.visible = true;
-        this.bite4.visible = true;
-        this.bite5.visible = true;
-        this.bite6.visible = true;
-        this.bite7.visible = true;
-        this.bite8.visible = true;
     }
 }

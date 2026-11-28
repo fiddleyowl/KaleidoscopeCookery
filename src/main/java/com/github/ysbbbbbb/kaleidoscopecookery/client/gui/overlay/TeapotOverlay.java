@@ -7,8 +7,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.ModBlocks;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -19,10 +18,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 
-public class TeapotOverlay implements LayeredDraw.Layer {
+public class TeapotOverlay implements GuiLayer {
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
         HitResult hitResult = minecraft.hitResult;
@@ -86,7 +86,7 @@ public class TeapotOverlay implements LayeredDraw.Layer {
         return stack.isEmpty() ? Component.translatable("mco.configure.world.slot.empty") : stack.getHoverName();
     }
 
-    private static void drawCentered(GuiGraphics graphics, Font font, Component text, int x, int y) {
-        graphics.drawString(font, text, x - font.width(text) / 2, y, 0xFFFFFF);
+    private static void drawCentered(GuiGraphicsExtractor graphics, Font font, Component text, int x, int y) {
+        graphics.text(font, text, x - font.width(text) / 2, y, 0xFFFFFFFF);
     }
 }

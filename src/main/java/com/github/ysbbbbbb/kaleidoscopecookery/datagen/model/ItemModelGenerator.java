@@ -56,6 +56,10 @@ public class ItemModelGenerator extends ModelProvider {
         withExistingParent("stove", modLoc("block/stove"));
         withExistingParent("pot", modLoc("block/pot"));
         withExistingParent("stockpot", modLoc("block/stockpot"));
+        registerClientItem(modLoc("kitchen_shelf"), plainModel(modLoc("item/kitchen_shelf")));
+        registerClientItem(modLoc("shawarma_spit"), plainModel(modLoc("item/shawarma_spit")));
+        registerClientItem(modLoc("trash_can"), plainModel(modLoc("item/trash_can")));
+        registerClientItem(modLoc("eight_immortals_table"), plainModel(modLoc("item/eight_immortals_table")));
 
         handheldItem(ModItems.IRON_KITCHEN_KNIFE.get());
         handheldItem(ModItems.GOLD_KITCHEN_KNIFE.get());
@@ -166,9 +170,13 @@ public class ItemModelGenerator extends ModelProvider {
         handheldItem(ModItems.CANDIED_APPLE_SKEWER.get());
         handheldItem(ModItems.CANDIED_CATERPILLAR_SKEWER.get());
 
-        basicItem(modLoc("honey"));
-        basicItem(modLoc("egg"));
-        basicItem(modLoc("oil_in_millstone"));
+        // 锅内和磨盘内的替换模型
+        Identifier honey = modLoc("honey");
+        registerClientItem(honey, plainModel(basicItem(honey)));
+        Identifier egg = modLoc("egg");
+        registerClientItem(egg, plainModel(basicItem(egg)));
+        Identifier oilInMillstone = modLoc("oil_in_millstone");
+        registerClientItem(oilInMillstone, plainModel(basicItem(oilInMillstone)));
 
         withExistingParent("bamboo_tray", modLoc("block/bamboo_tray/base"));
 

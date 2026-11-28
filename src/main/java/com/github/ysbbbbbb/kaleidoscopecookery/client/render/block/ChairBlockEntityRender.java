@@ -6,11 +6,12 @@ import com.github.ysbbbbbb.kaleidoscopecookery.client.event.ModModelEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.util.Util;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -38,22 +39,27 @@ public class ChairBlockEntityRender implements BlockEntityRenderer<ChairBlockEnt
     public void extractRenderState(ChairBlockEntity chair, State state, float partialTick,
                                    Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(chair, state, partialTick, cameraPosition, breakProgress);
-        state.rotation = chair.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite().get2DDataValue();
-        ModModelEvent.updateModel(state.carpet, CACHE_MODEL.apply(chair.getColor()));
+        state.rotationSteps = chair.getBlockState().getValue(HorizontalDirectionalBlock.FACING).getOpposite().get2DDataValue();
+        state.carpet = ModModelEvent.getModel(CACHE_MODEL.apply(chair.getColor()));
+        ModModelEvent.copyBreakProgress(state);
     }
 
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        if (state.carpet == null) {
+            return;
+        }
+
         poseStack.pushPose();
         poseStack.translate(0.5, 0, 0.5);
-        poseStack.mulPose(Axis.YP.rotationDegrees(-state.rotation * 90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-state.rotationSteps * 90));
         poseStack.translate(-0.5, 0, -0.5);
-        state.carpet.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+        ModModelEvent.submitModel(state.carpet, state, poseStack, collector, RenderTypes.entityCutout(TextureAtlas.LOCATION_BLOCKS));
         poseStack.popPose();
     }
 
     public static final class State extends BlockEntityRenderState {
-        private final BlockModelRenderState carpet = new BlockModelRenderState();
-        private int rotation;
+        private @Nullable BlockStateModelPart carpet;
+        private int rotationSteps;
     }
 }

@@ -19,7 +19,7 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -55,7 +55,7 @@ public class ReiTeapotRecipeCategory implements DisplayCategory<ReiTeapotRecipeC
         widgets.add(Widgets.createTexturedWidget(BG, startX, startY, 0, 0, WIDTH, HEIGHT));
         widgets.add(Widgets.withTranslate(Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, v) -> {
             drawCenteredString(guiGraphics, brewTime, WIDTH / 2, 70);
-        }), startX, startY, 0));
+        }), startX, startY));
         widgets.add(Widgets.createSlot(new Point(startX + 65, startY))
                 .entries(display.getInputEntries().get(0))
                 .markInput());
@@ -73,9 +73,9 @@ public class ReiTeapotRecipeCategory implements DisplayCategory<ReiTeapotRecipeC
         return widgets;
     }
 
-    private void drawCenteredString(GuiGraphics guiGraphics, Component text, int centerX, int y) {
+    private void drawCenteredString(GuiGraphicsExtractor guiGraphics, Component text, int centerX, int y) {
         Font font = Minecraft.getInstance().font;
-        guiGraphics.drawString(font, text, centerX - font.width(text) / 2, y, 0x555555, false);
+        guiGraphics.text(font, text, centerX - font.width(text) / 2, y, 0xFF555555, false);
     }
 
     @Override
