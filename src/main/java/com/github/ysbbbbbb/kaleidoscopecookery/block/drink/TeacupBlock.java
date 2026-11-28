@@ -36,7 +36,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -48,11 +48,11 @@ public class TeacupBlock extends HorizontalDirectionalBlock {
     protected final IntegerProperty cupCount;
     protected final IntegerProperty teaCount;
     protected final int maxCount;
-    protected final @Nullable FoodBiteAnimateTicks.AnimateTick animateTick;
+    protected final FoodBiteAnimateTicks.@Nullable AnimateTick animateTick;
 
     protected VoxelShape aabb = AABB;
 
-    public TeacupBlock(int maxCount, @Nullable FoodBiteAnimateTicks.AnimateTick animateTick) {
+    public TeacupBlock(int maxCount, FoodBiteAnimateTicks.@Nullable AnimateTick animateTick) {
         super(BlockBehaviour.Properties.of()
                 .forceSolidOn()
                 .instabreak()

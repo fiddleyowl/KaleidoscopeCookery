@@ -32,7 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -46,7 +46,7 @@ public class ChoppingBoardBlockEntity extends BaseBlockEntity implements IChoppi
     /**
      * 仅用于客户端渲染
      */
-    public @Nullable ModelResourceLocation[] cacheModels = null;
+    public ModelResourceLocation @Nullable [] cacheModels = null;
     public @Nullable ModelResourceLocation previousModel = null;
     /**
      * 服务端客户端共通数据

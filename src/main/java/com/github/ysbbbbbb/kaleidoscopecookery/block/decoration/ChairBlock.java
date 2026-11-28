@@ -36,7 +36,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -112,7 +112,7 @@ public class ChairBlock extends HorizontalDirectionalBlock implements SimpleWate
 
     @NotNull
     private InteractionResult useWithCarpets(BlockState state, Level level, BlockPos pos, Player player, ItemStack itemInHand) {
-        @Nullable DyeColor dyeColor = getColorByCarpet(itemInHand.getItem());
+        DyeColor dyeColor = getColorByCarpet(itemInHand.getItem());
         boolean hasCarpet = state.getValue(HAS_CARPET);
         if (dyeColor == null) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;

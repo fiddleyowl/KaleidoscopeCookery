@@ -16,7 +16,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 import static com.github.ysbbbbbb.kaleidoscopecookery.init.ModDataComponents.OIL_POT_OIL_COUNT;

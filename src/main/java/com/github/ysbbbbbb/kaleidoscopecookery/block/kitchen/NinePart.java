@@ -1,7 +1,7 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.block.kitchen;
 
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum NinePart implements StringRepresentable {
     LEFT_UP("left_up", -1, -1),

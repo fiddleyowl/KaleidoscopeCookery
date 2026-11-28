@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.LootParams;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +29,7 @@ public class FoodBiteOneByTwoBlock extends FoodBiteBlock {
     public static final int RIGHT = 1;
 
     public FoodBiteOneByTwoBlock(Food foodProperties, int maxBites,
-                                 @Nullable FoodBiteAnimateTicks.AnimateTick animateTick) {
+                                 FoodBiteAnimateTicks.@Nullable AnimateTick animateTick) {
         super(foodProperties, maxBites, animateTick);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(bites, 0)

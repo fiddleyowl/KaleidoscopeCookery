@@ -34,7 +34,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -50,11 +50,11 @@ public class FoodBiteBlock extends FoodBlock {
     protected final Food foodProperties;
     protected final IntegerProperty bites;
     protected final int maxBites;
-    protected final @Nullable FoodBiteAnimateTicks.AnimateTick animateTick;
+    protected final FoodBiteAnimateTicks.@Nullable AnimateTick animateTick;
 
     protected VoxelShape aabb = FoodBlock.AABB;
 
-    public FoodBiteBlock(Food foodProperties, int maxBites, @Nullable FoodBiteAnimateTicks.AnimateTick animateTick) {
+    public FoodBiteBlock(Food foodProperties, int maxBites, FoodBiteAnimateTicks.@Nullable AnimateTick animateTick) {
         super();
         this.maxBites = maxBites;
         this.foodProperties = foodProperties;

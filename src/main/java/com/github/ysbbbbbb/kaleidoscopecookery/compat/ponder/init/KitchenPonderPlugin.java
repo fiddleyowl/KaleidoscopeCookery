@@ -5,13 +5,10 @@ import net.createmod.ponder.api.client.registration.PonderPlugin;
 import net.createmod.ponder.api.client.registration.PonderSceneRegistrationHelper;
 import net.createmod.ponder.api.client.registration.PonderTagRegistrationHelper;
 import net.createmod.ponder.api.client.PonderIndex;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.NullMarked;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class KitchenPonderPlugin implements PonderPlugin {
     @Override
     public String getModId() {

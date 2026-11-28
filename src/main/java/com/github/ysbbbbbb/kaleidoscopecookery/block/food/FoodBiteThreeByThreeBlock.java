@@ -27,7 +27,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +50,7 @@ public class FoodBiteThreeByThreeBlock extends FoodBiteBlock implements EntityBl
     private static final VoxelShape RIGHT_DOWN = Block.box(0, 0, 0, 12, 2, 12);
 
     public FoodBiteThreeByThreeBlock(Food foodProperties, int maxBites,
-                                     @Nullable FoodBiteAnimateTicks.AnimateTick animateTick) {
+                                     FoodBiteAnimateTicks.@Nullable AnimateTick animateTick) {
         super(foodProperties, maxBites, animateTick);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(bites, 0)

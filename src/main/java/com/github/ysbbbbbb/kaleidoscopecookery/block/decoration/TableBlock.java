@@ -37,7 +37,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 
@@ -122,7 +122,7 @@ public class TableBlock extends Block implements SimpleWaterloggedBlock, EntityB
 
     @NotNull
     private InteractionResult useWithCarpets(BlockState state, Level level, BlockPos pos, Player player, ItemStack itemInHand) {
-        @Nullable DyeColor dyeColor = getColorByCarpet(itemInHand.getItem());
+        DyeColor dyeColor = getColorByCarpet(itemInHand.getItem());
         boolean hasCarpet = state.getValue(HAS_CARPET);
         if (dyeColor == null) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
