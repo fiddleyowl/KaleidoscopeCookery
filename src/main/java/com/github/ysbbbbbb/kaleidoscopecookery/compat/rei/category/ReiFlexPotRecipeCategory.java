@@ -21,7 +21,6 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
@@ -131,7 +130,7 @@ public class ReiFlexPotRecipeCategory implements DisplayCategory<ReiFlexPotRecip
                     FlexPotRecipe r = holder.value();
 
                     List<EntryIngredient> inputs = ReiUtil.ofIngredients(r.getIngredients());
-                    List<EntryIngredient> output = ReiUtil.ofItemStacks(r.getResultItem(RegistryAccess.EMPTY));
+                    List<EntryIngredient> output = ReiUtil.ofItemStacks(r.result());
                     Optional<Ingredient> recipeCarrier = r.carrier();
                     EntryIngredient carrier = EntryIngredient.empty();
                     if (recipeCarrier.isPresent()) {

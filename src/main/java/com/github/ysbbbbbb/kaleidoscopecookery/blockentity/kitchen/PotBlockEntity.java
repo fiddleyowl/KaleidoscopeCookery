@@ -316,7 +316,7 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
         PotRecipe value = recipe.value();
 
         this.carrier = value.carrier();
-        this.result = value.assemble(input, level.registryAccess());
+        this.result = value.assemble(input);
         this.currentTick = value.time();
         this.stirFryCount = value.stirFryCount();
 
@@ -329,7 +329,7 @@ public class PotBlockEntity extends BaseBlockEntity implements IPot {
         FlexPotRecipe value = recipe.value();
 
         this.carrier = value.carrier();
-        this.result = value.assemble(input, level.registryAccess());
+        this.result = value.assemble(input);
         this.currentTick = value.time();
         this.stirFryCount = value.stirFryCount();
 

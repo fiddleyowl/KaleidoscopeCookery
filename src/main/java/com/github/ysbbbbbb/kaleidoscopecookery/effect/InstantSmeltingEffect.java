@@ -44,7 +44,7 @@ public class InstantSmeltingEffect {
             SingleRecipeInput input = new SingleRecipeInput(stack);
             level.recipeAccess().getRecipeFor(RecipeType.SMELTING, input, level).ifPresent(recipe -> {
                 // 使用 assemble 更为标准
-                ItemStack result = recipe.value().assemble(input, level.registryAccess());
+                ItemStack result = recipe.value().assemble(input);
                 // 扣除原始物品的数量，增加冶炼结果的数量
                 int splitCount = stack.split(count[0]).getCount();
                 // 有可能烧炼的结果数量不为 1，故需要重新计算总量

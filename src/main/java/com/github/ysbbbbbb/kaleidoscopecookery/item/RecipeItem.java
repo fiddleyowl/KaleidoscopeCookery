@@ -302,14 +302,14 @@ public class RecipeItem extends BlockItem {
         var potRecipe = recipeManager.getRecipeFor(ModRecipes.POT_RECIPE, container, level);
         if (potRecipe.isPresent()) {
             ItemStack assemble = potRecipe.get().value()
-                    .assemble(container, level.registryAccess());
+                    .assemble(container);
             return new RecipeResult(assemble, false);
         }
 
         var flexPotRecipe = recipeManager.getRecipeFor(ModRecipes.FLEX_POT_RECIPE, container, level);
         if (flexPotRecipe.isPresent()) {
             var recipe = flexPotRecipe.get();
-            ItemStack result = recipe.value().assemble(container, level.registryAccess());
+            ItemStack result = recipe.value().assemble(container);
             setQuality(level, inputs, recipe.value().ingredients(), recipe.id(), result, recordStack);
             return new RecipeResult(result, true);
         }
@@ -324,14 +324,14 @@ public class RecipeItem extends BlockItem {
         var stockpotRecipe = recipeManager.getRecipeFor(ModRecipes.STOCKPOT_RECIPE, container, level);
         if (stockpotRecipe.isPresent()) {
             ItemStack assemble = stockpotRecipe.get().value()
-                    .assemble(container, level.registryAccess());
+                    .assemble(container);
             return new RecipeResult(assemble, false);
         }
 
         var flexStockpotRecipe = recipeManager.getRecipeFor(ModRecipes.FLEX_STOCKPOT_RECIPE, container, level);
         if (flexStockpotRecipe.isPresent()) {
             var recipe = flexStockpotRecipe.get();
-            ItemStack result = recipe.value().assemble(container, level.registryAccess());
+            ItemStack result = recipe.value().assemble(container);
             setQuality(level, inputs, recipe.value().ingredients(), recipe.id(), result, recordStack);
             return new RecipeResult(result, true);
         }

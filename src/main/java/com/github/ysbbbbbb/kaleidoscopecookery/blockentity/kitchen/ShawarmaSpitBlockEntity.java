@@ -48,7 +48,7 @@ public class ShawarmaSpitBlockEntity extends BaseBlockEntity implements IShawarm
         return this.quickCheck.getRecipeFor(singleRecipeInput, level).map(recipe -> {
             // 如果找到了配方，则设置正在烹饪的物品和烹饪时间
             this.cookingItem = itemStack.split(MAX_ITEMS);
-            this.cookedItem = recipe.value().assemble(singleRecipeInput, level.registryAccess());
+            this.cookedItem = recipe.value().assemble(singleRecipeInput);
             this.cookedItem.setCount(this.cookingItem.getCount());
             this.cookTime = recipe.value().getCookingTime();
             this.refresh();

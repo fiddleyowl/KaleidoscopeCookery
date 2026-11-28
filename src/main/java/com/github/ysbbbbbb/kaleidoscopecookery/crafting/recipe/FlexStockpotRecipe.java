@@ -3,7 +3,6 @@ package com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.container.StockpotInput;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.google.common.collect.Sets;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -22,13 +21,20 @@ import static com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.Stockp
 
 public record FlexStockpotRecipe(NonNullList<Ingredient> ingredients,
                                  Identifier soupBase, ItemStack result, int time,
-                                 Optional<Ingredient> carrier, StockpotVisuals visuals) implements BaseRecipe<StockpotInput> {
+                                 Optional<Ingredient> carrier, StockpotVisuals visuals,
+                                 boolean fillEmptySlots) implements BaseRecipe<StockpotInput> {
+    public FlexStockpotRecipe(NonNullList<Ingredient> ingredients,
+                              Identifier soupBase, ItemStack result,
+                              int time, Optional<Ingredient> carrier, StockpotVisuals visuals) {
+        this(ingredients, soupBase, result, time, carrier, visuals, false);
+    }
+
     public FlexStockpotRecipe(List<Ingredient> ingredients,
                               Identifier soupBase, ItemStack result,
                               int time, Optional<Ingredient> carrier, StockpotVisuals visuals
     ) {
-        this(NonNullList.of(Ingredient.EMPTY, BaseRecipe.fillInputs(ingredients)),
-                soupBase, result, time, carrier, visuals);
+        this(NonNullList.copyOf(ingredients.subList(0, Math.min(ingredients.size(), RECIPES_SIZE))),
+                soupBase, result, time, carrier, visuals, true);
     }
 
     public FlexStockpotRecipe(NonNullList<Ingredient> ingredients,
@@ -77,17 +83,11 @@ public record FlexStockpotRecipe(NonNullList<Ingredient> ingredients,
                 }
             }
         }
-        return RecipeMatcher.findMatches(merged, ingredients) != null;
+        return RecipeMatcher.findMatches(merged, BaseRecipe.fillInputs(ingredients, fillEmptySlots)) != null;
     }
 
-    @Override
     public NonNullList<Ingredient> getIngredients() {
         return ingredients;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
-        return this.result;
     }
 
     @Override
@@ -96,7 +96,7 @@ public record FlexStockpotRecipe(NonNullList<Ingredient> ingredients,
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<FlexStockpotRecipe> getType() {
         return ModRecipes.FLEX_STOCKPOT_RECIPE;
     }
 }

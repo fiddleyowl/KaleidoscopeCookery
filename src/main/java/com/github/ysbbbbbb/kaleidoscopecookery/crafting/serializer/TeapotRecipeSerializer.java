@@ -22,7 +22,7 @@ public class TeapotRecipeSerializer {
             Ingredient.CODEC.fieldOf("ingredient").forGetter(TeapotRecipe::ingredient),
             Codec.INT.optionalFieldOf("ingredient_count", DEFAULT_INGREDIENT_COUNT).forGetter(TeapotRecipe::ingredientCount),
             Codec.INT.optionalFieldOf("time", DEFAULT_TIME).forGetter(TeapotRecipe::time),
-            ItemStack.STRICT_CODEC.fieldOf("result").forGetter(TeapotRecipe::result)
+            ItemStack.CODEC.validate(ItemStack::validateStrict).fieldOf("result").forGetter(TeapotRecipe::result)
     ).apply(inst, TeapotRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TeapotRecipe> STREAM_CODEC = StreamCodec.composite(

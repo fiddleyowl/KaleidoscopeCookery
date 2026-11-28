@@ -251,7 +251,7 @@ public class SteamerBlockEntity extends BaseBlockEntity implements ISteamer {
             }
             SingleRecipeInput container = new SingleRecipeInput(stack);
             ItemStack resultStack = steamer.quickCheck.getRecipeFor(container, level)
-                    .map(r -> r.value().assemble(container, level.registryAccess()))
+                    .map(r -> r.value().assemble(container))
                     .orElse(stack);
             if (!resultStack.isEmpty()) {
                 steamer.items.set(i, resultStack);

@@ -20,7 +20,6 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
@@ -123,7 +122,7 @@ public class ReiPotRecipeCategory implements DisplayCategory<ReiPotRecipeCategor
         registry.getRecipeManager().getAllRecipesFor(ModRecipes.POT_RECIPE)
                 .forEach(r -> {
                     List<EntryIngredient> inputs = ReiUtil.ofIngredients(r.value().getIngredients());
-                    List<EntryIngredient> output = ReiUtil.ofItemStacks(r.value().getResultItem(RegistryAccess.EMPTY));
+                    List<EntryIngredient> output = ReiUtil.ofItemStacks(r.value().result());
                     Optional<Ingredient> recipeCarrier = r.value().carrier();
                     EntryIngredient carrier = EntryIngredient.empty();
                     if (recipeCarrier.isPresent()) {

@@ -8,10 +8,12 @@ import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -37,14 +39,11 @@ public class StockpotRecipeSerializer {
                 StockpotVisuals.DEFAULT,
                 false
         );
-        return new RecipeHolder<>(EMPTY_ID, stockpotRecipe);
+        return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, EMPTY_ID), stockpotRecipe);
     }
 
     public static final MapCodec<StockpotRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Ingredient.CODEC.listOf().fieldOf("ingredients").xmap(
-                    list -> list,
-                    list -> list.stream().filter(i -> !i.isEmpty()).toList()
-            ).forGetter(StockpotRecipe::getIngredients),
+            Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(StockpotRecipe::getIngredients),
             Identifier.CODEC.optionalFieldOf("soup_base", DEFAULT_SOUP_BASE).forGetter(StockpotRecipe::soupBase),
             ItemStack.CODEC.fieldOf("result").forGetter(StockpotRecipe::result),
             Codec.INT.optionalFieldOf("time", DEFAULT_TIME).forGetter(StockpotRecipe::time),

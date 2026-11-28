@@ -111,7 +111,7 @@ public class TeapotBlockEntity extends BaseBlockEntity implements ITeapot {
                 Optional<RecipeHolder<TeapotRecipe>> recipeOpt = this.quickCheck.getRecipeFor(container, level);
                 if (recipeOpt.isPresent()) {
                     TeapotRecipe teapotRecipe = recipeOpt.get().value();
-                    this.result = teapotRecipe.assemble(container, level.registryAccess());
+                    this.result = teapotRecipe.assemble(container);
                     this.currentTick = teapotRecipe.time();
                     this.status = PROCESSING;
                     this.refresh();

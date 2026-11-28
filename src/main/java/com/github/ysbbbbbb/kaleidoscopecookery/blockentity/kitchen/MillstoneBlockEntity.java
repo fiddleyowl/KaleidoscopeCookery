@@ -383,7 +383,7 @@ public class MillstoneBlockEntity extends BaseBlockEntity implements IMillstone 
         if (postEvent.getOutput() != null) {
             recipe = postEvent.getOutput();
         }
-        return recipe.id().equals(MillstoneRecipeSerializer.EMPTY_ID) ? Optional.empty() : Optional.of(recipe);
+        return recipe.id().identifier().equals(MillstoneRecipeSerializer.EMPTY_ID) ? Optional.empty() : Optional.of(recipe);
     }
 
     public void sendActionBarMessage(LivingEntity user, String key, Object... args) {

@@ -2,7 +2,6 @@ package com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.container.SimpleInput;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -16,26 +15,25 @@ import java.util.List;
 import java.util.Optional;
 
 public record PotRecipe(int time, int stirFryCount, Optional<Ingredient> carrier,
-                        NonNullList<Ingredient> ingredients, ItemStack result) implements BaseRecipe<SimpleInput> {
+                        NonNullList<Ingredient> ingredients, ItemStack result, boolean fillEmptySlots) implements BaseRecipe<SimpleInput> {
+    public PotRecipe(int time, int stirFryCount, Optional<Ingredient> carrier,
+                     NonNullList<Ingredient> ingredients, ItemStack result) {
+        this(time, stirFryCount, carrier, ingredients, result, false);
+    }
+
     public PotRecipe(int time, int stirFryCount, Optional<Ingredient> carrier,
                      List<Ingredient> ingredients, ItemStack result) {
-        this(time, stirFryCount, carrier, NonNullList.of(Ingredient.EMPTY,
-                BaseRecipe.fillInputs(ingredients)), result);
+        this(time, stirFryCount, carrier,
+                NonNullList.copyOf(ingredients.subList(0, Math.min(ingredients.size(), RECIPES_SIZE))), result, true);
     }
 
     @Override
     public boolean matches(SimpleInput simpleInput, Level level) {
-        return RecipeMatcher.findMatches(simpleInput.getInputs(), ingredients) != null;
+        return RecipeMatcher.findMatches(simpleInput.getInputs(), BaseRecipe.fillInputs(ingredients, fillEmptySlots)) != null;
     }
 
-    @Override
     public NonNullList<Ingredient> getIngredients() {
         return ingredients;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
-        return this.result;
     }
 
     @Override
@@ -44,7 +42,7 @@ public record PotRecipe(int time, int stirFryCount, Optional<Ingredient> carrier
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<PotRecipe> getType() {
         return ModRecipes.POT_RECIPE;
     }
 }

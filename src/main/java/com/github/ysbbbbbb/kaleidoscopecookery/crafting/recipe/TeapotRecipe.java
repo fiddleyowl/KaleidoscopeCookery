@@ -2,7 +2,6 @@ package com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.container.TeapotInput;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -27,13 +26,8 @@ public record TeapotRecipe(Identifier teaFluid,
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider) {
-        return this.result;
-    }
-
-    @Override
-    public ItemStack assemble(TeapotInput container, HolderLookup.Provider registryAccess) {
-        return getResultItem(registryAccess).copyWithCount(OUTPUT_COUNT);
+    public ItemStack assemble(TeapotInput container) {
+        return this.result.copyWithCount(OUTPUT_COUNT);
     }
 
     @Override
@@ -42,7 +36,7 @@ public record TeapotRecipe(Identifier teaFluid,
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<TeapotRecipe> getType() {
         return ModRecipes.TEAPOT_RECIPE;
     }
 }

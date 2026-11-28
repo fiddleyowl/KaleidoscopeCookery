@@ -20,10 +20,7 @@ public class FlexPotRecipeSerializer {
                     Codec.INT.optionalFieldOf("time", 200).forGetter(FlexPotRecipe::time),
                     Codec.INT.optionalFieldOf("stir_fry_count", 3).forGetter(FlexPotRecipe::stirFryCount),
                     CARRIER_CODEC.optionalFieldOf("carrier", Optional.empty()).forGetter(FlexPotRecipe::carrier),
-                    Ingredient.CODEC.listOf().fieldOf("ingredients").xmap(
-                            list -> list,
-                            list -> list.stream().filter(i -> !i.isEmpty()).toList()
-                    ).forGetter(recipe -> recipe.ingredients().stream().toList()),
+                    Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(FlexPotRecipe::getIngredients),
                     ItemStack.CODEC.fieldOf("result").forGetter(FlexPotRecipe::result)
             ).apply(instance, FlexPotRecipe::new)
     );

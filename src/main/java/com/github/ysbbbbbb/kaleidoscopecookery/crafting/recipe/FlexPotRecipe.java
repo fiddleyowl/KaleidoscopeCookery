@@ -3,7 +3,6 @@ package com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe;
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.container.SimpleInput;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
 import com.google.common.collect.Sets;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,11 +17,16 @@ import java.util.Optional;
 import java.util.Set;
 
 public record FlexPotRecipe(int time, int stirFryCount, Optional<Ingredient> carrier,
-                            NonNullList<Ingredient> ingredients, ItemStack result) implements BaseRecipe<SimpleInput> {
+                            NonNullList<Ingredient> ingredients, ItemStack result, boolean fillEmptySlots) implements BaseRecipe<SimpleInput> {
+    public FlexPotRecipe(int time, int stirFryCount, Optional<Ingredient> carrier,
+                         NonNullList<Ingredient> ingredients, ItemStack result) {
+        this(time, stirFryCount, carrier, ingredients, result, false);
+    }
+
     public FlexPotRecipe(int time, int stirFryCount, Optional<Ingredient> carrier,
                          List<Ingredient> ingredients, ItemStack result) {
-        this(time, stirFryCount, carrier, NonNullList.of(Ingredient.EMPTY,
-                BaseRecipe.fillInputs(ingredients)), result);
+        this(time, stirFryCount, carrier,
+                NonNullList.copyOf(ingredients.subList(0, Math.min(ingredients.size(), RECIPES_SIZE))), result, true);
     }
 
     @Override
@@ -42,17 +46,11 @@ public record FlexPotRecipe(int time, int stirFryCount, Optional<Ingredient> car
                 }
             }
         }
-        return RecipeMatcher.findMatches(merged, ingredients) != null;
+        return RecipeMatcher.findMatches(merged, BaseRecipe.fillInputs(ingredients, fillEmptySlots)) != null;
     }
 
-    @Override
     public NonNullList<Ingredient> getIngredients() {
         return ingredients;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
-        return this.result;
     }
 
     @Override
@@ -61,7 +59,7 @@ public record FlexPotRecipe(int time, int stirFryCount, Optional<Ingredient> car
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<FlexPotRecipe> getType() {
         return ModRecipes.FLEX_POT_RECIPE;
     }
 }

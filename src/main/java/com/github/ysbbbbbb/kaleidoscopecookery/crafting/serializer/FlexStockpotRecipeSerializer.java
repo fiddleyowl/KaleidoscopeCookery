@@ -20,10 +20,7 @@ import static com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.Stockp
 
 public class FlexStockpotRecipeSerializer {
     public static final MapCodec<FlexStockpotRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Ingredient.CODEC.listOf().fieldOf("ingredients").xmap(
-                    list -> list,
-                    list -> list.stream().filter(i -> !i.isEmpty()).toList()
-            ).forGetter(FlexStockpotRecipe::getIngredients),
+            Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(FlexStockpotRecipe::getIngredients),
             Identifier.CODEC.optionalFieldOf("soup_base", DEFAULT_SOUP_BASE).forGetter(FlexStockpotRecipe::soupBase),
             ItemStack.CODEC.fieldOf("result").forGetter(FlexStockpotRecipe::result),
             Codec.INT.optionalFieldOf("time", DEFAULT_TIME).forGetter(FlexStockpotRecipe::time),

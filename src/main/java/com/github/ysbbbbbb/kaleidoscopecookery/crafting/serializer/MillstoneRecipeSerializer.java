@@ -6,14 +6,17 @@ import com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe.MillstoneRecipe;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class MillstoneRecipeSerializer {
@@ -48,13 +51,13 @@ public class MillstoneRecipeSerializer {
 
     public static final MapCodec<MillstoneRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    Ingredient.CODEC.fieldOf("ingredient").forGetter(MillstoneRecipe::ingredient),
+                    Ingredient.CODEC.fieldOf("ingredient").forGetter(recipe -> recipe.ingredient().orElseThrow()),
                     RESULTS_MAP_CODEC.forGetter(MillstoneRecipe::results)
             ).apply(instance, MillstoneRecipe::new)
     );
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MillstoneRecipe> STREAM_CODEC = StreamCodec.composite(
-            Ingredient.CONTENTS_STREAM_CODEC, MillstoneRecipe::ingredient,
+            Ingredient.CONTENTS_STREAM_CODEC, recipe -> recipe.ingredient().orElseThrow(),
             RandomOutput.STREAM_CODEC.apply(ByteBufCodecs.list(4)), MillstoneRecipe::results,
             MillstoneRecipe::new
     );
@@ -62,7 +65,7 @@ public class MillstoneRecipeSerializer {
     public static final Identifier EMPTY_ID = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "millstone/empty");
 
     public static RecipeHolder<MillstoneRecipe> getEmptyRecipe() {
-        MillstoneRecipe recipe = new MillstoneRecipe(Ingredient.EMPTY, NonNullList.withSize(4, RandomOutput.EMPTY));
-        return new RecipeHolder<>(EMPTY_ID, recipe);
+        MillstoneRecipe recipe = new MillstoneRecipe(Optional.empty(), NonNullList.withSize(4, RandomOutput.EMPTY));
+        return new RecipeHolder<>(ResourceKey.create(Registries.RECIPE, EMPTY_ID), recipe);
     }
 }

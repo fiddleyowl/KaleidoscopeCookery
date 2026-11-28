@@ -23,7 +23,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jspecify.annotations.Nullable;
 
@@ -81,10 +80,10 @@ public class MillstoneRecipeCategory implements IRecipeCategory<RecipeHolder<Mil
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RecipeHolder<MillstoneRecipe> holder, IFocusGroup focuses) {
         MillstoneRecipe recipe = holder.value();
-        Ingredient input = recipe.ingredient();
         List<RandomOutput> outputs = recipe.results();
 
-        builder.addSlot(RecipeIngredientRole.INPUT, 69, 39).addIngredients(input).setStandardSlotBackground();
+        var inputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 69, 39).setStandardSlotBackground();
+        recipe.ingredient().ifPresent(inputSlot::addIngredients);
 
         // 主输出
         RandomOutput output = outputs.get(0);

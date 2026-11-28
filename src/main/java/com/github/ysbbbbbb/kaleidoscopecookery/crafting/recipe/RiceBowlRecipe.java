@@ -5,21 +5,23 @@ import com.github.ysbbbbbb.kaleidoscopecookery.init.tag.TagCommon;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.quality.Quality;
 import com.github.ysbbbbbb.kaleidoscopecookery.item.quality.QualityUtils;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 import java.util.List;
 
 public class RiceBowlRecipe extends CustomRecipe {
-    public static final Ingredient COOKED_RICE = Ingredient.of(TagCommon.COOKED_RICE);
-
+    private final CraftingBookCategory category;
     private final Ingredient ingredient;
     private final ItemStack result;
 
     public RiceBowlRecipe(CraftingBookCategory category, Ingredient ingredient, ItemStack result) {
-        super(category);
+        this.category = category;
         this.ingredient = ingredient;
         this.result = result;
     }
@@ -34,29 +36,28 @@ public class RiceBowlRecipe extends CustomRecipe {
         }
 
         // 有且只能有一个物品匹配 COOKED_RICE
-        return items.stream().filter(COOKED_RICE).count() == 1;
+        return items.stream().filter(stack -> stack.is(TagCommon.COOKED_RICE)).count() == 1;
     }
 
     @Override
-    public ItemStack assemble(CraftingInput container, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput container) {
         ItemStack assembled = result.copy();
         copyBestQuality(container, assembled);
         return assembled;
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 2;
+    public CraftingBookCategory category() {
+        return this.category;
     }
 
-    @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.of(Ingredient.EMPTY, this.ingredient, COOKED_RICE);
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return result.copy();
+    public List<Ingredient> getIngredients(HolderLookup.Provider registries) {
+        Ingredient cookedRice = registries.get(TagCommon.COOKED_RICE)
+                .filter(tag -> tag.size() > 0)
+                .map(Ingredient::of)
+                .orElseGet(() -> DataComponentIngredient.of(DataComponents.CUSTOM_NAME,
+                        Component.literal("Empty Tag: " + TagCommon.COOKED_RICE.location()), Items.BARRIER));
+        return List.of(this.ingredient, cookedRice);
     }
 
     public ItemStack getResult() {

@@ -6,6 +6,7 @@ import com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -61,16 +62,23 @@ public class ModRecipes {
 
     @SubscribeEvent
     public static void register(RegisterEvent evt) {
-        if (evt.getRegistryKey().equals(Registries.RECIPE_SERIALIZER)) {
-            POT_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "pot"));
-            FLEX_POT_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "flex_pot"));
-            CHOPPING_BOARD_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "chopping_board"));
-            STOCKPOT_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "stockpot"));
-            FLEX_STOCKPOT_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "flex_stockpot"));
-            MILLSTONE_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "millstone"));
-            STEAMER_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "steamer"));
-            TEAPOT_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "teapot"));
-            BAMBOO_TRAY_RECIPE = RecipeType.simple(Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, "bamboo_tray"));
-        }
+        evt.register(Registries.RECIPE_TYPE, helper -> {
+            POT_RECIPE = registerType(helper, "pot");
+            FLEX_POT_RECIPE = registerType(helper, "flex_pot");
+            CHOPPING_BOARD_RECIPE = registerType(helper, "chopping_board");
+            STOCKPOT_RECIPE = registerType(helper, "stockpot");
+            FLEX_STOCKPOT_RECIPE = registerType(helper, "flex_stockpot");
+            MILLSTONE_RECIPE = registerType(helper, "millstone");
+            STEAMER_RECIPE = registerType(helper, "steamer");
+            TEAPOT_RECIPE = registerType(helper, "teapot");
+            BAMBOO_TRAY_RECIPE = registerType(helper, "bamboo_tray");
+        });
+    }
+
+    private static <T extends Recipe<?>> RecipeType<T> registerType(RegisterEvent.RegisterHelper<RecipeType<?>> helper, String name) {
+        Identifier id = Identifier.fromNamespaceAndPath(KaleidoscopeCookery.MOD_ID, name);
+        RecipeType<T> type = RecipeType.simple(id);
+        helper.register(id, type);
+        return type;
     }
 }

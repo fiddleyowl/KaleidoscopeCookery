@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
@@ -62,13 +61,12 @@ public class RecipeRandomlyFunction extends LootItemConditionalFunction {
         }
         Identifier randomKey = keys.get(randomsource.nextInt(keys.size()));
         Item result = FoodBiteRegistry.getItem(randomKey);
-        RegistryAccess registryAccess = context.getLevel().registryAccess();
 
         // 炒锅配方
         var potRecipes = context.getLevel().getRecipeManager().getAllRecipesFor(ModRecipes.POT_RECIPE);
         for (var recipeHolder : potRecipes) {
             PotRecipe recipe = recipeHolder.value();
-            ItemStack resultItem = recipe.getResultItem(registryAccess);
+            ItemStack resultItem = recipe.result();
             if (!resultItem.is(result)) {
                 continue;
             }
@@ -84,7 +82,7 @@ public class RecipeRandomlyFunction extends LootItemConditionalFunction {
         var stockpotRecipes = context.getLevel().getRecipeManager().getAllRecipesFor(ModRecipes.STOCKPOT_RECIPE);
         for (var recipeHolder : stockpotRecipes) {
             StockpotRecipe recipe = recipeHolder.value();
-            ItemStack resultItem = recipe.getResultItem(registryAccess);
+            ItemStack resultItem = recipe.result();
             if (!resultItem.is(result)) {
                 continue;
             }

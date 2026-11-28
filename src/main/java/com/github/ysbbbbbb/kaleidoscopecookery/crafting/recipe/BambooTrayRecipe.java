@@ -8,11 +8,15 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.IntFunction;
@@ -22,14 +26,19 @@ public class BambooTrayRecipe extends SingleItemRecipe {
     private final int duration;
 
     public BambooTrayRecipe(Ingredient ingredient, ItemStack result, Subtype subtype, int duration) {
-        super(ModRecipes.BAMBOO_TRAY_RECIPE, ModRecipes.BAMBOO_TRAY_SERIALIZER.get(), StringUtils.EMPTY, ingredient, result);
+        super(new Recipe.CommonInfo(true), ingredient, ItemStackTemplate.fromNonEmptyStack(result));
         this.subtype = subtype;
         this.duration = Math.max(duration, 1);
     }
 
     @Override
-    public boolean matches(SingleRecipeInput inv, Level level) {
-        return this.ingredient.test(inv.getItem(0));
+    public String group() {
+        return StringUtils.EMPTY;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     @Override
@@ -42,12 +51,24 @@ public class BambooTrayRecipe extends SingleItemRecipe {
         return ModRecipes.BAMBOO_TRAY_SERIALIZER.get();
     }
 
+    @Override
+    public RecipeType<BambooTrayRecipe> getType() {
+        return ModRecipes.BAMBOO_TRAY_RECIPE;
+    }
+
     public Ingredient getIngredient() {
-        return this.ingredient;
+        return this.input();
     }
 
     public ItemStack getResult() {
-        return this.result;
+        ItemStackTemplate template = this.result();
+        // 竹筛在计算实际产量后才限制堆叠数量。
+        return new ItemStack(template.item(), template.count(), template.components());
+    }
+
+    @Override
+    public ItemStack assemble(SingleRecipeInput input) {
+        return this.getResult();
     }
 
     public Subtype getSubtype() {

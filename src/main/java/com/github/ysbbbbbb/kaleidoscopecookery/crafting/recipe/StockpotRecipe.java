@@ -2,7 +2,6 @@ package com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.crafting.container.StockpotInput;
 import com.github.ysbbbbbb.kaleidoscopecookery.init.ModRecipes;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -20,15 +19,22 @@ import static com.github.ysbbbbbb.kaleidoscopecookery.crafting.serializer.Stockp
 public record StockpotRecipe(NonNullList<Ingredient> ingredients,
                              Identifier soupBase, ItemStack result, int time,
                              Optional<Ingredient> carrier, StockpotVisuals visuals,
-                             boolean syrup) implements BaseRecipe<StockpotInput> {
+                             boolean syrup, boolean fillEmptySlots) implements BaseRecipe<StockpotInput> {
+
+    public StockpotRecipe(NonNullList<Ingredient> ingredients,
+                          Identifier soupBase, ItemStack result,
+                          int time, Optional<Ingredient> carrier, StockpotVisuals visuals,
+                          boolean syrup) {
+        this(ingredients, soupBase, result, time, carrier, visuals, syrup, false);
+    }
 
     public StockpotRecipe(List<Ingredient> ingredients,
                           Identifier soupBase, ItemStack result,
                           int time, Optional<Ingredient> carrier, StockpotVisuals visuals,
                           boolean syrup
     ) {
-        this(NonNullList.of(Ingredient.EMPTY, BaseRecipe.fillInputs(ingredients)),
-                soupBase, result, time, carrier, visuals, syrup);
+        this(NonNullList.copyOf(ingredients.subList(0, Math.min(ingredients.size(), RECIPES_SIZE))),
+                soupBase, result, time, carrier, visuals, syrup, true);
     }
 
     public StockpotRecipe(NonNullList<Ingredient> ingredients,
@@ -60,17 +66,11 @@ public record StockpotRecipe(NonNullList<Ingredient> ingredients,
     @Override
     public boolean matches(StockpotInput container, Level level) {
         return container.getSoupBase().equals(this.soupBase)
-               && RecipeMatcher.findMatches(container.getInputs(), ingredients) != null;
+               && RecipeMatcher.findMatches(container.getInputs(), BaseRecipe.fillInputs(ingredients, fillEmptySlots)) != null;
     }
 
-    @Override
     public NonNullList<Ingredient> getIngredients() {
         return ingredients;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
-        return this.result;
     }
 
     @Override
@@ -79,7 +79,7 @@ public record StockpotRecipe(NonNullList<Ingredient> ingredients,
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<StockpotRecipe> getType() {
         return ModRecipes.STOCKPOT_RECIPE;
     }
 }

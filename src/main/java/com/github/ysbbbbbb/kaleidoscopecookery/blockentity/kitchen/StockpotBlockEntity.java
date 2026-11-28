@@ -310,7 +310,7 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
 
         this.recipeId = recipe.id();
         this.visuals = value.visuals();
-        this.result = value.assemble(input, level.registryAccess());
+        this.result = value.assemble(input);
         this.currentTick = value.time();
         this.syrupUses = value.syrup() ? this.countIngredients() : 0;
         this.takeoutCount = value.syrup()
@@ -323,7 +323,7 @@ public class StockpotBlockEntity extends BaseBlockEntity implements IStockpot {
 
         this.recipeId = recipe.id();
         this.visuals = value.visuals();
-        this.result = value.assemble(input, level.registryAccess());
+        this.result = value.assemble(input);
         this.currentTick = value.time();
         this.takeoutCount = Math.min(this.result.getCount(), MAX_TAKEOUT_COUNT);
         this.syrupUses = 0;

@@ -33,7 +33,7 @@ public class ChoppingBoardRecipeSerializer {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ChoppingBoardRecipe> STREAM_CODEC = StreamCodec.composite(
             Ingredient.CONTENTS_STREAM_CODEC, ChoppingBoardRecipe::getIngredient,
-            ItemStack.LIST_STREAM_CODEC, ChoppingBoardRecipe::getResults,
+            ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()), ChoppingBoardRecipe::getResults,
             ByteBufCodecs.INT, ChoppingBoardRecipe::getCutCount,
             Identifier.STREAM_CODEC, ChoppingBoardRecipe::getModelId,
             ChoppingBoardRecipe::new);

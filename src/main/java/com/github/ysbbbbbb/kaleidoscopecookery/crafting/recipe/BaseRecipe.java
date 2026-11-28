@@ -1,31 +1,38 @@
 package com.github.ysbbbbbb.kaleidoscopecookery.crafting.recipe;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public interface BaseRecipe<C extends RecipeInput> extends Recipe<C> {
     int RECIPES_SIZE = 9;
 
-    static Ingredient[] fillInputs(List<Ingredient> inputs) {
-        Ingredient[] newInputs = new Ingredient[RECIPES_SIZE];
-        for (int i = 0; i < RECIPES_SIZE; i++) {
-            if (i < inputs.size()) {
-                newInputs[i] = inputs.get(i);
-            } else {
-                newInputs[i] = Ingredient.EMPTY;
-            }
+    static List<? extends Predicate<ItemStack>> fillInputs(List<Ingredient> inputs, boolean fillEmptySlots) {
+        if (!fillEmptySlots) {
+            return inputs;
         }
-        return newInputs;
+        List<Predicate<ItemStack>> filled = new ArrayList<>(Math.max(RECIPES_SIZE, inputs.size()));
+        filled.addAll(inputs);
+        // List 构造器补齐九槽，直接传入 NonNullList 时按原料数匹配。
+        for (int i = inputs.size(); i < RECIPES_SIZE; i++) {
+            filled.add(ItemStack::isEmpty);
+        }
+        return filled;
     }
 
+    ItemStack result();
+
     @Override
-    default ItemStack assemble(C container, HolderLookup.Provider registryAccess) {
-        return getResultItem(registryAccess).copy();
+    default ItemStack assemble(C container) {
+        return result().copy();
     }
 
     @Override
@@ -34,7 +41,22 @@ public interface BaseRecipe<C extends RecipeInput> extends Recipe<C> {
     }
 
     @Override
-    default boolean canCraftInDimensions(int width, int height) {
-        return false;
+    default boolean showNotification() {
+        return true;
+    }
+
+    @Override
+    default String group() {
+        return "";
+    }
+
+    @Override
+    default PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    default RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 }
